@@ -1,0 +1,19 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Подтверждение отката</h5>
+<hr>
+
+<form class='detail_form' action="" method="post">
+
+  {% csrf_token %}
+  
+  <div class="buttons_area">
+    <input type="submit" value="ROLLBACK">
+    <a href="{% url 'svh_service:consignment_update' consignment.id %}"><input type="button" value="CANCEL"></a>
+  </div>
+  
+</form>
+
+{% endblock %}

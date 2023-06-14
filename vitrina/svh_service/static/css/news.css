@@ -1,0 +1,144 @@
+#header {
+    background: RoyalBlue;
+    /* padding-left: 20px; */
+    padding: 10px 0px 10px 20px;
+    /* height: 100px; */
+}
+
+#header_title {
+    font-weight:normal;
+    color: GhostWhite;
+    display: inline-block;
+}
+
+#content { 
+    /* float:right; */
+    /* width:60%; */
+    padding: 0 20px 20px 20px;
+}
+
+/* .block_name {
+    font-weight:normal;
+    border-bottom:1px solid #bbb;
+    background: orange;
+} */
+
+/* form label {
+    font-size: 12px;
+  } */
+
+  /* form input {
+    font-size: 14px;
+    width: 300px;
+  } */
+
+  /* form input[type=submit] {
+    width: 320px;
+  } */
+
+  /* forms */
+
+.block_name{
+    margin: 10px 0px 0px 0px;
+    color: SlateGray;
+    /* background-color: red; */
+
+}
+
+.detail_form label { 
+    font-size: 13px;
+    font-weight: bold;
+    /* float:left;
+    clear:both; */
+    color: SlateGray;
+    margin-bottom:4px; 
+    width: 260px;
+}
+
+.detail_form input { 
+    font-size: 13px;
+    width: 320px;
+    /* clear:both;
+    float:left; */
+    margin:0 0 0px;
+    /* background:#ededed; */
+    border:1px solid gainsboro;
+    border-radius: 5px;
+    padding:6px 10px;
+    /* font-size:12px; */
+}
+
+.buttons_area {
+    margin: 15px 0px 0px 0px;
+    padding: 0px;
+}
+
+.form_fields_area {
+    margin-top: 15px;
+}
+
+/* .btn_img {
+    border-radius: 5px;
+    border: 1px solid DarkSlateBlue;
+    width: 30px;
+    height: 30px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.btn_img:hover {
+    border: 2px solid MediumSlateBlue;
+} */
+
+/* .detail_form input[type=submit], input[type=image] {
+    border-radius: 5px;
+    border: 1px solid DarkSlateBlue;
+    width: 30px;
+    height: 30px;
+    margin: 0px;
+    padding: 0px;
+} */
+
+/* .detail_form input[type=submit], input[type=button] { */
+.buttons_area input[type=submit], input[type=button] {
+    border-radius: 5px;
+    /* border: 2px solid SlateGray; */
+    width: 100px;
+    /* height: 30px; */
+    background:Teal;
+    color: WhiteSmoke;
+    margin-right: 5px;
+    /* padding: 10px 0px 0px 10px; */
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding:6px 10px;
+    border: None;
+}
+
+/* .detail_form input[type=submit]:hover, input[type=button]:hover{ */
+.buttons_area input[type=submit]:hover, input[type=button]:hover{
+    background: LightSeaGreen;
+}
+
+.div_posted_status{
+    width: fit-content;
+    margin: 10px 0px 15px 0px;
+    padding: 2px 5px 2px 5px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    color: GhostWhite;
+    background-color: MediumSeaGreen;
+}
+
+.div_not_posted_status{
+    width: fit-content;
+    margin: 10px 0px 15px 0px;
+    padding: 2px 5px 2px 5px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    color: GhostWhite;
+    background-color: RosyBrown;
+}

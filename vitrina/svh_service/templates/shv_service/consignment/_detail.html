@@ -1,0 +1,20 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Партия товаров</h5>
+<hr>
+
+<form class='detail_form' action="" method="get">
+
+  {{ form.as_p }}
+  {% csrf_token %}
+
+  <div class="buttons_area">
+    <hr>
+    <a href="{% url 'svh_service:consignment_list' %}"><input type="button" value="CLOSE"></a>
+  </div>
+  
+</form>
+
+{% endblock %}

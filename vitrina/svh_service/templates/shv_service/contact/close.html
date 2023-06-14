@@ -1,0 +1,19 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Подтверждение выхода</h5>
+<hr>
+
+<form class='detail_form' action="" method="post">
+
+  {% csrf_token %}
+  
+  <div class="buttons_area">
+    <input type="submit" value="YES">
+    <a href="{% url 'svh_service:contact_update' contact.id %}"><input type="button" value="NO"></a>
+  </div>
+  
+</form>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Документ</h5>
+<hr>
+
+<form class='detail_form' action="{% url 'svh_service:consignment_add_document' consignment_id %}" method="post" 
+  enctype="multipart/form-data">
+
+  {{ form.as_p }}
+  {% csrf_token %}
+
+  <div class="buttons_area">
+    <hr>
+    <input type="submit" value="SAVE">
+    <a href="{% url 'svh_service:consignment_update' consignment_id %}"><input type="button" value="CANCEL"></a>
+  </div>
+  
+</form>
+
+{% endblock %}

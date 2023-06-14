@@ -1,0 +1,44 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+  <h4 class="block_name">Партия товаров</h4>
+  <form class='detal_form' action="" method="post">
+    <label for="key_id">Ключ партии: </label>
+    <input id="key_id" type="text" name="key_id" value="{{ consignment.key_id }}">
+    
+    <label for="contact_name">Клиент: </label>
+    <input id="contact_name" type="text" name="contact_name" value="{{ consignment.contact_name }}">
+    
+    <label for="broker_name">Брокер: </label>
+    <input id="broker_name" type="text" name="broker_name" value="{{ consignment.broker_name }}">
+
+    <label for="nttn">Номер транспортного документа: </label>
+    <input id="nttn" type="text" name="nttn" value="{{ consignment.nttn }}">
+    
+    <label for="goods">Номер документа доставки: </label>
+    <input id="goods" type="text" name="goods" value="{{ consignment.goods }}">
+    
+    <label for="weight">Вес партии товара: </label>
+    <input id="weight" type="text" name="weight" value="{{ consignment.weight }}">
+
+    <label for="dater">Дата регистрации партии товара: </label>
+    <input id="dater" type="text" name="dater" value="{{ consignment.dater }}">
+    
+    <label for="dateo">Дата выдачи партии товара со склада: </label>
+    <input id="dateo" type="text" name="dateo" value="{{ consignment.dateo }}">
+    
+    <label for="id_enter">Id пропуска въезда транпортного средства на терминал: </label>
+    <input id="id_enter" type="text" name="id_enter" value="{{ consignment.id_enter }}">
+
+    <label for="car">Номер транспортного средства: </label>
+    <input id="car" type="text" name="car" value="{{ consignment.car }}">
+    
+    <label for="d_in">Дата въезда транспортного средства на терминал: </label>
+    <input id="d_in" type="text" name="d_in" value="{{ consignment.d_in }}">
+    
+    <label for="d_out">Дата выезда транспортного средства с терминала : </label>
+    <input id="d_out" type="text" name="d_out" value="{{ consignment.d_out }}">
+    
+    <input class='submit_btn' type="submit" value="UPDATE">
+  </form>
+{% endblock %}

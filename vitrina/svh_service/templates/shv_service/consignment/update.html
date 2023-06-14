@@ -1,0 +1,76 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Партия товаров</h5>
+
+<form class='detail_form' action="" method="post">
+
+  <div class="buttons_area">
+    {% if not consignment.posted %}
+      <input type="submit" value="SAVE">
+      <a href="{% url 'svh_service:consignment_post' consignment.id %}"><input type="button" value="POST"></a>
+      <a href="{% url 'svh_service:consignment_delete' consignment.id %}"><input type="button" value="DELETE"></a>
+    {% else %}
+      <a href="{% url 'svh_service:consignment_rollback' consignment.id %}"><input type="button" value="ROLLBACK"></a>
+    {% endif %}
+    <a href="{% url 'svh_service:consignment_close' consignment.id %}"><input type="button" value="CLOSE"></a>
+  </div>
+
+  <div class="form_fields_area">
+    <div {% if consignment.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
+      Статус проводки: {% if not consignment.posted %}НЕ {% endif %}ПРОВЕДЕН
+    </div>
+
+    {{ form.as_p }}
+    {% csrf_token %}
+  </div>
+  
+</form>
+
+<hr>
+
+<h5 class="block_name">Документы</h5>
+{% if not consignment.posted %}
+  <div class='buttons_area'>
+    <a href="{% url 'svh_service:consignment_add_document' consignment.id %}">
+      <!-- <input type='image' class='btn_img' src="/../../../static/icons/baseline_add_black_24dp.png"> -->
+      <input type="button" value="ADD"></a>
+    </a>
+  </div>
+{% endif %}
+<!-- <hr> -->
+<table
+    id="table"
+    data-toggle="table"
+    data-show-export="true"
+    data-pagination="true"
+    data-show-columns="true"
+    data-search="true"
+    data-advanced-search="true"
+    data-id-table="advancedTable"
+    data-reorderable-columns="true"
+    data-resizable="true"
+    data-search-align="left"
+    data-buttons-align="left"
+>  
+  <thead>
+  <tr>
+    <th data-sortable="true" data-field="docnum">Номер документа</th>
+    <th data-sortable="true" data-field="docdate">Дата документа</th>
+    <th data-sortable="true" data-field="docname">Наименование документа</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for document in documents %}
+    <tr>
+      <td><a href="{% url 'svh_service:document_update' document.id %}">{{ document.docnum }}</a></td>
+      <td>{{ document.docdate }}</td>
+      <td>{{ document.docname }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

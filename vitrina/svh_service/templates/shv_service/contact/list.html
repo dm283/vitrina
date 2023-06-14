@@ -1,0 +1,48 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+  <h5 class="block_name">Организации</h5>
+
+  <div class='buttons_area'>
+    <a href="{% url 'svh_service:contact_add' %}"><input type="button" value="ADD"></a>
+  </div>
+
+  <table
+    id="table"
+    data-toggle="table"
+    data-show-export="true"
+    data-pagination="true"
+    data-show-columns="true"
+    data-search="true"
+    data-advanced-search="true"
+    data-id-table="advancedTable"
+    data-reorderable-columns="true"
+    data-resizable="true"
+    data-search-align="left"
+    data-buttons-align="left"
+  >  
+    <thead>
+    <tr>
+      <th data-sortable="true" data-field="contact">Код клиента</th>
+      <th data-sortable="true" data-field="type">Тип</th>
+      <th data-sortable="true" data-field="name">Наименование организации</th>
+      <th data-sortable="true" data-field="inn">ИНН</th>
+      <th data-sortable="true" data-field="email1">E-mail</th>
+      <th data-sortable="true" data-field="idtelegram">Telegram ID</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for contact in contacts %}
+      <tr>
+        <td><a href="{% url 'svh_service:contact_update' contact.id %}">{{ contact.contact }}</a></td>
+        <td>{{ contact.type }}</td>
+        <td>{{ contact.name }}</td>
+        <td>{{ contact.inn }}</td>
+        <td>{{ contact.email1 }}</td>
+        <td>{{ contact.idtelegram }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+{% endblock %}

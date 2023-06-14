@@ -1,0 +1,38 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+  <h5 class="block_name">Документы</h5>
+  <a href="{% url 'svh_service:document_add' %}"><input type="button" value="ADD"></a>
+  <hr>
+  <table
+      id="table"
+      data-toggle="table"
+      data-show-export="true"
+      data-pagination="true"
+      data-show-columns="true"
+      data-search="true"
+      data-advanced-search="true"
+      data-id-table="advancedTable"
+      data-reorderable-columns="true"
+      data-resizable="true"
+      data-search-align="right"
+  >  
+    <thead>
+    <tr>
+      <th data-sortable="true" data-field="docnum">Номер документа</th>
+      <th data-sortable="true" data-field="docdate">Дата документа</th>
+      <th data-sortable="true" data-field="docname">Наименование документа</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for document in documents %}
+      <tr>
+        <td><a href="">{{ document.docnum }}</a></td>
+        <td>{{ document.docdate }}</td>
+        <td>{{ document.docname }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+{% endblock %}

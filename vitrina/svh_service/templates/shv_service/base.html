@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- <title>{% block title %}{% endblock %}</title> -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Альта-СВХ. Витрина</title>
+
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" >
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap-icons/font/bootstrap-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap-table/dist/bootstrap-table.min.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/jquery-resizable-columns/dist/jquery.resizableColumns.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/dragtable/dragtable.css' %}">
+  
+  <!-- <link href="{% static 'css/svh_service.css' %}" rel="stylesheet"> -->
+  <link href="{% static 'css/news.css' %}" rel="stylesheet">
+</head>
+
+<body>
+  <div id="header">
+    <h3 id="header_title">Альта-СВХ. Витрина</h3>
+  </div>
+  <!-- <div style="background: RoyalBlue; padding-left: 20px;">
+    <h2 style="font-weight:normal; color: White; display: inline-block;">Альта-СВХ. Витрина</h2>
+  </div> -->
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+<script src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-table/dist/extensions/resizable/bootstrap-table-resizable.js' %}"></script>
+<script src="{% static 'node_modules/jquery-resizable-columns/dist/jquery.resizableColumns.js' %}"></script>
+<script src="{% static 'node_modules/jquery-ui.js' %}"></script>
+<script src="{% static 'node_modules/dragtable/jquery.dragtable.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-table/dist/extensions/reorder-columns/bootstrap-table-reorder-columns.js' %}"></script>
+<script src="{% static 'node_modules/tableExport.jquery.plugin/libs/FileSaver/FileSaver.min.js' %}"></script>
+<script src="{% static 'node_modules/tableExport.jquery.plugin/tableExport.min.js' %}"></script>
+<script src="{% static 'node_modules/tableExport.jquery.plugin/libs/jsPDF/jspdf.umd.min.js' %}"></script>
+<script src="{% static 'node_modules/tableExport.jquery.plugin/libs/js-xlsx/xlsx.core.min.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js' %}"></script>
+
+<script src="{% static 'node_modules/bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.min.js' %}"></script>
+
+</body>
+
+
+</html>

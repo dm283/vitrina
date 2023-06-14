@@ -1,0 +1,23 @@
+from django.contrib import admin
+from .models import Consignment, Contact, Document, Message, Uemail
+
+
+@admin.register(Consignment)
+class ConsignmentAdmin(admin.ModelAdmin):
+    list_display = ['key_id', 'contact_name', 'broker_name', 'dater', 'car', 'datep']
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ['contact', 'type', 'name', 'inn', 'fio', 'email1', 'idtelegram', 'f_stop']
+
+@admin.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ['docnum', 'docdate', 'docname', 'f_zip', 'nfile', 'guid_partia']
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ['guid_partia', 'contact', 'txt', 'datep']
+
+@admin.register(Uemail)
+class UemailAdmin(admin.ModelAdmin):
+    list_display = ['guid_partia', 'type', 'adrto', 'subj', 'datep']

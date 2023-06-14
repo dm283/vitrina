@@ -1,0 +1,5 @@
+venv/
+vitrina/media/
+vitrina/svh_service/migrations/
+vitrina/svh_service/__pycache__/
+vitrina/vitrina/__pycache__/
