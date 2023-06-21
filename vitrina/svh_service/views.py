@@ -103,7 +103,14 @@ def consignment_post(request, id):
         type = ''
         adrto = contact.email1
         subj = 'Сервис Альта-СВХ Витрина - оповещение'
+
+        #  выбираются документы соответствующей партии с нуловыми датами отправки (dates)
+        #  этот механизм нужно лучше потом продумать 
+        files_added = Document.objects.filter(guid_partia=consignment.key_id).filter(dates__isnull=True)
         attachmentfiles = ''
+        for n, f in enumerate(files_added):
+            attachmentfiles += ', ' if n > 0 else ''
+            attachmentfiles += str(f.file).partition('/')[2]
 
         new_uemail = Uemail(
             guid_partia=guid_partia,
@@ -114,6 +121,14 @@ def consignment_post(request, id):
             attachmentfiles=attachmentfiles,
         )
         new_uemail.save()
+
+        # функция пометки документа как отправленного (потом сделать чтобы она добавлялась только после реально отправки сообщения)
+        guid_mail = int(Uemail.objects.all().order_by('-uniqueindexfield')[0].uniqueindexfield)  # выбираем id только что созданного письма
+        dates = datetime.now()
+        for f in files_added:
+            f.guid_mail = guid_mail
+            f.dates = dates
+            f.save()
 
         return redirect(f'/svh_service/consignments/{consignment.id}/update')
     
