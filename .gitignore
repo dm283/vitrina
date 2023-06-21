@@ -4,3 +4,5 @@ vitrina/svh_service/migrations/
 vitrina/svh_service/__pycache__/
 vitrina/vitrina/__pycache__/
 vitrina/svh_service/static/node_modules/
+vitrina/svh_service/static/package-lock.json
+vitrina/svh_service/static/package.json
