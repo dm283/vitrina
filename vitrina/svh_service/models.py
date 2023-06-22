@@ -14,7 +14,7 @@ class Consignment(models.Model):
     dater = models.DateTimeField(blank=True, null=True) # Дата регистрации партии товара
     dateo = models.DateTimeField(blank=True, null=True) # Дата выдачи партии товара со склада
     id_enter = models.CharField(max_length=8, blank=True, default='') # Id пропуска въезда транпортного средства на терминал
-    car =  models.CharField(max_length=20, blank=True, default='') # Номер транспортного средства 
+    car =  models.CharField(max_length=30, blank=True, default='') # Номер транспортного средства 
     d_in = models.DateTimeField(blank=True, null=True) # Дата въезда транспортного средства на терминал
     d_out = models.DateTimeField(blank=True, null=True) # Дата выезда транспортного средства с терминала 
     guid_user = models.CharField(max_length=36, blank=True, default='') # GUID пользователя который создал эту запись
