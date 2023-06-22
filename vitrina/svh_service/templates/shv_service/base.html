@@ -13,21 +13,49 @@
   <link rel="stylesheet" href="{% static 'node_modules/jquery-resizable-columns/dist/jquery.resizableColumns.css' %}">
   <link rel="stylesheet" href="{% static 'node_modules/dragtable/dragtable.css' %}">
   
+  <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+  
   <!-- <link href="{% static 'css/svh_service.css' %}" rel="stylesheet"> -->
   <link href="{% static 'css/news.css' %}" rel="stylesheet">
 </head>
 
 <body>
-  <div id="header">
-    <h3 id="header_title">Альта-СВХ. Витрина</h3>
+
+  <div class="sidebar" style="width: 15%; display: block" id="mySidebar">
+    <button class="sidebar_button_close" onclick="w3_close()">АЛЬТА-СОФТ &times;</button>
+      <a href="{% url 'svh_service:consignment_list' %}" class="a_button">Партии товара</a>
+      <a href="{% url 'svh_service:contact_list' %}" class="a_button">Организации</a>
   </div>
-  <!-- <div style="background: RoyalBlue; padding-left: 20px;">
-    <h2 style="font-weight:normal; color: White; display: inline-block;">Альта-СВХ. Витрина</h2>
-  </div> -->
-  <div id="content">
-    {% block content %}
-    {% endblock %}
+
+  <div id="main" style="margin-left: 15%;">
+    <div id="header">
+      <button id="openNav" class="button_show_sidebar" style="display: none" onclick="w3_open()">&#9776;</button>
+      <h3 id="header_title">Альта-СВХ. Витрина</h3>
+    </div>
+    <!-- <div style="background: RoyalBlue; padding-left: 20px;">
+      <h2 style="font-weight:normal; color: White; display: inline-block;">Альта-СВХ. Витрина</h2>
+    </div> -->
+    <div id="content">
+      {% block content %}
+      {% endblock %}
+    </div>
   </div>
+
+
+
+<script>
+    function w3_open() {
+      document.getElementById("main").style.marginLeft = "15%";
+      document.getElementById("mySidebar").style.width = "15%";
+      document.getElementById("mySidebar").style.display = "block";
+      document.getElementById("openNav").style.display = 'none';
+    }
+    function w3_close() {
+      document.getElementById("main").style.marginLeft = "0%";
+      document.getElementById("mySidebar").style.display = "none";
+      document.getElementById("openNav").style.display = "inline-block";
+    }
+</script>
 
 <script src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
@@ -42,7 +70,6 @@
 <script src="{% static 'node_modules/tableExport.jquery.plugin/libs/jsPDF/jspdf.umd.min.js' %}"></script>
 <script src="{% static 'node_modules/tableExport.jquery.plugin/libs/js-xlsx/xlsx.core.min.js' %}"></script>
 <script src="{% static 'node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js' %}"></script>
-
 <script src="{% static 'node_modules/bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.min.js' %}"></script>
 
 </body>
