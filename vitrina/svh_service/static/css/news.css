@@ -38,6 +38,10 @@
     margin-bottom: 2px;
 }
 
+.sidebar_button_close:hover {
+    background-color: MediumBlue;
+}
+
 .a_button {
     display: block;
     width: 97.5%;

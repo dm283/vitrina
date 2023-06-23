@@ -32,9 +32,6 @@
       <button id="openNav" class="button_show_sidebar" style="display: none" onclick="w3_open()">&#9776;</button>
       <h3 id="header_title">Альта-СВХ. Витрина</h3>
     </div>
-    <!-- <div style="background: RoyalBlue; padding-left: 20px;">
-      <h2 style="font-weight:normal; color: White; display: inline-block;">Альта-СВХ. Витрина</h2>
-    </div> -->
     <div id="content">
       {% block content %}
       {% endblock %}
@@ -44,16 +41,30 @@
 
 
 <script>
+    if (sessionStorage.getItem('main_marginLeft')) {
+      document.getElementById("main").style.marginLeft = sessionStorage.getItem('main_marginLeft');
+      document.getElementById("mySidebar").style.width = sessionStorage.getItem('mySidebar_width');
+      document.getElementById("mySidebar").style.display = sessionStorage.getItem('mySidebar_display');
+      document.getElementById("openNav").style.display = sessionStorage.getItem('openNav_display');
+    }
+
     function w3_open() {
       document.getElementById("main").style.marginLeft = "15%";
       document.getElementById("mySidebar").style.width = "15%";
       document.getElementById("mySidebar").style.display = "block";
       document.getElementById("openNav").style.display = 'none';
+      sessionStorage.setItem('main_marginLeft', '15%')
+      sessionStorage.setItem('mySidebar_width', '15%')
+      sessionStorage.setItem('mySidebar_display', 'block')
+      sessionStorage.setItem('openNav_display', 'none')
     }
     function w3_close() {
       document.getElementById("main").style.marginLeft = "0%";
       document.getElementById("mySidebar").style.display = "none";
       document.getElementById("openNav").style.display = "inline-block";
+      sessionStorage.setItem('main_marginLeft', '0%')
+      sessionStorage.setItem('mySidebar_display', 'none')
+      sessionStorage.setItem('openNav_display', 'inline-block')
     }
 </script>
 
