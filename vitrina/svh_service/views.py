@@ -109,7 +109,7 @@ def consignment_post(request, id):
         files_added = Document.objects.filter(guid_partia=consignment.key_id).filter(dates__isnull=True)
         attachmentfiles = ''
         for n, f in enumerate(files_added):
-            attachmentfiles += ', ' if n > 0 else ''
+            attachmentfiles += ', ' if len(attachmentfiles) > 0 else ''
             attachmentfiles += str(f.file).partition('/')[2]
 
         new_uemail = Uemail(
