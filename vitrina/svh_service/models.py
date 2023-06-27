@@ -17,6 +17,7 @@ class Consignment(models.Model):
     car =  models.CharField(max_length=30, blank=True, default='') # Номер транспортного средства 
     d_in = models.DateTimeField(blank=True, null=True) # Дата въезда транспортного средства на терминал
     d_out = models.DateTimeField(blank=True, null=True) # Дата выезда транспортного средства с терминала 
+
     guid_user = models.CharField(max_length=36, blank=True, default='') # GUID пользователя который создал эту запись
     datep = models.DateTimeField(auto_now_add=True) # Дата создания записи
     posted = models.BooleanField(default=False) # флаг проводки
@@ -45,7 +46,6 @@ class Contact(models.Model):
     f_stop = models.BooleanField(default=False) # Флаг приостановки пользования порталом
     guid_user = models.CharField(max_length=36, blank=True, default='') # GUID пользователя который создал эту запись
     datep = models.DateTimeField(auto_now_add=True) # Дата создания записи
-
     posted = models.BooleanField(default=False) # флаг проводки
     post_date = models.DateTimeField(blank=True, null=True) # дата проводки
     post_user_id = models.CharField(max_length=36, blank=True, default='') # идентификатор пользователя  который провел запись 

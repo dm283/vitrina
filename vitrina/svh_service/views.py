@@ -54,7 +54,8 @@ def consignment_update(request, id):
             return render(request,
                         'shv_service/consignment/update.html',
                         {'form': form,
-                         'consignment': consignment})
+                         'consignment': consignment,
+                         'documents': documents})
     else:
         form = ConsignmentForm(instance=consignment)
 
