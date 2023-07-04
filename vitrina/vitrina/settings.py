@@ -79,6 +79,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': 'svh_service_db',
+#         'OPTIONS': {"driver": "ODBC Driver 18 for SQL Server", "dsn": "odbc_1", },
+#         'USER': '',
+#         'PASSWORD': '',
+#     }
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
