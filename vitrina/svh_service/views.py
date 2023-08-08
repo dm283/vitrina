@@ -47,26 +47,43 @@ def consignment_update(request, id):
     except:
         documents = ''
 
+    data = {}
+    data['block_name'] = 'Партия товаров'
+    data['entity'] = 'consignment'
+
     if request.method == 'POST':
         form = ConsignmentForm(request.POST, instance=consignment)
         if form.is_valid():
             form.save()
+
             return render(request,
-                        'shv_service/consignment/update.html',
+                        'shv_service/carpass/update_universal.html',
                         {'form': form,
-                         'consignment': consignment,
+                         'data': data, 
+                         'entity': consignment,
                          'documents': documents})
+            # return render(request,
+            #             'shv_service/consignment/update.html',
+            #             {'form': form,
+            #              'consignment': consignment,
+            #              'documents': documents})
     else:
         form = ConsignmentForm(instance=consignment)
 
     return render(request,
-                  'shv_service/consignment/update.html',
-                  {
-                   'form': form,
-                   'consignment': consignment,
-                   'documents': documents
-                   }
-                   )
+                        'shv_service/carpass/update_universal.html',
+                        {'form': form,
+                         'data': data, 
+                         'entity': consignment,
+                         'documents': documents})
+    # return render(request,
+    #               'shv_service/consignment/update.html',
+    #               {
+    #                'form': form,
+    #                'consignment': consignment,
+    #                'documents': documents
+    #                }
+    #                )
 
 
 def consignment_delete(request, id):
@@ -330,6 +347,35 @@ def post_carpass(request):
                    'carpass': carpass})
 
 
+# def carpass_update(request, id):
+#     carpass = get_object_or_404(Carpass, id=id)
+ 
+#     try:
+#         documents = Document.objects.filter(id_enter=carpass.id_enter)
+#     except:
+#         documents = ''
+
+#     if request.method == 'POST':
+#         form = CarpassForm(request.POST, instance=carpass)
+#         if form.is_valid():
+#             form.save()
+#             return render(request,
+#                         'shv_service/carpass/update.html',
+#                         {'form': form,
+#                          'carpass': carpass,
+#                          'documents': documents})
+#     else:
+#         form = CarpassForm(instance=carpass)
+
+#     return render(request,
+#                   'shv_service/carpass/update.html',
+#                   {
+#                    'form': form,
+#                    'carpass': carpass,
+#                    'documents': documents
+#                    }
+#                    )
+
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
  
@@ -338,23 +384,29 @@ def carpass_update(request, id):
     except:
         documents = ''
 
+    data = {}
+    data['block_name'] = 'Пропуск'
+    data['entity'] = 'carpass'
+    
     if request.method == 'POST':
         form = CarpassForm(request.POST, instance=carpass)
         if form.is_valid():
             form.save()
             return render(request,
-                        'shv_service/carpass/update.html',
+                        'shv_service/carpass/update_universal.html',
                         {'form': form,
-                         'carpass': carpass,
+                         'data': data, 
+                         'entity': carpass,
                          'documents': documents})
     else:
         form = CarpassForm(instance=carpass)
 
     return render(request,
-                  'shv_service/carpass/update.html',
+                  'shv_service/carpass/update_universal.html',
                   {
                    'form': form,
-                   'carpass': carpass,
+                   'data': data, 
+                   'entity': carpass,
                    'documents': documents
                    }
                    )
