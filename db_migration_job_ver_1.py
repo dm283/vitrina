@@ -5,6 +5,7 @@ import psycopg2.extras as extras
 # ************************************ READ DATA [ MS-SQL ] ************************************
 # con_string_1 = 'Driver={ODBC Driver 18 for SQL Server};Server=192.168.0.6;Database=AltaSVHDb_2015;Encrypt=no;UID=Alta;PWD=AltApoRTal2022;'
 con_string_1 = 'DSN=odbc_1'
+db_name = 'sanp2018'
 
 cnxn_1 = pyodbc.connect(con_string_1)  # odbc driver system dsn name
 cursor_1 = cnxn_1.cursor()
@@ -13,7 +14,7 @@ def db_read_data():
     '''
     Чтение данных из БД1
     '''
-    cursor_1.execute("""
+    cursor_1.execute(f"""
     select top 1000
     s.ids key_id, 
     s.receiver contact,
@@ -35,11 +36,11 @@ def db_read_data():
     getdate() datep,
     'replace_false' posted,
     null post_date,
-    '' post_user_id,
+    'sys' post_user_id,
     'replace_false' was_posted
 
-    from (reg_sub s inner join reg_main m on m.id=s.main_id) 
-    left outer join contact b on b.contact=s.broker
+    from ({db_name}.dbo.reg_sub s inner join {db_name}.dbo.reg_main m on m.id=s.main_id) 
+    left outer join {db_name}.dbo.contact b on b.contact=s.broker
     order by m.date desc
     """)
 
@@ -65,7 +66,8 @@ data_set = data_handling(data_set)  # это набор данных загру�
 cursor_1.close()
 cnxn_1.close()
 
-# sys.exit()
+# print(data_set)  # check mere reading
+# sys.exit()       # check mere reading
 
 
 # ************************************ INSERT DATA [ MS-SQL ] ************************************

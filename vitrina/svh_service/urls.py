@@ -17,6 +17,17 @@ urlpatterns = [
     path('consignments/<int:id>/close', views.consignment_close, name='consignment_close'),
     path('consignments/<int:id>/add_document', views.consignment_add_document, name='consignment_add_document'),
 
+    path('carpass', views.carpass_list, name='carpass_list'),
+    path('carpass/<int:id>/', views.carpass_update, name='carpass_update'),
+    path('carpass/add', views.carpass_add, name='carpass_add'),
+    path('carpass/add_complete', views.post_carpass, name='post_carpass'),
+    path('carpass/<int:id>/update', views.carpass_update, name='carpass_update'),
+    path('carpass/<int:id>/delete', views.carpass_delete, name='carpass_delete'),
+    path('carpass/<int:id>/post', views.carpass_post, name='carpass_post'),
+    path('carpass/<int:id>/rollback', views.carpass_rollback, name='carpass_rollback'),
+    path('carpass/<int:id>/close', views.carpass_close, name='carpass_close'),
+    path('carpass/<int:id>/add_document', views.carpass_add_document, name='carpass_add_document'),
+
     path('documents/<int:id>/update', views.document_update, name='document_update'),
     path('documents/<int:id>/delete', views.document_delete, name='document_delete'),
     path('documents/<int:id>/close', views.document_close, name='document_close'),

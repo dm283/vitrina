@@ -1,6 +1,6 @@
 #header {
     background: RoyalBlue;
-    padding: 10px 0px 10px 20px;
+    padding: 10px 0px 11px 20px;
 }
 
 #header_title {
@@ -29,41 +29,35 @@
 }
 
 .sidebar_button_close {
-    background-color: DarkBlue;
+    background-color: RoyalBlue;
     color: White;
     font-weight: bold;
     border: none;
-    width: 100%;
     height: 62px;
     margin-bottom: 2px;
-}
-
-.sidebar_button_close:hover {
-    background-color: MediumBlue;
+    margin-left: 1px;
+    margin-right: 1px;
+    padding: 5% 0 0 40%;
 }
 
 .a_button {
     display: block;
-    width: 97.5%;
     height: 50px;
     background-color: SteelBlue;
     color: White;
     text-align: center;
     line-height: 3;
     text-decoration: none;
-    margin: 0px 0px 2px 4px;
+    margin: 0px 2px 2px 2px;
 }
 
 .a_button:hover {
     background-color: LightSteelBlue;
 }
 
-
-#main {
-    border: 1px solid gainsboro;
-}
-
 #content { 
+    border-top: 1px solid gainsboro;
+    border-left: 1px solid gainsboro;
     padding: 0 20px 20px 20px;
 }
 

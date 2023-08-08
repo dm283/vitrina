@@ -1,0 +1,49 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+  <h5 class="block_name">Пропуска</h5>
+
+  <div class='buttons_area'>
+    <a href="{% url 'svh_service:carpass_add' %}"><input type="button" value="ADD"></a>
+  </div>
+
+  <table
+      id="table"
+      data-toggle="table"
+      data-show-export="true"
+      data-pagination="true"
+      data-show-columns="true"
+      data-search="true"
+      data-advanced-search="true"
+      data-id-table="advancedTable"
+      data-reorderable-columns="true"
+      data-resizable="true"
+      data-search-align="left"
+      data-buttons-align="left"
+  >  
+    <thead>
+    <tr>
+      <th data-sortable="true" data-field="key_id">Ключ пропуска</th>
+      <th data-sortable="true" data-field="contact_name">Номер машины</th>
+      <th data-sortable="true" data-field="broker_name">Дата въезда</th>
+      <th data-sortable="true" data-field="dater">Время въезда</th>
+      <th data-sortable="true" data-field="dateo">Номер документа доставки</th>
+      <th data-sortable="true" data-field="car">Номер контейнера</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for carpass in carpasses %}
+      
+      <tr>
+        <td><a href="{% url 'svh_service:carpass_update' carpass.id %}">{{ carpass.id_enter }}</a></td>
+        <td>{{ carpass.ncar }}</td>
+        <td>{{ carpass.dateen }}</td>
+        <td>{{ carpass.timeen }}</td>
+        <td>{{ carpass.ntir }}</td>
+        <td>{{ carpass.nkont }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Пропуск</h5>
+
+<form class='detail_form' action="" method="post">
+
+  <div class="buttons_area">
+    {% if not carpass.posted %}
+      <input type="submit" value="SAVE">
+      <a href="{% url 'svh_service:carpass_post' carpass.id %}"><input type="button" value="POST"></a>
+      <a href="{% url 'svh_service:carpass_delete' carpass.id %}"><input type="button" value="DELETE"></a>
+    {% else %}
+      <a href="{% url 'svh_service:carpass_rollback' carpass.id %}"><input type="button" value="ROLLBACK"></a>
+    {% endif %}
+    <a href="{% url 'svh_service:carpass_close' carpass.id %}"><input type="button" value="CLOSE"></a>
+  </div>
+
+  <div class="form_fields_area">
+    <div {% if carpass.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
+      Статус проводки: {% if not carpass.posted %}НЕ {% endif %}ПРОВЕДЕН
+    </div>
+
+    {{ form.as_p }}
+    {% csrf_token %}
+  </div>
+  
+</form>
+
+<hr>
+
+<h5 class="block_name">Документы</h5>
+{% if not carpass.posted %}
+  <div class='buttons_area'>
+    <a href="{% url 'svh_service:carpass_add_document' carpass.id %}">
+      <!-- <input type='image' class='btn_img' src="/../../../static/icons/baseline_add_black_24dp.png"> -->
+      <input type="button" value="ADD"></a>
+    </a>
+  </div>
+{% endif %}
+<!-- <hr> -->
+<table
+    id="table"
+    data-toggle="table"
+    data-show-export="true"
+    data-pagination="true"
+    data-show-columns="true"
+    data-search="true"
+    data-advanced-search="true"
+    data-id-table="advancedTable"
+    data-reorderable-columns="true"
+    data-resizable="true"
+    data-search-align="left"
+    data-buttons-align="left"
+>  
+  <thead>
+  <tr>
+    <th data-sortable="true" data-field="docnum">Номер документа</th>
+    <th data-sortable="true" data-field="docdate">Дата документа</th>
+    <th data-sortable="true" data-field="docname">Наименование документа</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for document in documents %}
+    <tr>
+      <td><a href="{% url 'svh_service:document_update' document.id %}">{{ document.docnum }}</a></td>
+      <td>{{ document.docdate }}</td>
+      <td>{{ document.docname }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

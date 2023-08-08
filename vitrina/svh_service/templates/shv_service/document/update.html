@@ -12,7 +12,7 @@
 
   <div class="buttons_area">
     <hr>
-    {% if not consignment.posted %}
+    {% if not entity.posted %}
       <input type="submit" value="SAVE">
       <a href="{% url 'svh_service:document_delete' document_id %}"><input type="button" value="DELETE"></a>
     {% endif %}
