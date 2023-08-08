@@ -2,7 +2,14 @@
 
 {% block content %}
 
-<h5 class="block_name">Пропуск [ ID {{ carpass.id_enter }}]</h5>
+<div>
+  <h5 class="block_name_detail_page">Пропуск (id: {{ carpass.id_enter }})</h5>
+
+  <div {% if carpass.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
+    Статус проводки: {% if not carpass.posted %}НЕ {% endif %}ПРОВЕДЕН
+  </div>
+</div>
+
 
 <form class='detail_form' action="" method="post">
 
@@ -18,9 +25,8 @@
   </div>
 
   <div class="form_fields_area">
-    <div {% if carpass.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
-      Статус проводки: {% if not carpass.posted %}НЕ {% endif %}ПРОВЕДЕН
-    </div>
+
+
 
     {{ form.as_p }}
     {% csrf_token %}

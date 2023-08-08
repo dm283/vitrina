@@ -61,6 +61,8 @@
     padding: 0 20px 20px 20px;
 }
 
+
+
 .block_name{
     margin: 10px 0px 0px 0px;
     color: SlateGray;
@@ -109,24 +111,32 @@
     background: LightSeaGreen;
 }
 
+.block_name_detail_page {
+    margin: 10px 20px 0px 0px;
+    color: SlateGray;
+    display: inline-block;
+}
+
 .div_posted_status{
     width: fit-content;
-    margin: 10px 0px 15px 0px;
+    margin: 10px 0px 0px 0px;
     padding: 2px 5px 2px 5px;
     border-radius: 5px;
     font-size: 13px;
     font-weight: bold;
     color: GhostWhite;
     background-color: MediumSeaGreen;
+    display: inline-block;
 }
 
 .div_not_posted_status{
     width: fit-content;
-    margin: 10px 0px 15px 0px;
+    margin: 10px 0px 0px 0px;
     padding: 2px 5px 2px 5px;
     border-radius: 5px;
     font-size: 13px;
     font-weight: bold;
     color: GhostWhite;
     background-color: RosyBrown;
+    display: inline-block;
 }

@@ -360,18 +360,6 @@ def carpass_update(request, id):
                    )
 
 
-def carpass_delete(request, id):
-    carpass = get_object_or_404(Carpass, id=id)
-    
-    if request.method == 'POST':
-        carpass.delete()
-        return redirect('/svh_service/carpass')
-    
-    return render(request,
-                  'shv_service/carpass/delete.html',
-                  {'carpass': carpass})
-
-
 def carpass_post(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     
@@ -442,6 +430,18 @@ def carpass_rollback(request, id):
     
     return render(request,
                   'shv_service/carpass/rollback.html',
+                  {'carpass': carpass})
+
+
+def carpass_delete(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+    
+    if request.method == 'POST':
+        carpass.delete()
+        return redirect('/svh_service/carpass')
+    
+    return render(request,
+                  'shv_service/carpass/delete.html',
                   {'carpass': carpass})
 
 
