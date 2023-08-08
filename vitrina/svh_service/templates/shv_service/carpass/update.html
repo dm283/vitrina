@@ -2,25 +2,31 @@
 
 {% block content %}
 
-<h5 class="block_name">Партия товаров [ ID {{ consignment.key_id }} ]</h5>
+<div>
+  <h5 class="block_name_detail_page">Пропуск (id: {{ carpass.id_enter }})</h5>
+
+  <div {% if carpass.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
+    Статус проводки: {% if not carpass.posted %}НЕ {% endif %}ПРОВЕДЕН
+  </div>
+</div>
+
 
 <form class='detail_form' action="" method="post">
 
   <div class="buttons_area">
-    {% if not consignment.posted %}
+    {% if not carpass.posted %}
       <input type="submit" value="SAVE">
-      <a href="{% url 'svh_service:consignment_post' consignment.id %}"><input type="button" value="POST"></a>
-      <a href="{% url 'svh_service:consignment_delete' consignment.id %}"><input type="button" value="DELETE"></a>
+      <a href="{% url 'svh_service:carpass_post' carpass.id %}"><input type="button" value="POST"></a>
+      <a href="{% url 'svh_service:carpass_delete' carpass.id %}"><input type="button" value="DELETE"></a>
     {% else %}
-      <a href="{% url 'svh_service:consignment_rollback' consignment.id %}"><input type="button" value="ROLLBACK"></a>
+      <a href="{% url 'svh_service:carpass_rollback' carpass.id %}"><input type="button" value="ROLLBACK"></a>
     {% endif %}
-    <a href="{% url 'svh_service:consignment_close' consignment.id %}"><input type="button" value="CLOSE"></a>
+    <a href="{% url 'svh_service:carpass_close' carpass.id %}"><input type="button" value="CLOSE"></a>
   </div>
 
   <div class="form_fields_area">
-    <div {% if consignment.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
-      Статус проводки: {% if not consignment.posted %}НЕ {% endif %}ПРОВЕДЕН
-    </div>
+
+
 
     {{ form.as_p }}
     {% csrf_token %}
@@ -31,9 +37,9 @@
 <hr>
 
 <h5 class="block_name">Документы</h5>
-{% if not consignment.posted %}
+{% if not carpass.posted %}
   <div class='buttons_area'>
-    <a href="{% url 'svh_service:consignment_add_document' consignment.id %}">
+    <a href="{% url 'svh_service:carpass_add_document' carpass.id %}">
       <!-- <input type='image' class='btn_img' src="/../../../static/icons/baseline_add_black_24dp.png"> -->
       <input type="button" value="ADD"></a>
     </a>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
-from .models import Consignment, Contact, Document, Uemail
-from .forms import ConsignmentForm, ContactForm, DocumentForm
+from .models import Consignment, Carpass, Contact, Document, Uemail
+from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
 from django.views.decorators.http import require_POST
 from datetime import datetime
 
@@ -167,44 +167,69 @@ def consignment_close(request, id):
 
 def document_update(request, id):
     document = get_object_or_404(Document, id=id)
-    consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
+    if document.guid_partia:
+        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
+    elif document.id_enter:
+        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
 
     if request.method == 'POST':
         form = DocumentForm(data=request.POST, files=request.FILES, instance=document)
+        
+        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
+        
         if form.is_valid():
             form.save()
             document = get_object_or_404(Document, id=id)
             form = DocumentForm(instance=document)
+            # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
+            # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
 
     else:
         form = DocumentForm(instance=document)
+        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
+        # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
 
     return render(request,
                   'shv_service/document/update.html',
                   {
                    'form': form,
                    'document_id': document.id,
-                   'consignment': consignment,
+                   'entity': entity,
+                #    'consignment': consignment,
                    })
 
 
 def document_delete(request, id):
     document = get_object_or_404(Document, id=id)
-    consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
+    if document.guid_partia:
+        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
+        entity_title = 'consignment'
+    elif document.id_enter:
+        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
+        entity_title = 'carpass'
+    # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
     
     if request.method == 'POST':
         document.delete()
-        form = ConsignmentForm(instance=consignment)
-        try:
-            documents = Document.objects.filter(guid_partia=consignment.key_id)
-        except:
-            documents = ''
+
+        if document.guid_partia:
+            form = ConsignmentForm(instance=entity)
+            try:
+                documents = Document.objects.filter(guid_partia=entity.key_id)
+            except:
+                documents = ''
+        elif document.id_enter:
+            form = CarpassForm(instance=entity)
+            try:
+                documents = Document.objects.filter(id_enter=entity.id_enter)
+            except:
+                documents = ''
 
         return render(request,
-                  'shv_service/consignment/update.html',
+                  f'shv_service/{entity_title}/update.html',
                   {
                    'form': form,
-                   'consignment': consignment,
+                   entity_title: entity,
                    'documents': documents
                    }
                    )
@@ -219,11 +244,17 @@ def document_delete(request, id):
 
 def document_close(request, id):
     document = get_object_or_404(Document, id=id)
-    consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
+    if document.guid_partia:
+        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
+        entity_title = 'consignments'
+    elif document.id_enter:
+        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
+        entity_title = 'carpass'
+    # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
 
     
     if request.method == 'POST':
-        return redirect(f'/svh_service/consignments/{consignment.id}/update')
+        return redirect(f'/svh_service/{entity_title}/{entity.id}/update')
     
     return render(request,
                   'shv_service/document/close.html',
@@ -244,7 +275,8 @@ def consignment_add_document(request, id):
                   {
                    'form': form,
                    'document_id': document.id,
-                   'consignment_id': consignment.id,
+                   'entity': consignment, 
+                #    'consignment_id': consignment.id,
                    })
     else:
         guid_partia = consignment.key_id
@@ -258,6 +290,265 @@ def consignment_add_document(request, id):
     
     return render(request, 
                   'shv_service/consignment/add_document.html', 
+                  context)
+
+
+
+#  CARPASS ******************************************
+def carpass_list(request):
+    carpasses = Carpass.objects.all()
+
+    return render(request,
+                  'shv_service/carpass/list.html',
+                  {'carpasses': carpasses})
+
+
+def carpass_add(request):
+    # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
+    id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
+    if len(id_enter_list) == 0:
+        id_enter_list = ['0']
+    id_enter_new = str(max(list(map(int, id_enter_list))) + 1)  # key_id_max_from_list_increased_1
+
+    form = CarpassForm(initial={'id_enter': id_enter_new})
+
+    return render(request, 'shv_service/carpass/add.html',
+                  {'form': form})
+
+@require_POST
+def post_carpass(request):
+    form = CarpassForm(data=request.POST)
+    if form.is_valid:
+        form.save()
+    
+    carpass = Carpass.objects.all().order_by('-id').first()
+    form = CarpassForm(instance=carpass)
+    
+    return render(request,
+                  'shv_service/carpass/update.html',
+                  {'form': form,
+                   'carpass': carpass})
+
+
+def carpass_update(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+ 
+    try:
+        documents = Document.objects.filter(id_enter=carpass.id_enter)
+    except:
+        documents = ''
+
+    if request.method == 'POST':
+        form = CarpassForm(request.POST, instance=carpass)
+        if form.is_valid():
+            form.save()
+            return render(request,
+                        'shv_service/carpass/update.html',
+                        {'form': form,
+                         'carpass': carpass,
+                         'documents': documents})
+    else:
+        form = CarpassForm(instance=carpass)
+
+    return render(request,
+                  'shv_service/carpass/update.html',
+                  {
+                   'form': form,
+                   'carpass': carpass,
+                   'documents': documents
+                   }
+                   )
+
+
+def carpass_post(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+    
+    # СДЕЛАТЬ ФУНКЦИЮ ПРОВЕРКИ ДАННЫХ В ФОРМЕ!!!!
+
+    if request.method == 'POST':
+        id_enter = carpass.id_enter
+        if carpass.was_posted:
+            textemail = f'Добрый день!\n\nВ карточку партии товара {id_enter} внесены изменения.\n\nСервис Альта-СВХ Витрина.'
+        else:
+            textemail = f'Добрый день!\n\nСоздана карточка партии товара {id_enter}.\n\nСервис Альта-СВХ Витрина.'
+
+        carpass.post_user_id = '1'
+        carpass.post_date = datetime.now()
+        carpass.posted = True
+        carpass.was_posted = True  # устанавливается навечно при первичной проводке
+        carpass.save()
+
+        # create uemail record about consignment was created or updated
+        contact = get_object_or_404(Contact, contact=carpass.contact)
+        type = ''
+        adrto = contact.email1
+        subj = 'Сервис Альта-СВХ Витрина - оповещение'
+
+        #  выбираются документы соответствующей партии с нуловыми датами отправки (dates)
+        #  этот механизм нужно лучше потом продумать 
+        files_added = Document.objects.filter(id_enter=carpass.id_enter).filter(dates__isnull=True)
+        attachmentfiles = ''
+        for n, f in enumerate(files_added):
+            attachmentfiles += ', ' if len(attachmentfiles) > 0 else ''
+            attachmentfiles += str(f.file).partition('/')[2]
+
+        new_uemail = Uemail(
+            id_enter=id_enter,
+            type=type,
+            adrto=adrto,
+            subj=subj,
+            textemail=textemail,
+            attachmentfiles=attachmentfiles,
+        )
+        new_uemail.save()
+
+        # функция пометки документа как отправленного (потом сделать чтобы она добавлялась только после реально отправки сообщения)
+        guid_mail = int(Uemail.objects.all().order_by('-uniqueindexfield')[0].uniqueindexfield)  # выбираем id только что созданного письма
+        dates = datetime.now()
+        for f in files_added:
+            f.guid_mail = guid_mail
+            f.dates = dates
+            f.save()
+
+        return redirect(f'/svh_service/carpass/{carpass.id}/update')
+    
+    return render(request,
+                  'shv_service/carpass/post.html',
+                  {'carpass': carpass})
+
+
+def carpass_rollback(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+    
+    if request.method == 'POST':
+        carpass.post_user_id = ''
+        carpass.post_date = None
+        carpass.posted = False
+        carpass.save()
+        #return HttpResponse('Откат проводки партии товаров успешно осуществлен.')
+        return redirect(f'/svh_service/carpass/{carpass.id}/update')
+    
+    return render(request,
+                  'shv_service/carpass/rollback.html',
+                  {'carpass': carpass})
+
+
+def carpass_delete(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+    
+    if request.method == 'POST':
+        carpass.delete()
+        return redirect('/svh_service/carpass')
+    
+    return render(request,
+                  'shv_service/carpass/delete.html',
+                  {'carpass': carpass})
+
+
+def carpass_close(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+
+    if request.method == 'POST':
+        return redirect('/svh_service/carpass')
+    
+    return render(request,
+                  'shv_service/carpass/close.html',
+                  {'carpass': carpass})
+
+
+# def document_update_carpass(request, id):
+#     document = get_object_or_404(Document, id=id)
+#     carpass = get_object_or_404(Carpass, id_enter=document.id_enter)
+
+#     if request.method == 'POST':
+#         form = DocumentForm(data=request.POST, files=request.FILES, instance=document)
+#         if form.is_valid():
+#             form.save()
+#             document = get_object_or_404(Document, id=id)
+#             form = DocumentForm(instance=document)
+
+#     else:
+#         form = DocumentForm(instance=document)
+
+#     return render(request,
+#                   'shv_service/document/update.html',
+#                   {
+#                    'form': form,
+#                    'document_id': document.id,
+#                    'entity': carpass,
+#                    })
+
+
+# def document_delete_carpass(request, id):
+#     document = get_object_or_404(Document, id=id)
+#     carpass = get_object_or_404(Carpass, id_enter=document.id_enter)
+    
+#     if request.method == 'POST':
+#         document.delete()
+#         form = CarpassForm(instance=carpass)
+#         try:
+#             documents = Document.objects.filter(id_enter=carpass.id_enter)
+#         except:
+#             documents = ''
+
+#         return render(request,
+#                   'shv_service/carpass/update.html',
+#                   {
+#                    'form': form,
+#                    'carpass': carpass,
+#                    'documents': documents
+#                    }
+#                    )
+    
+#     return render(request,
+#                   'shv_service/document/delete.html',
+#                   {
+#                     'document': document,
+#                     # 'consignment_id': consignment.id,
+#                   })
+
+
+# def document_close_carpass(request, id):
+#     document = get_object_or_404(Document, id=id)
+#     carpass = get_object_or_404(Carpass, id_enter=document.id_enter)
+
+    
+#     if request.method == 'POST':
+#         return redirect(f'/svh_service/carpass/{carpass.id}/update')
+    
+#     return render(request,
+#                   'shv_service/document/close.html',
+#                   {'document': document})
+
+
+def carpass_add_document(request, id):
+    carpass = get_object_or_404(Carpass, id=id)
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            document = Document.objects.all().order_by('-id').first()
+            form = DocumentForm(instance=document)
+            return render(request,
+                  'shv_service/document/update.html',
+                  {
+                   'form': form,
+                   'document_id': document.id,
+                   'entiry': carpass,
+                   })
+    else:
+        id_enter = carpass.id_enter
+        docdate = datetime.now()
+        form = DocumentForm(initial={'docdate': docdate, 'id_enter': id_enter})
+        
+    context = {
+        'form': form,
+        'carpass_id': carpass.id
+    }
+    
+    return render(request, 
+                  'shv_service/carpass/add_document.html', 
                   context)
 
 

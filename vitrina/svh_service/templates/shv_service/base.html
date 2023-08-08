@@ -22,9 +22,13 @@
 <body>
 
   <div class="sidebar" style="width: 15%; display: block" id="mySidebar">
-    <button class="sidebar_button_close" onclick="w3_close()">АЛЬТА-СОФТ &times;</button>
-      <a href="{% url 'svh_service:consignment_list' %}" class="a_button">Партии товара</a>
-      <a href="{% url 'svh_service:contact_list' %}" class="a_button">Организации</a>
+    <!-- <button class="sidebar_button_close" onclick="w3_close()">АЛЬТА-СОФТ &times;</button> -->
+      <div class="sidebar_button_close">
+        <button class="button_show_sidebar" onclick="w3_close()">&#9776;</button>
+      </div>
+      <a href="{% url 'svh_service:consignment_list' %}" class="a_button">ПАРТИИ ТОВАРА</a>
+      <a href="{% url 'svh_service:contact_list' %}" class="a_button">ОРГАНИЗАЦИИ</a>
+      <a href="{% url 'svh_service:carpass_list' %}" class="a_button">ПРОПУСКА</a>
   </div>
 
   <div id="main" style="margin-left: 15%;">

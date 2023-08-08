@@ -2,6 +2,9 @@ from django.db import models
 
 
 class Consignment(models.Model):
+    """
+    Партии товаров
+    """
     key_id = models.CharField(max_length=16, unique=True) # Ключ партии товара в Альта-СВХ. 
     contact = models.IntegerField(blank=True, null=True) # Код клиента 
     contact_name = models.CharField(max_length=150, blank=True, default='') # Наименование клиента
@@ -29,7 +32,42 @@ class Consignment(models.Model):
         ordering = ['-id']
 
 
+class Carpass(models.Model):
+    """
+    Пропуска/транспортные средства
+    """
+    guid = models.CharField(max_length=36, blank=True, default='') # Уникальный идентификатор записи
+    id_enter = models.CharField(max_length=8, unique=True) # Ключ пропуска на въезд  в Альта-СВХ
+    ncar = models.CharField(max_length=255, blank=True, default='') # Номер машины
+    dateen = models.DateField(blank=True, null=True) # Дата въезда
+    timeen = models.TimeField(blank=True, null=True) # Время въезда
+    ntir = models.CharField(max_length=50, blank=True, default='') # Номер документа доставки
+    nkont = models.CharField(max_length=50, blank=True, default='') # Номер контейнера
+    driver = models.CharField(max_length=150, blank=True, default='') # Наименование перевозчика
+    drv_man = models.CharField(max_length=50, blank=True, default='') # ФИО водителя
+    dev_phone = models.CharField(max_length=15, blank=True, default='') # Телефон водителя для связи
+    contact = models.IntegerField(blank=True, null=True) # Код клиента 
+    contact_name = models.CharField(max_length=150, blank=True, default='') # Наименование клиента
+    contact_broker = models.IntegerField(blank=True, null=True) # Код брокера оформляющего товар
+    broker_name = models.CharField(max_length=150, blank=True,  default='') # Наименование брокера
+    place_n =  models.CharField(max_length=150, blank=True,  default='') # Номер стоянки – где находится машина
+    dateex = models.DateField(blank=True, null=True) # дата выезда транспортного средства с терминала 
+    timeex = models.TimeField(blank=True, null=True) # Время выезда
+    
+    datep = models.DateTimeField(auto_now_add=True) # Дата создания записи
+    posted = models.BooleanField(default=False) # флаг проводки
+    post_date = models.DateTimeField(blank=True, null=True) # дата проводки
+    post_user_id = models.CharField(max_length=36, blank=True, default='') # идентификатор пользователя  который провел запись
+    was_posted = models.BooleanField(default=False) # флаг первичной проводки
+
+    class Meta:
+        ordering = ['-id']
+
+
 class Contact(models.Model):
+    """
+    Организации/Контакты (клиенты/брокеры/операторы свх/руководство свх)
+    """
     contact = models.IntegerField(unique=True) # Код клиента из программы Альта-СВХ
     type = models.CharField(max_length=1, blank=True, default='') # Тип пользователя
     name = models.CharField(max_length=150, blank=True, default='') # Наименование организации
@@ -56,6 +94,9 @@ class Contact(models.Model):
         
 
 class Document(models.Model):
+    """
+    Документы для партий товаров
+    """
     docnum = models.CharField(max_length=36) # Номер документа
     docdate = models.DateTimeField(blank=True, null=True) # Дата документа
     docname = models.CharField(max_length=100, blank=True, default='') # Наименование документа
@@ -64,7 +105,10 @@ class Document(models.Model):
     docbody = models.BinaryField(blank=True, null=True) # Содержимое документа. Может быть zip
     f_zip = models.BooleanField(blank=True, default=False) # файл архивирован/неархивирован
     nfile = models.CharField(max_length=100, blank=True, default='') # Наименование файла
-    guid_partia = models.CharField(max_length=100) # Ссылка на партию товара (key_id)
+
+    guid_partia = models.CharField(max_length=100, blank=True, null=True) # Ссылка на партию товара (key_id)
+    id_enter = models.CharField(max_length=8, blank=True, null=True) # Ссылка на пропуск
+
     guid_mail = models.CharField(max_length=36, blank=True, default='') # Uemail.guid. guid письма которое отослал этот документ 
     dates = models.DateTimeField(blank=True, null=True) # Дата отправки письма c документом
 
@@ -73,6 +117,9 @@ class Document(models.Model):
 
 
 class Message(models.Model):
+    """
+    Сообщения в сервисе Витрина между оператором свх и клиентом/брокером
+    """
     guid_partia = models.CharField(max_length=36) # id Партии товара
     contact = models.IntegerField() # Код клиента 
     txt = models.CharField(max_length=200) # Сообщение
@@ -81,8 +128,12 @@ class Message(models.Model):
 
 
 class Uemail(models.Model):
+    """
+    e-mail сообщения
+    """
     uniqueindexfield = models.BigAutoField(primary_key=True, null=False)
     guid_partia = models.CharField(max_length=36, default='') # Guid партии товара  к которой относиться сообщение
+    id_enter = models.CharField(max_length=8, default='') # Ключ пропуска на въезд  в Альта-СВХ - к которому относиться сообщение
     type = models.CharField(max_length=1, default='') # Тип сообщения: с документами/без документов
     adrto = models.CharField(max_length=200, default='') # Адресат
     subj = models.CharField(max_length=100, default='') # Заголовок сообщения

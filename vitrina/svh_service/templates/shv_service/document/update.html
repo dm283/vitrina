@@ -2,24 +2,24 @@
 
 {% block content %}
 
-<h5 class="block_name">Документ</h5>
-<hr>
+<h5 class="block_name">Документ [ ID {{ document_id }} ]</h5>
 
 <form class='detail_form' action="" method="post" enctype="multipart/form-data">
 
-  {{ form.as_p }}
-  {% csrf_token %}
-
   <div class="buttons_area">
-    <hr>
-    {% if not consignment.posted %}
+    {% if not entity.posted %}
       <input type="submit" value="SAVE">
       <a href="{% url 'svh_service:document_delete' document_id %}"><input type="button" value="DELETE"></a>
     {% endif %}
 
     <a href="{% url 'svh_service:document_close' document_id %}"><input type="button" value="CLOSE"></a>
   </div>
-  
+
+  <div class="form_fields_area">
+    {{ form.as_p }}
+    {% csrf_token %}
+  </div>
+
 </form>
 
 {% endblock %}

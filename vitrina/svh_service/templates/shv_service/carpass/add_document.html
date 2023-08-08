@@ -1,0 +1,21 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<h5 class="block_name">Документ</h5>
+
+<form class='detail_form' action="{% url 'svh_service:carpass_add_document' carpass_id %}" method="post" enctype="multipart/form-data">
+
+  <div class="buttons_area">
+    <input type="submit" value="SAVE">
+    <a href="{% url 'svh_service:carpass_update' carpass_id %}"><input type="button" value="CANCEL"></a>
+  </div>
+
+  <div class="form_fields_area">
+    {{ form.as_p }}
+    {% csrf_token %}
+  </div>
+
+</form>
+
+{% endblock %}
