@@ -33,10 +33,16 @@ def post_consignment(request):
     consignment = Consignment.objects.all().order_by('-id').first()
     form = ConsignmentForm(instance=consignment)
     
+    data = {}
+    data['block_name'] = 'Партия товаров'
+    data['entity'] = 'consignment'
+    data['id'] = consignment.key_id
+
     return render(request,
-                  'shv_service/consignment/update.html',
+                  'shv_service/update_universal.html',
                   {'form': form,
-                   'consignment': consignment})
+                   'data': data,
+                   'entity': consignment})
 
 
 def consignment_update(request, id):
@@ -329,10 +335,16 @@ def post_carpass(request):
     carpass = Carpass.objects.all().order_by('-id').first()
     form = CarpassForm(instance=carpass)
     
+    data = {}
+    data['block_name'] = 'Пропуск'
+    data['entity'] = 'carpass'
+    data['id'] = carpass.id_enter
+
     return render(request,
-                  'shv_service/carpass/update.html',
+                  'shv_service/update_universal.html',
                   {'form': form,
-                   'carpass': carpass})
+                   'data': data, 
+                   'entity': carpass,})
 
 
 def carpass_update(request, id):
@@ -380,9 +392,9 @@ def carpass_post(request, id):
     if request.method == 'POST':
         id_enter = carpass.id_enter
         if carpass.was_posted:
-            textemail = f'Добрый день!\n\nВ карточку партии товара {id_enter} внесены изменения.\n\nСервис Альта-СВХ Витрина.'
+            textemail = f'Добрый день!\n\nВ карточку пропуска (id: {id_enter}) внесены изменения.\n\nСервис Альта-СВХ Витрина.'
         else:
-            textemail = f'Добрый день!\n\nСоздана карточка партии товара {id_enter}.\n\nСервис Альта-СВХ Витрина.'
+            textemail = f'Добрый день!\n\nСоздана карточка пропуска (id: {id_enter}).\n\nСервис Альта-СВХ Витрина.'
 
         carpass.post_user_id = '1'
         carpass.post_date = datetime.now()
@@ -530,7 +542,7 @@ def post_contact(request):
     form = ContactForm(instance=contact)
     
     return render(request,
-                  'shv_service/contact/update.html',
+                  'shv_service/update_universal.html',
                   {'form': form,
                    'contact': contact})
 
