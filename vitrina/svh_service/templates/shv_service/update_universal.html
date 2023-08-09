@@ -1,0 +1,119 @@
+{% extends "shv_service/base.html" %}
+
+{% block content %}
+
+<div>
+  <h5 class="block_name_detail_page">{{ data.block_name }} (id: {{ data.id }})</h5>
+
+  <div {% if entity.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
+    Статус проводки: {% if not carpass.posted %}НЕ {% endif %}ПРОВЕДЕН
+  </div>
+</div>
+
+
+<form class='detail_form' action="" method="post">
+
+  <div class="buttons_area">
+
+    {% if data.entity == 'carpass' %}
+      {% if not entity.posted %}
+        <input type="submit" value="SAVE">
+        <a href="{% url 'svh_service:carpass_post' entity.id %}"><input type="button" value="POST"></a>
+        <a href="{% url 'svh_service:carpass_delete' entity.id %}"><input type="button" value="DELETE"></a>
+      {% else %}
+        <a href="{% url 'svh_service:carpass_rollback' entity.id %}"><input type="button" value="ROLLBACK"></a>
+      {% endif %}
+      <a href="{% url 'svh_service:carpass_close' entity.id %}"><input type="button" value="CLOSE"></a>
+    {% endif %}
+
+    {% if data.entity == 'consignment' %}
+      {% if not entity.posted %}
+        <input type="submit" value="SAVE">
+        <a href="{% url 'svh_service:consignment_post' entity.id %}"><input type="button" value="POST"></a>
+        <a href="{% url 'svh_service:consignment_delete' entity.id %}"><input type="button" value="DELETE"></a>
+      {% else %}
+        <a href="{% url 'svh_service:consignment_rollback' entity.id %}"><input type="button" value="ROLLBACK"></a>
+      {% endif %}
+      <a href="{% url 'svh_service:consignment_close' entity.id %}"><input type="button" value="CLOSE"></a>
+    {% endif %}
+
+    {% if data.entity == 'contact' %}
+      {% if not entity.posted %}
+        <input type="submit" value="SAVE">
+        <a href="{% url 'svh_service:contact_post' entity.id %}"><input type="button" value="POST"></a>
+        <a href="{% url 'svh_service:contact_delete' entity.id %}"><input type="button" value="DELETE"></a>
+      {% else %}
+        <a href="{% url 'svh_service:contact_rollback' entity.id %}"><input type="button" value="ROLLBACK"></a>
+      {% endif %}
+      <a href="{% url 'svh_service:contact_close' entity.id %}"><input type="button" value="CLOSE"></a>  
+    {% endif %}
+
+  </div>
+
+  <div class="form_fields_area">
+
+    {{ form.as_p }}
+    {% csrf_token %}
+  </div>
+  
+</form>
+
+{% if data.entity != 'contact' %}
+  <hr>
+
+  <h5 class="block_name">Документы</h5>
+
+  {% if data.entity == 'carpass' %}
+    {% if not entity.posted %}
+    <div class='buttons_area'>
+      <a href="{% url 'svh_service:carpass_add_document' entity.id %}">
+        <input type="button" value="ADD"></a>
+      </a>
+    </div>
+    {% endif %}
+  {% endif %}
+
+  {% if data.entity == 'consignment' %}
+    {% if not entity.posted %}
+    <div class='buttons_area'>
+      <a href="{% url 'svh_service:consignment_add_document' entity.id %}">
+        <input type="button" value="ADD"></a>
+      </a>
+    </div>
+    {% endif %}
+  {% endif %}
+
+  <table
+      id="table"
+      data-toggle="table"
+      data-show-export="true"
+      data-pagination="true"
+      data-show-columns="true"
+      data-search="true"
+      data-advanced-search="true"
+      data-id-table="advancedTable"
+      data-reorderable-columns="true"
+      data-resizable="true"
+      data-search-align="left"
+      data-buttons-align="left"
+  >  
+    <thead>
+    <tr>
+      <th data-sortable="true" data-field="docnum">Номер документа</th>
+      <th data-sortable="true" data-field="docdate">Дата документа</th>
+      <th data-sortable="true" data-field="docname">Наименование документа</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for document in documents %}
+      <tr>
+        <td><a href="{% url 'svh_service:document_update' document.id %}">{{ document.docnum }}</a></td>
+        <td>{{ document.docdate }}</td>
+        <td>{{ document.docname }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% endblock %}
