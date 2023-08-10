@@ -212,12 +212,19 @@ def document_update(request, id):
 
 def document_delete(request, id):
     document = get_object_or_404(Document, id=id)
+    data = {}
     if document.guid_partia:
         entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-        entity_title = 'consignment'
+        #entity_title = 'consignment'
+        data['block_name'] = 'Партия товаров'
+        data['entity'] = 'consignment'
+        data['id'] = entity.key_id
     elif document.id_enter:
         entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-        entity_title = 'carpass'
+        #entity_title = 'carpass'
+        data['block_name'] = 'Пропуск'
+        data['entity'] = 'carpass'
+        data['id'] = entity.id_enter
     # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
     
     if request.method == 'POST':
@@ -236,14 +243,23 @@ def document_delete(request, id):
             except:
                 documents = ''
 
+        # return render(request,
+        #           f'shv_service/{entity_title}/update.html',
+        #           {
+        #            'form': form,
+        #            entity_title: entity,
+        #            'documents': documents
+        #            }
+        #            )
+
+
         return render(request,
-                  f'shv_service/{entity_title}/update.html',
-                  {
-                   'form': form,
-                   entity_title: entity,
-                   'documents': documents
-                   }
-                   )
+                    'shv_service/update_universal.html',
+                    {'form': form,
+                    'data': data, 
+                    'entity': entity,
+                    'documents': documents,})
+
     
     return render(request,
                   'shv_service/document/delete.html',
