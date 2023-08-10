@@ -3,7 +3,7 @@
 {% block content %}
 
 <div>
-  <h5 class="block_name_detail_page">{{ data.block_name }} (id: {{ data.id }})</h5>
+  <h5 class="block_name_detail_page">{{ data.block_name }} [ ID {{ data.id }} ]</h5>
 
   <div {% if entity.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
     Статус проводки: {% if not entity.posted %}НЕ {% endif %}ПРОВЕДЕН

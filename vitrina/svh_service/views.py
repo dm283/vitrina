@@ -1,8 +1,11 @@
+import os
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
 from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
 from django.views.decorators.http import require_POST
 from datetime import datetime
+from django.conf import settings
+from django.http import HttpResponse, Http404
 
 
 #  CONSIGNMENT ******************************************
@@ -176,6 +179,39 @@ def consignment_close(request, id):
                   {'consignment': consignment})
 
 
+def consignment_add_document(request, id):
+    consignment = get_object_or_404(Consignment, id=id)
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            document = Document.objects.all().order_by('-id').first()
+            form = DocumentForm(instance=document)
+            return render(request,
+                  'shv_service/document/update.html',
+                  {
+                   'form': form,
+                   'document': document,
+                   'entity': consignment, 
+                #    'consignment_id': consignment.id,
+                   })
+    else:
+        guid_partia = consignment.key_id
+        docdate = datetime.now()
+        form = DocumentForm(initial={'docdate': docdate, 'guid_partia': guid_partia})
+        
+    context = {
+        'form': form,
+        'consignment_id': consignment.id
+    }
+    
+    return render(request, 
+                  'shv_service/consignment/add_document.html', 
+                  context)
+
+
+#  DOCUMENT ******************************************
 def document_update(request, id):
     document = get_object_or_404(Document, id=id)
     if document.guid_partia:
@@ -204,7 +240,8 @@ def document_update(request, id):
                   'shv_service/document/update.html',
                   {
                    'form': form,
-                   'document_id': document.id,
+                #    'document_id': document.id,
+                   'document': document,
                    'entity': entity,
                 #    'consignment': consignment,
                    })
@@ -252,7 +289,6 @@ def document_delete(request, id):
         #            }
         #            )
 
-
         return render(request,
                     'shv_service/update_universal.html',
                     {'form': form,
@@ -260,7 +296,7 @@ def document_delete(request, id):
                     'entity': entity,
                     'documents': documents,})
 
-    
+
     return render(request,
                   'shv_service/document/delete.html',
                   {
@@ -279,7 +315,6 @@ def document_close(request, id):
         entity_title = 'carpass'
     # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
 
-    
     if request.method == 'POST':
         return redirect(f'/svh_service/{entity_title}/{entity.id}/update')
     
@@ -288,37 +323,20 @@ def document_close(request, id):
                   {'document': document})
 
 
-def consignment_add_document(request, id):
-    consignment = get_object_or_404(Consignment, id=id)
-
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            document = Document.objects.all().order_by('-id').first()
-            form = DocumentForm(instance=document)
-            return render(request,
-                  'shv_service/document/update.html',
-                  {
-                   'form': form,
-                   'document_id': document.id,
-                   'entity': consignment, 
-                #    'consignment_id': consignment.id,
-                   })
-    else:
-        guid_partia = consignment.key_id
-        docdate = datetime.now()
-        form = DocumentForm(initial={'docdate': docdate, 'guid_partia': guid_partia})
-        
-    context = {
-        'form': form,
-        'consignment_id': consignment.id
-    }
-    
-    return render(request, 
-                  'shv_service/consignment/add_document.html', 
-                  context)
-
+def document_download(request, id):
+    """
+    Скачивает документ
+    """
+    document = get_object_or_404(Document, id=id)
+    path = str(document.file)
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="text/plain")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+    return Http404
 
 
 #  CARPASS ******************************************
@@ -509,7 +527,7 @@ def carpass_add_document(request, id):
                   'shv_service/document/update.html',
                   {
                    'form': form,
-                   'document_id': document.id,
+                   'document': document,
                    'entiry': carpass,
                    })
     else:
@@ -525,8 +543,6 @@ def carpass_add_document(request, id):
     return render(request, 
                   'shv_service/carpass/add_document.html', 
                   context)
-
-
 
 
 #  CONTACT ******************************************

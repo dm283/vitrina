@@ -31,6 +31,7 @@ urlpatterns = [
     path('documents/<int:id>/update', views.document_update, name='document_update'),
     path('documents/<int:id>/delete', views.document_delete, name='document_delete'),
     path('documents/<int:id>/close', views.document_close, name='document_close'),
+    path('documents/<int:id>/download', views.document_download, name='document_download'),
 
     path('contacts', views.contact_list, name='contact_list'),
     path('contacts/<int:id>/', views.contact_update, name='contact_update'),
