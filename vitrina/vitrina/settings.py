@@ -72,26 +72,26 @@ WSGI_APPLICATION = 'vitrina.wsgi.application'
 
 # !!! ПРИ ПЕРЕКЛЮЧЕНИИ БАЗЫ ДАННЫХ ОБЯЗАТЕЛЬНО ЗАМЕНИТЬ ПАПКУ MIGRATIONS !!!!
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'svh_service_db',
-        'USER': 'postgres',
-        'PASSWORD': 's2d3f4!@',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'svh_service_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 's2d3f4!@',
+#     }
+# }
 
 # !!! ПРИ ПЕРЕКЛЮЧЕНИИ БАЗЫ ДАННЫХ ОБЯЗАТЕЛЬНО ЗАМЕНИТЬ ПАПКУ MIGRATIONS !!!!
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': 'svh_service_db_2',
-#         'OPTIONS': {"driver": "ODBC Driver 18 for SQL Server", "dsn": "odbc_1", },
-#         'USER': '',
-#         'PASSWORD': '',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': 'svh_service_db_2',
+        'OPTIONS': {"driver": "ODBC Driver 18 for SQL Server", "dsn": "odbc_1", },
+        'USER': '',
+        'PASSWORD': '',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
