@@ -77,7 +77,7 @@ con_string_2 = 'DSN=odbc_1'
 cnxn_2 = pyodbc.connect(con_string_2)  # odbc driver system dsn name
 cursor_2 = cnxn_2.cursor()
 
-table_2 = 'svh_service_db.dbo.svh_service_consignment'
+table_2 = 'svh_service_db_2.dbo.svh_service_consignment'
 cols_2 = 'key_id, contact, contact_name, contact_broker, broker_name, nttn, nttn_date, goods, weight, dater, dateo, id_enter, car, d_in, d_out, guid_user, datep, posted, post_date, post_user_id, was_posted'
 
 def db_save_data(data_set):

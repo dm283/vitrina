@@ -102,9 +102,9 @@ class ContactForm(forms.ModelForm):
         model = Contact
         fields = ['contact', 'type', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', 'login', 'pwd', ]
         
-        widgets = {
-            'contact': forms.HiddenInput(),
-        }
+        # widgets = {
+        #     'contact': forms.HiddenInput(),
+        # }
 
         labels = {
             'contact': 'Код клиента', 
