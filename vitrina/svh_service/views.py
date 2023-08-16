@@ -20,6 +20,8 @@ def consignment_list(request):
 def consignment_add(request):
     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
     key_id_list = Consignment.objects.values_list("key_id", flat=True)
+    if len(key_id_list) == 0:
+        key_id_list = ['0']
     key_id_new = str(max(list(map(int, key_id_list))) + 1)  # key_id_max_from_list_increased_1
 
     form = ConsignmentForm(initial={'key_id': key_id_new})
@@ -160,7 +162,6 @@ def consignment_rollback(request, id):
         consignment.post_date = None
         consignment.posted = False
         consignment.save()
-        #return HttpResponse('Откат проводки партии товаров успешно осуществлен.')
         return redirect(f'/svh_service/consignments/{consignment.id}/update')
     
     return render(request,
@@ -240,10 +241,8 @@ def document_update(request, id):
                   'shv_service/document/update.html',
                   {
                    'form': form,
-                #    'document_id': document.id,
                    'document': document,
                    'entity': entity,
-                #    'consignment': consignment,
                    })
 
 
@@ -252,17 +251,14 @@ def document_delete(request, id):
     data = {}
     if document.guid_partia:
         entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-        #entity_title = 'consignment'
         data['block_name'] = 'Партия товаров'
         data['entity'] = 'consignment'
         data['id'] = entity.key_id
     elif document.id_enter:
         entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-        #entity_title = 'carpass'
         data['block_name'] = 'Пропуск'
         data['entity'] = 'carpass'
         data['id'] = entity.id_enter
-    # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
     
     if request.method == 'POST':
         document.delete()
@@ -280,15 +276,6 @@ def document_delete(request, id):
             except:
                 documents = ''
 
-        # return render(request,
-        #           f'shv_service/{entity_title}/update.html',
-        #           {
-        #            'form': form,
-        #            entity_title: entity,
-        #            'documents': documents
-        #            }
-        #            )
-
         return render(request,
                     'shv_service/update_universal.html',
                     {'form': form,
@@ -301,7 +288,6 @@ def document_delete(request, id):
                   'shv_service/document/delete.html',
                   {
                     'document': document,
-                    # 'consignment_id': consignment.id,
                   })
 
 
@@ -483,7 +469,6 @@ def carpass_rollback(request, id):
         carpass.post_date = None
         carpass.posted = False
         carpass.save()
-        #return HttpResponse('Откат проводки партии товаров успешно осуществлен.')
         return redirect(f'/svh_service/carpass/{carpass.id}/update')
     
     return render(request,
@@ -556,10 +541,11 @@ def contact_list(request):
 
 def contact_add(request):
     # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
-    # contact_list = Contact.objects.values_list("contact", flat=True)
-    # contact_new = max(list(contact_list)) + 1
-    # form = ContactForm(initial={'contact': contact_new})
-    form = ContactForm()
+    contact_list = Contact.objects.values_list("contact", flat=True)
+    if len(contact_list) == 0:
+        contact_list = ['0']
+    contact_new = str(max(list(map(int, contact_list))) + 1)  # key_id_max_from_list_increased_1
+    form = ContactForm(initial={'contact': contact_new})
 
     return render(request, 'shv_service/contact/add.html',
                   {'form': form})
@@ -572,11 +558,17 @@ def post_contact(request):
 
     contact = Contact.objects.all().order_by('-id').first()
     form = ContactForm(instance=contact)
-    
+
+    data = {}
+    data['block_name'] = 'Организация'
+    data['entity'] = 'contact'
+    data['id'] = contact.contact
+
     return render(request,
                   'shv_service/update_universal.html',
                   {'form': form,
-                   'contact': contact})
+                   'data': data, 
+                   'entity': contact,})
 
 
 def contact_update(request, id):

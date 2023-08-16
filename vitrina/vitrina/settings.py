@@ -70,6 +70,8 @@ WSGI_APPLICATION = 'vitrina.wsgi.application'
 #     }
 # }
 
+# !!! ПРИ ПЕРЕКЛЮЧЕНИИ БАЗЫ ДАННЫХ ОБЯЗАТЕЛЬНО ЗАМЕНИТЬ ПАПКУ MIGRATIONS !!!!
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -79,10 +81,12 @@ DATABASES = {
     }
 }
 
+# !!! ПРИ ПЕРЕКЛЮЧЕНИИ БАЗЫ ДАННЫХ ОБЯЗАТЕЛЬНО ЗАМЕНИТЬ ПАПКУ MIGRATIONS !!!!
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'mssql',
-#         'NAME': 'svh_service_db',
+#         'NAME': 'svh_service_db_2',
 #         'OPTIONS': {"driver": "ODBC Driver 18 for SQL Server", "dsn": "odbc_1", },
 #         'USER': '',
 #         'PASSWORD': '',
