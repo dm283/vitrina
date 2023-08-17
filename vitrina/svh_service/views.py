@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from datetime import datetime
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from urllib.parse import quote
 
 
 #  CONSIGNMENT ******************************************
@@ -320,10 +321,13 @@ def document_download(request, id):
     path = str(document.file)
     file_path = os.path.join(settings.MEDIA_ROOT, path)
     print(file_path)
+    print(os.path.basename(file_path))
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="text/plain")
-            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
+            print(response['Content-Disposition'])
             return response
     return Http404
 
