@@ -140,3 +140,15 @@
     background-color: RosyBrown;
     display: inline-block;
 }
+
+.doc_download {
+    padding: 0 5px 0 5px;
+    border-radius: 5px;
+    background-color: Teal;
+    display: inline-block;
+}
+
+.doc_download a {
+    text-decoration: none;
+    color: white;
+}
