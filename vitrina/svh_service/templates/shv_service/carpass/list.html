@@ -29,6 +29,7 @@
       <th data-sortable="true" data-field="dater">Время въезда</th>
       <th data-sortable="true" data-field="dateo">Номер документа доставки</th>
       <th data-sortable="true" data-field="car">Номер контейнера</th>
+      <th data-sortable="true" data-field="docs">Документы</th>
     </tr>
     </thead>
     <tbody>
@@ -41,6 +42,13 @@
         <td>{{ carpass.timeen }}</td>
         <td>{{ carpass.ntir }}</td>
         <td>{{ carpass.nkont }}</td>
+        <td>
+          {% for document in documents %}
+            {% if document.id_enter == carpass.id_enter %}  
+              <div class='doc_download'><a href="{% url 'svh_service:document_download' document.id %}">{{ document.docnum }}</a></div>
+            {% endif %}
+          {% endfor %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>

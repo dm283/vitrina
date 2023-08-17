@@ -12,9 +12,12 @@ from django.http import HttpResponse, Http404
 def consignment_list(request):
     consignments = Consignment.objects.all()
 
+    documents = Document.objects.all()
+
     return render(request,
                   'shv_service/consignment/list.html',
-                  {'consignments': consignments})
+                  {'consignments': consignments,
+                   'documents': documents})
 
 
 def consignment_add(request):
@@ -328,10 +331,12 @@ def document_download(request, id):
 #  CARPASS ******************************************
 def carpass_list(request):
     carpasses = Carpass.objects.all()
+    documents = Document.objects.all()
 
     return render(request,
                   'shv_service/carpass/list.html',
-                  {'carpasses': carpasses})
+                  {'carpasses': carpasses,
+                   'documents': documents})
 
 
 def carpass_add(request):
