@@ -23,11 +23,11 @@ def db_read_data():
     case when b.name is null then '' else b.name end broker_name,
     s.sub_id nttn, 
     s.sub_date nttn_date, 
-    '' goods,
+    case when s.cmr is null then '' else s.cmr end goods,
     0 weight,
     m.date dater, 
     null dateo,
-    '' id_enter,
+    case when m.propusk is null then '' else m.propusk end id_enter,
     m.ncar car, 
     convert( datetime, convert(char(8), m.rdate, 112) + ' ' + 
         convert(CHAR(8), m.rdate, 108) ) d_in,
