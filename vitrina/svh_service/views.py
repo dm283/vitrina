@@ -20,6 +20,9 @@ def consignment_list(request):
         form_filters = ConsignmentFiltersForm(data=request.POST)
         if form_filters.is_valid():
             cd = form_filters.cleaned_data
+
+            print('on_terminal = ', cd['on_terminal'])
+
             if cd['key_id']:
                 consignments = consignments.filter(key_id=cd['key_id'])
             if cd['contact_name']:
@@ -40,6 +43,10 @@ def consignment_list(request):
                 consignments = consignments.filter(dateo__lte=cd['dateo_to'])
             if cd['car']:
                 consignments = consignments.filter(car=cd['car'])
+            if cd['on_terminal']:
+                consignments = consignments.filter(dateo__isnull=True)
+            else:
+                consignments = consignments.filter(dateo__isnull=False)
 
     return render(request,
                   'shv_service/consignment/list.html',
