@@ -1,7 +1,8 @@
 import os
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
-from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm, ConsignmentFiltersForm, CarpassFiltersForm
+from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
+from .forms import ConsignmentFiltersForm, CarpassFiltersForm, ContactFiltersForm
 from django.views.decorators.http import require_POST
 from datetime import datetime
 from django.conf import settings
@@ -591,9 +592,30 @@ def carpass_add_document(request, id):
 def contact_list(request):
     contacts = Contact.objects.all()
 
+    # фильтрация данных
+    form_filters = ContactFiltersForm()
+    if request.method == 'POST':
+        form_filters = ContactFiltersForm(data=request.POST)
+        if form_filters.is_valid():
+            cd = form_filters.cleaned_data
+            if cd['contact']:
+                contacts = contacts.filter(contact=cd['contact'])
+            if cd['type']:
+                contacts = contacts.filter(type=cd['type'])
+            if cd['name']:
+                contacts = contacts.filter(name=cd['name'])
+            if cd['inn']:
+                contacts = contacts.filter(inn=cd['inn'])
+            if cd['email1']:
+                contacts = contacts.filter(email1=cd['email1'])
+            if cd['idtelegram']:
+                contacts = contacts.filter(idtelegram=cd['idtelegram'])
+
+
     return render(request,
                   'shv_service/contact/list.html',
-                  {'contacts': contacts})
+                  {'contacts': contacts,
+                   'form_filters': form_filters, })
 
 
 def contact_add(request):

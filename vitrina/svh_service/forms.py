@@ -66,6 +66,15 @@ class CarpassFiltersForm(forms.Form):
     nkont = forms.CharField(label='№ контейнера', max_length=50, required=False)
 
 
+class ContactFiltersForm(forms.Form):
+    contact = forms.IntegerField(label='Код клиента', required=False) # Код клиента из программы Альта-СВХ
+    type = forms.CharField(label='Тип', max_length=1, required=False) # Тип пользователя
+    name = forms.CharField(label='Организация', max_length=150, required=False) # Наименование организации
+    inn = forms.CharField(label='ИНН', max_length=12, required=False) # ИНН организации
+    email1 = forms.CharField(label='E-mail', max_length=100, required=False) # Почта отсылки сообщений
+    idtelegram = forms.CharField(label='Telegram ID', max_length=36, required=False) # Идентификатор ID messenger Telegram
+
+
 class CarpassForm(forms.ModelForm):
     class Meta:
         model = Carpass
