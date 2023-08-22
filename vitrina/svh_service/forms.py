@@ -43,6 +43,19 @@ class ConsignmentForm(forms.ModelForm):
         # }
 
 
+class ConsignmentFiltersForm(forms.Form):
+    key_id = forms.CharField(label='Ключ партии товара', max_length=16, required=False)
+    contact_name = forms.CharField(label='Наименование клиента', max_length=150, required=False)
+    broker_name = forms.CharField(label='Наименование брокера', max_length=150, required=False)
+    dater_from = forms.DateField(label='Дата регистрации, c', widget=forms.DateInput(attrs=dict(type='date')), required=False)
+    dater_to = forms.DateField(label='по', widget=forms.DateInput(attrs=dict(type='date')), required=False)
+    nttn =  forms.CharField(label='№ транспортного документа', max_length=100, required=False)
+    dateo_from = forms.DateField(label='Дата выдачи, с', widget=forms.DateInput(attrs=dict(type='date')), required=False)
+    dateo_to = forms.DateField(label='по', widget=forms.DateInput(attrs=dict(type='date')), required=False)
+    goods = forms.CharField(label='№ документа доставки', max_length=100, required=False)
+    car = forms.CharField(label='ТС', max_length=30, required=False)
+
+
 class CarpassForm(forms.ModelForm):
     class Meta:
         model = Carpass

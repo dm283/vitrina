@@ -1,7 +1,7 @@
 import os
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
-from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
+from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm, ConsignmentFiltersForm
 from django.views.decorators.http import require_POST
 from datetime import datetime
 from django.conf import settings
@@ -12,13 +12,40 @@ from urllib.parse import quote
 #  CONSIGNMENT ******************************************
 def consignment_list(request):
     consignments = Consignment.objects.all()
-
     documents = Document.objects.all()
+
+    # фильтрация данных
+    form_filters = ConsignmentFiltersForm()
+    if request.method == 'POST':
+        form_filters = ConsignmentFiltersForm(data=request.POST)
+        if form_filters.is_valid():
+            cd = form_filters.cleaned_data
+            if cd['key_id']:
+                consignments = consignments.filter(key_id=cd['key_id'])
+            if cd['contact_name']:
+                consignments = consignments.filter(contact_name=cd['contact_name'])
+            if cd['broker_name']:
+                consignments = consignments.filter(broker_name=cd['broker_name'])
+            if cd['nttn']:
+                consignments = consignments.filter(nttn=cd['nttn'])
+            if cd['goods']:
+                consignments = consignments.filter(goods=cd['goods'])
+            if cd['dater_from']:
+                consignments = consignments.filter(dater__gte=cd['dater_from'])
+            if cd['dater_to']:
+                consignments = consignments.filter(dater__lte=cd['dater_to'])
+            if cd['dateo_from']:
+                consignments = consignments.filter(dateo__gte=cd['dateo_from'])
+            if cd['dateo_to']:
+                consignments = consignments.filter(dateo__lte=cd['dateo_to'])
+            if cd['car']:
+                consignments = consignments.filter(car=cd['car'])
 
     return render(request,
                   'shv_service/consignment/list.html',
                   {'consignments': consignments,
-                   'documents': documents})
+                   'documents': documents,
+                   'form_filters': form_filters, })
 
 
 def consignment_add(request):

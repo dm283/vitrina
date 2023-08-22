@@ -98,7 +98,7 @@ body {
     margin-top: 15px;
 }
 
-.buttons_area input[type=submit], input[type=button] {
+.buttons_area input[type=submit], .buttons_area input[type=button] {
     border-radius: 5px;
     width: 100px;
     background:Teal;
@@ -111,7 +111,7 @@ body {
     border: None;
 }
 
-.buttons_area input[type=submit]:hover, input[type=button]:hover{
+.buttons_area input[type=submit]:hover, .buttons_area input[type=button]:hover{
     background: LightSeaGreen;
 }
 
@@ -155,4 +155,56 @@ body {
 .doc_download a {
     text-decoration: none;
     color: white;
+}
+
+.filters_form {
+    /* background-color: orange; */
+    margin-top: 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    font-size: 14px;
+    max-width: 1300px;
+}
+
+.filters_form_btns {
+    background-color: SlateGray;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 5px 0 5px 5px;
+    margin-bottom: 5px;
+}
+
+.filters_form_btns input[type=submit], .filters_form_btns input[type=button]  {
+    border: 1px solid White;
+    border-radius: 5px;
+    width: 100px;
+    background:SlateGray;
+    color: WhiteSmoke;
+    margin-right: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 1px;
+}
+
+.filters_form_btns input[type=submit]:hover, .filters_form_btns input[type=button]:hover{
+    background: LightSlateGray;
+    color: White;
+}
+
+.filters_form label { 
+    font-size: 13px;
+    font-weight: bold;
+    color: SlateGray;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    width: 200px;
+}
+
+.filters_form input { 
+    font-size: 13px;
+    width: 190px;
+    color: DarkSlateGray;
+    border:1px solid gainsboro;
+    border-radius: 5px;
 }
