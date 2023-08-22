@@ -1,7 +1,7 @@
 import os
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
-from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm, ConsignmentFiltersForm
+from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm, ConsignmentFiltersForm, CarpassFiltersForm
 from django.views.decorators.http import require_POST
 from datetime import datetime
 from django.conf import settings
@@ -20,9 +20,6 @@ def consignment_list(request):
         form_filters = ConsignmentFiltersForm(data=request.POST)
         if form_filters.is_valid():
             cd = form_filters.cleaned_data
-
-            print('on_terminal = ', cd['on_terminal'])
-
             if cd['key_id']:
                 consignments = consignments.filter(key_id=cd['key_id'])
             if cd['contact_name']:
@@ -368,10 +365,30 @@ def carpass_list(request):
     carpasses = Carpass.objects.all()
     documents = Document.objects.all()
 
+    # фильтрация данных
+    form_filters = CarpassFiltersForm()
+    if request.method == 'POST':
+        form_filters = CarpassFiltersForm(data=request.POST)
+        if form_filters.is_valid():
+            cd = form_filters.cleaned_data
+            if cd['id_enter']:
+                carpasses = carpasses.filter(id_enter=cd['id_enter'])
+            if cd['ncar']:
+                carpasses = carpasses.filter(ncar=cd['ncar'])
+            if cd['ntir']:
+                carpasses = carpasses.filter(ntir=cd['ntir'])
+            if cd['nkont']:
+                carpasses = carpasses.filter(nkont=cd['nkont'])
+            if cd['dateen_from']:
+                carpasses = carpasses.filter(dateen__gte=cd['dateen_from'])
+            if cd['dateen_to']:
+                carpasses = carpasses.filter(dateen__lte=cd['dateen_to'])
+
     return render(request,
                   'shv_service/carpass/list.html',
                   {'carpasses': carpasses,
-                   'documents': documents})
+                   'documents': documents,
+                   'form_filters': form_filters, })
 
 
 def carpass_add(request):

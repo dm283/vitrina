@@ -13,17 +13,6 @@
       <a href="{% url 'svh_service:consignment_list' %}"><input type="button" value="ERASE"></a>
     </div>
     <div class="filters_form_inputs">
-      <!-- {{ form_filters.key_id.label }}{{ form_filters.key_id }}
-      {{ form_filters.contact_name.label }}{{ form_filters.contact_name }}
-      {{ form_filters.broker_name.label }}{{ form_filters.broker_name }}
-      {{ form_filters.nttn.label }}{{ form_filters.nttn }}
-      {{ form_filters.goods.label }}{{ form_filters.goods }}
-      {{ form_filters.dater_from.label }}{{ form_filters.dater_from }}
-      {{ form_filters.dater_to.label }}{{ form_filters.dater_to }}
-      {{ form_filters.dateo_from.label }}{{ form_filters.dateo_from }}
-      {{ form_filters.dateo_to.label }}{{ form_filters.dateo_to }}
-      {{ form_filters.car.label }}{{ form_filters.car }} -->
-
       {{ form_filters.as_table }}
       {% csrf_token %}
     </div>
