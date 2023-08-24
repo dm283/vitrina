@@ -1,13 +1,29 @@
-import os
+import os, json
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
 from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
 from .forms import ConsignmentFiltersForm, CarpassFiltersForm, ContactFiltersForm
 from django.views.decorators.http import require_POST
-from datetime import datetime
+from datetime import datetime, date
 from django.conf import settings
 from django.http import HttpResponse, Http404
 from urllib.parse import quote
+
+
+FILE_FILTERS = {}
+FILE_FILTERS['consignments'] = 'temp_files/consignments_filters.json'
+FILE_FILTERS['carpass'] = 'temp_files/carpass_filters.json'
+
+# COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
+
+#  COMMON_VIEWS *************************************
+def erase_filters(request, entity):
+    # erase all filters data - by deleting json file with it
+    print('ERASE FROM - ', entity)
+    if os.path.exists(FILE_FILTERS[entity]):
+        os.remove(FILE_FILTERS[entity])
+    return redirect(f'/svh_service/{entity}')
+
 
 
 #  CONSIGNMENT ******************************************
@@ -16,35 +32,59 @@ def consignment_list(request):
     documents = Document.objects.all()
 
     # фильтрация данных
-    form_filters = ConsignmentFiltersForm()
     if request.method == 'POST':
         form_filters = ConsignmentFiltersForm(data=request.POST)
         if form_filters.is_valid():
             cd = form_filters.cleaned_data
-            if cd['key_id']:
-                consignments = consignments.filter(key_id=cd['key_id'])
-            if cd['contact_name']:
-                consignments = consignments.filter(contact_name=cd['contact_name'])
-            if cd['broker_name']:
-                consignments = consignments.filter(broker_name=cd['broker_name'])
-            if cd['nttn']:
-                consignments = consignments.filter(nttn=cd['nttn'])
-            if cd['dkd']:
-                consignments = consignments.filter(dkd=cd['dkd'])
-            if cd['dater_from']:
-                consignments = consignments.filter(dater__gte=cd['dater_from'])
-            if cd['dater_to']:
-                consignments = consignments.filter(dater__lte=cd['dater_to'])
-            if cd['dateo_from']:
-                consignments = consignments.filter(dateo__gte=cd['dateo_from'])
-            if cd['dateo_to']:
-                consignments = consignments.filter(dateo__lte=cd['dateo_to'])
-            if cd['car']:
-                consignments = consignments.filter(car=cd['car'])
-            if cd['on_terminal']:
-                consignments = consignments.filter(dateo__isnull=True)
-            else:
-                consignments = consignments.filter(dateo__isnull=False)
+            # save filters data into json file
+            # cast datetime to str for ability of serializing
+            cd_date_casted = form_filters.cleaned_data
+            for d in cd_date_casted:
+                if (type(cd_date_casted[d]) is date):
+                    cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
+            cd_json = json.dumps(cd_date_casted)
+            with open(FILE_FILTERS['consignments'], 'w', encoding='utf-8') as f:
+                f.write(cd_json)
+
+    else: # request.method == 'GET'
+        # load filters data from json file if it exists
+        if os.path.exists(FILE_FILTERS['consignments']):
+            with open(FILE_FILTERS['consignments'], 'r') as f:
+                cd = json.load(f)
+            form_filters = ConsignmentFiltersForm(initial=cd)
+        # create empty form if json file doesn't exit
+        else:
+            form_filters = ConsignmentFiltersForm()
+            return render(request,
+                    'shv_service/consignment/list.html',
+                    {'consignments': consignments,
+                    'documents': documents,
+                    'form_filters': form_filters, })
+    
+    if cd['key_id']:
+        consignments = consignments.filter(key_id=cd['key_id'])
+    if cd['contact_name']:
+        consignments = consignments.filter(contact_name=cd['contact_name'])
+    if cd['broker_name']:
+        consignments = consignments.filter(broker_name=cd['broker_name'])
+    if cd['nttn']:
+        consignments = consignments.filter(nttn=cd['nttn'])
+    if cd['dkd']:
+        consignments = consignments.filter(dkd=cd['dkd'])
+    if cd['dater_from']:
+        consignments = consignments.filter(dater__gte=cd['dater_from'])
+    if cd['dater_to']:
+        consignments = consignments.filter(dater__lte=cd['dater_to'])
+    if cd['dateo_from']:
+        consignments = consignments.filter(dateo__gte=cd['dateo_from'])
+    if cd['dateo_to']:
+        consignments = consignments.filter(dateo__lte=cd['dateo_to'])
+    if cd['car']:
+        consignments = consignments.filter(car=cd['car'])
+    if cd['on_terminal']:
+        consignments = consignments.filter(dateo__isnull=True)
+    else:
+        consignments = consignments.filter(dateo__isnull=False)
 
     return render(request,
                   'shv_service/consignment/list.html',
@@ -248,118 +288,6 @@ def consignment_add_document(request, id):
                   context)
 
 
-#  DOCUMENT ******************************************
-def document_update(request, id):
-    document = get_object_or_404(Document, id=id)
-    if document.guid_partia:
-        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-    elif document.id_enter:
-        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-
-    if request.method == 'POST':
-        form = DocumentForm(data=request.POST, files=request.FILES, instance=document)
-        
-        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
-        
-        if form.is_valid():
-            form.save()
-            document = get_object_or_404(Document, id=id)
-            form = DocumentForm(instance=document)
-            # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
-            # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
-
-    else:
-        form = DocumentForm(instance=document)
-        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
-        # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
-
-    return render(request,
-                  'shv_service/document/update.html',
-                  {
-                   'form': form,
-                   'document': document,
-                   'entity': entity,
-                   })
-
-
-def document_delete(request, id):
-    document = get_object_or_404(Document, id=id)
-    data = {}
-    if document.guid_partia:
-        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-        data['block_name'] = 'Партия товаров'
-        data['entity'] = 'consignment'
-        data['id'] = entity.key_id
-    elif document.id_enter:
-        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-        data['block_name'] = 'Пропуск'
-        data['entity'] = 'carpass'
-        data['id'] = entity.id_enter
-    
-    if request.method == 'POST':
-        document.delete()
-
-        if document.guid_partia:
-            form = ConsignmentForm(instance=entity)
-            try:
-                documents = Document.objects.filter(guid_partia=entity.key_id)
-            except:
-                documents = ''
-        elif document.id_enter:
-            form = CarpassForm(instance=entity)
-            try:
-                documents = Document.objects.filter(id_enter=entity.id_enter)
-            except:
-                documents = ''
-
-        return render(request,
-                    'shv_service/update_universal.html',
-                    {'form': form,
-                    'data': data, 
-                    'entity': entity,
-                    'documents': documents,})
-
-
-    return render(request,
-                  'shv_service/document/delete.html',
-                  {
-                    'document': document,
-                  })
-
-
-def document_close(request, id):
-    document = get_object_or_404(Document, id=id)
-    if document.guid_partia:
-        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-        entity_title = 'consignments'
-    elif document.id_enter:
-        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-        entity_title = 'carpass'
-    # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
-
-    if request.method == 'POST':
-        return redirect(f'/svh_service/{entity_title}/{entity.id}/update')
-    
-    return render(request,
-                  'shv_service/document/close.html',
-                  {'document': document})
-
-
-def document_download(request, id):
-    """
-    Скачивает документ
-    """
-    document = get_object_or_404(Document, id=id)
-    path = str(document.file)
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="text/plain")
-            #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-            response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
-            return response
-    return Http404
-
 
 #  CARPASS ******************************************
 def carpass_list(request):
@@ -367,23 +295,67 @@ def carpass_list(request):
     documents = Document.objects.all()
 
     # фильтрация данных
-    form_filters = CarpassFiltersForm()
     if request.method == 'POST':
         form_filters = CarpassFiltersForm(data=request.POST)
         if form_filters.is_valid():
             cd = form_filters.cleaned_data
-            if cd['id_enter']:
-                carpasses = carpasses.filter(id_enter=cd['id_enter'])
-            if cd['ncar']:
-                carpasses = carpasses.filter(ncar=cd['ncar'])
-            if cd['ntir']:
-                carpasses = carpasses.filter(ntir=cd['ntir'])
-            if cd['nkont']:
-                carpasses = carpasses.filter(nkont=cd['nkont'])
-            if cd['dateen_from']:
-                carpasses = carpasses.filter(dateen__gte=cd['dateen_from'])
-            if cd['dateen_to']:
-                carpasses = carpasses.filter(dateen__lte=cd['dateen_to'])
+            # save filters data into json file
+            # cast datetime to str for ability of serializing
+            cd_date_casted = form_filters.cleaned_data
+            for d in cd_date_casted:
+                if (type(cd_date_casted[d]) is date):
+                    cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
+            cd_json = json.dumps(cd_date_casted)
+            with open(FILE_FILTERS['carpass'], 'w', encoding='utf-8') as f:
+                f.write(cd_json)
+
+    else: # request.method == 'GET'
+        # load filters data from json file if it exists
+        if os.path.exists(FILE_FILTERS['carpass']):
+            with open(FILE_FILTERS['carpass'], 'r') as f:
+                cd = json.load(f)
+            form_filters = CarpassFiltersForm(initial=cd)
+        # create empty form if json file doesn't exit
+        else:
+            form_filters = CarpassFiltersForm()
+            return render(request,
+                    'shv_service/carpass/list.html',
+                    {'carpasses': carpasses,
+                    'documents': documents,
+                    'form_filters': form_filters, })
+        
+    if cd['id_enter']:
+        carpasses = carpasses.filter(id_enter=cd['id_enter'])
+    if cd['ncar']:
+        carpasses = carpasses.filter(ncar=cd['ncar'])
+    if cd['ntir']:
+        carpasses = carpasses.filter(ntir=cd['ntir'])
+    if cd['nkont']:
+        carpasses = carpasses.filter(nkont=cd['nkont'])
+    if cd['dateen_from']:
+        carpasses = carpasses.filter(dateen__gte=cd['dateen_from'])
+    if cd['dateen_to']:
+        carpasses = carpasses.filter(dateen__lte=cd['dateen_to'])  
+
+
+    # # фильтрация данных
+    # form_filters = CarpassFiltersForm()
+    # if request.method == 'POST':
+    #     form_filters = CarpassFiltersForm(data=request.POST)
+    #     if form_filters.is_valid():
+    #         cd = form_filters.cleaned_data
+    #         if cd['id_enter']:
+    #             carpasses = carpasses.filter(id_enter=cd['id_enter'])
+    #         if cd['ncar']:
+    #             carpasses = carpasses.filter(ncar=cd['ncar'])
+    #         if cd['ntir']:
+    #             carpasses = carpasses.filter(ntir=cd['ntir'])
+    #         if cd['nkont']:
+    #             carpasses = carpasses.filter(nkont=cd['nkont'])
+    #         if cd['dateen_from']:
+    #             carpasses = carpasses.filter(dateen__gte=cd['dateen_from'])
+    #         if cd['dateen_to']:
+    #             carpasses = carpasses.filter(dateen__lte=cd['dateen_to'])
 
     return render(request,
                   'shv_service/carpass/list.html',
@@ -586,6 +558,121 @@ def carpass_add_document(request, id):
     return render(request, 
                   'shv_service/carpass/add_document.html', 
                   context)
+
+
+
+#  DOCUMENT ******************************************
+def document_update(request, id):
+    document = get_object_or_404(Document, id=id)
+    if document.guid_partia:
+        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
+    elif document.id_enter:
+        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
+
+    if request.method == 'POST':
+        form = DocumentForm(data=request.POST, files=request.FILES, instance=document)
+        
+        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
+        
+        if form.is_valid():
+            form.save()
+            document = get_object_or_404(Document, id=id)
+            form = DocumentForm(instance=document)
+            # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
+            # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
+
+    else:
+        form = DocumentForm(instance=document)
+        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
+        # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
+
+    return render(request,
+                  'shv_service/document/update.html',
+                  {
+                   'form': form,
+                   'document': document,
+                   'entity': entity,
+                   })
+
+
+def document_delete(request, id):
+    document = get_object_or_404(Document, id=id)
+    data = {}
+    if document.guid_partia:
+        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
+        data['block_name'] = 'Партия товаров'
+        data['entity'] = 'consignment'
+        data['id'] = entity.key_id
+    elif document.id_enter:
+        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
+        data['block_name'] = 'Пропуск'
+        data['entity'] = 'carpass'
+        data['id'] = entity.id_enter
+    
+    if request.method == 'POST':
+        document.delete()
+
+        if document.guid_partia:
+            form = ConsignmentForm(instance=entity)
+            try:
+                documents = Document.objects.filter(guid_partia=entity.key_id)
+            except:
+                documents = ''
+        elif document.id_enter:
+            form = CarpassForm(instance=entity)
+            try:
+                documents = Document.objects.filter(id_enter=entity.id_enter)
+            except:
+                documents = ''
+
+        return render(request,
+                    'shv_service/update_universal.html',
+                    {'form': form,
+                    'data': data, 
+                    'entity': entity,
+                    'documents': documents,})
+
+
+    return render(request,
+                  'shv_service/document/delete.html',
+                  {
+                    'document': document,
+                  })
+
+
+def document_close(request, id):
+    document = get_object_or_404(Document, id=id)
+    if document.guid_partia:
+        entity = get_object_or_404(Consignment, key_id=document.guid_partia)
+        entity_title = 'consignments'
+    elif document.id_enter:
+        entity = get_object_or_404(Carpass, id_enter=document.id_enter)
+        entity_title = 'carpass'
+    # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
+
+    if request.method == 'POST':
+        return redirect(f'/svh_service/{entity_title}/{entity.id}/update')
+    
+    return render(request,
+                  'shv_service/document/close.html',
+                  {'document': document})
+
+
+def document_download(request, id):
+    """
+    Скачивает документ
+    """
+    document = get_object_or_404(Document, id=id)
+    path = str(document.file)
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="text/plain")
+            #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
+            return response
+    return Http404
+
 
 
 #  CONTACT ******************************************
