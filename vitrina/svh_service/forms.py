@@ -7,23 +7,26 @@ class ConsignmentForm(forms.ModelForm):
     class Meta:
         model = Consignment
         fields = ['key_id', 'contact', 'contact_name', 'contact_broker', 'broker_name', 'nttn', 'nttn_date',
-                  'goods', 'weight', 'dater', 'dateo', 'id_enter', 'car', 'd_in', 'd_out']
+                  'dkd', 'dkd_date', 'goods', 'weight', 'dater', 'dateo', 'id_enter', 'car', 'd_in', 'd_out']
         # fields = '__all__'
 
         widgets = {
             'key_id': forms.HiddenInput(),
             'nttn_date': forms.DateInput(attrs=dict(type='date')),
+            'dkd_date': forms.DateInput(attrs=dict(type='date')),
         }
 
         labels = {
-            'key_id': 'Ключ партии товара', 
+            'key_id': 'ID партии товара', 
             'contact': 'Код клиента', 
             'contact_name': 'Наименование клиента', 
             'contact_broker': 'Код брокера', 
             'broker_name': 'Наименование брокера', 
-            'nttn': 'Номер транспортного документа', 
+            'nttn': '№ транспортного документа', 
             'nttn_date': 'Дата транспортного документа',
-            'goods': 'Номер документа доставки', 
+            'dkd': '№ документа доставки',
+            'dkd_date': 'Дата документа доставки',
+            'goods': 'Описание товаров', 
             'weight': 'Вес партии товара', 
             'dater': 'Дата регистрации партии товара', 
             'dateo': 'Дата выдачи партии товара со склада', 
@@ -52,7 +55,7 @@ class ConsignmentFiltersForm(forms.Form):
     nttn =  forms.CharField(label='№ транспортного документа', max_length=100, required=False)
     dateo_from = forms.DateField(label='Дата выдачи, с', widget=forms.DateInput(attrs=dict(type='date')), required=False)
     dateo_to = forms.DateField(label='по', widget=forms.DateInput(attrs=dict(type='date')), required=False)
-    goods = forms.CharField(label='№ документа доставки', max_length=100, required=False)
+    dkd = forms.CharField(label='№ документа доставки', max_length=100, required=False)
     car = forms.CharField(label='ТС', max_length=30, required=False)
     on_terminal = forms.BooleanField(label='На складе', widget=forms.CheckboxInput(), initial=True, required=False)
 

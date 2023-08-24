@@ -29,8 +29,8 @@ def consignment_list(request):
                 consignments = consignments.filter(broker_name=cd['broker_name'])
             if cd['nttn']:
                 consignments = consignments.filter(nttn=cd['nttn'])
-            if cd['goods']:
-                consignments = consignments.filter(goods=cd['goods'])
+            if cd['dkd']:
+                consignments = consignments.filter(dkd=cd['dkd'])
             if cd['dater_from']:
                 consignments = consignments.filter(dater__gte=cd['dater_from'])
             if cd['dater_to']:

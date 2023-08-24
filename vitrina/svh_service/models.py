@@ -5,6 +5,7 @@ class Consignment(models.Model):
     """
     Партии товаров
     """
+    guid = models.CharField(max_length=36, blank=True, default='') # Уникальный идентификатор записи (аналогичен Альта-СВХ)
     key_id = models.CharField(max_length=16, unique=True) # Ключ партии товара в Альта-СВХ. 
     contact = models.IntegerField(blank=True, null=True) # Код клиента 
     contact_name = models.CharField(max_length=150, blank=True, default='') # Наименование клиента
@@ -12,7 +13,9 @@ class Consignment(models.Model):
     broker_name = models.CharField(max_length=150, blank=True,  default='') # Наименование брокера
     nttn = models.CharField(max_length=100, blank=True, default='') # Номер транспортного документа
     nttn_date = models.DateField(blank=True, null=True) # Дата транспортного документа
-    goods = models.CharField(max_length=100, blank=True, default='') # Номер документа доставки
+    dkd = models.CharField(max_length=100, blank=True, default='') # Номер ДКД
+    dkd_date = models.DateField(blank=True, null=True) # Дата ДКД
+    goods = models.CharField(max_length=100, blank=True, default='') # Описание товаров
     weight = models.FloatField(default=0) # Вес партии товара
     dater = models.DateTimeField(blank=True, null=True) # Дата регистрации партии товара
     dateo = models.DateTimeField(blank=True, null=True) # Дата выдачи партии товара со склада
@@ -20,9 +23,11 @@ class Consignment(models.Model):
     car =  models.CharField(max_length=30, blank=True, default='') # Номер транспортного средства 
     d_in = models.DateTimeField(blank=True, null=True) # Дата въезда транспортного средства на терминал
     d_out = models.DateTimeField(blank=True, null=True) # Дата выезда транспортного средства с терминала 
-
     guid_user = models.CharField(max_length=36, blank=True, default='') # GUID пользователя который создал эту запись
-    datep = models.DateTimeField(auto_now_add=True) # Дата создания записи
+
+    datep = models.DateTimeField(blank=True, null=True) # дата последнего обновления записи в БД Альта-СВХ (при миграции записи)
+    created = models.DateTimeField(auto_now_add=True, ) # Дата создания записи в БД Витрины
+    updated = models.DateTimeField(auto_now=True, ) # Дата последнего обновления записи в БД Витрины
     posted = models.BooleanField(default=False) # флаг проводки
     post_date = models.DateTimeField(blank=True, null=True) # дата проводки
     post_user_id = models.CharField(max_length=36, blank=True, default='') # идентификатор пользователя  который провел запись
