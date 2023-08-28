@@ -3,6 +3,7 @@ vitrina/media/
 vitrina/svh_service/migrations/
 vitrina/svh_service/migrations_postgre/
 vitrina/svh_service/migrations_mssql/
+vitrina/temp_files/
 vitrina/svh_service/__pycache__/
 vitrina/vitrina/__pycache__/
 vitrina/svh_service/static/node_modules/

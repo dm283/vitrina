@@ -6,7 +6,6 @@ app_name = 'svh_service'
 
 urlpatterns = [
     path('consignments', views.consignment_list, name='consignment_list'),
-    # path('consignments/<int:id>/', views.consignment_detail, name='consignment_detail'),
     path('consignments/<int:id>/', views.consignment_update, name='consignment_update'),
     path('consignments/add', views.consignment_add, name='consignment_add'),
     path('consignments/add_complete', views.post_consignment, name='post_consignment'),
@@ -16,6 +15,8 @@ urlpatterns = [
     path('consignments/<int:id>/rollback', views.consignment_rollback, name='consignment_rollback'),
     path('consignments/<int:id>/close', views.consignment_close, name='consignment_close'),
     path('consignments/<int:id>/add_document', views.consignment_add_document, name='consignment_add_document'),
+
+    path('erase_filters/<str:entity>/', views.erase_filters, name='erase_filters'),
 
     path('carpass', views.carpass_list, name='carpass_list'),
     path('carpass/<int:id>/', views.carpass_update, name='carpass_update'),
