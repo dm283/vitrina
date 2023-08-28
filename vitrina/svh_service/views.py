@@ -44,6 +44,8 @@ def consignment_list(request):
                 if (type(cd_date_casted[d]) is date):
                     cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
             cd_json = json.dumps(cd_date_casted)
+            if not os.path.exists('temp_files'):
+                os.mkdir('temp_files')
             with open(FILE_FILTERS['consignments'], 'w', encoding='utf-8') as f:
                 f.write(cd_json)
 
@@ -307,6 +309,8 @@ def carpass_list(request):
                 if (type(cd_date_casted[d]) is date):
                     cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
             cd_json = json.dumps(cd_date_casted)
+            if not os.path.exists('temp_files'):
+                os.mkdir('temp_files')
             with open(FILE_FILTERS['carpass'], 'w', encoding='utf-8') as f:
                 f.write(cd_json)
 
@@ -692,6 +696,8 @@ def contact_list(request):
                 if (type(cd_date_casted[d]) is date):
                     cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
             cd_json = json.dumps(cd_date_casted)
+            if not os.path.exists('temp_files'):
+                os.mkdir('temp_files')
             with open(FILE_FILTERS['contacts'], 'w', encoding='utf-8') as f:
                 f.write(cd_json)
 
