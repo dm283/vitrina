@@ -36,6 +36,11 @@
     <div id="header">
       <button id="openNav" class="button_show_sidebar" style="display: none" onclick="w3_open()">&#9776;</button>
       <h3 id="header_title">Альта-СВХ. Витрина</h3>
+      <!-- <span id="header_user">[ {{ request.user.profile.name|default:request.user.username }} ]</span> -->
+      <span id="header_logout">
+        <span id="header_user">{{ request.user.profile.name|default:request.user.username }}</span>
+        <a href="{% url 'svh_service:logout' %}"><img src="{% static 'icons/logout_white_24dp_1x.png' %}"></a>
+      </span>
     </div>
     <div id="content">
       {% block content %}

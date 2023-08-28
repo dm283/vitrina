@@ -1,6 +1,10 @@
 from django.contrib import admin
-from .models import Consignment, Contact, Document, Message, Uemail
+from .models import Profile, Consignment, Contact, Document, Message, Uemail
 
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'contact', 'type', 'name', ]
 
 @admin.register(Consignment)
 class ConsignmentAdmin(admin.ModelAdmin):

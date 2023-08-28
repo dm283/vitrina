@@ -1,5 +1,18 @@
 from django.db import models
+from django.conf import settings
 
+
+class Profile(models.Model):
+    """
+    Данные об организации пользователя из auth_user (соответствуют сущности Contact)
+    """
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE)
+    contact = models.IntegerField(unique=True) # Код клиента из программы Альта-СВХ
+    type = models.CharField(max_length=1, blank=True, default='') # Тип пользователя
+    name = models.CharField(max_length=150, blank=True, default='') # Наименование организации
+
+    
 
 class Consignment(models.Model):
     """
@@ -72,7 +85,7 @@ class Carpass(models.Model):
 class Contact(models.Model):
     """
     Организации/Контакты (клиенты/брокеры/операторы свх/руководство свх)
-    """
+    """      
     contact = models.IntegerField(unique=True) # Код клиента из программы Альта-СВХ
     type = models.CharField(max_length=1, blank=True, default='') # Тип пользователя
     name = models.CharField(max_length=150, blank=True, default='') # Наименование организации
