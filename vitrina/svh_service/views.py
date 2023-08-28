@@ -13,6 +13,7 @@ from urllib.parse import quote
 FILE_FILTERS = {}
 FILE_FILTERS['consignments'] = 'temp_files/consignments_filters.json'
 FILE_FILTERS['carpass'] = 'temp_files/carpass_filters.json'
+FILE_FILTERS['contacts'] = 'temp_files/contacts_filters.json'
 
 # COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
 
@@ -680,24 +681,46 @@ def contact_list(request):
     contacts = Contact.objects.all()
 
     # фильтрация данных
-    form_filters = ContactFiltersForm()
     if request.method == 'POST':
         form_filters = ContactFiltersForm(data=request.POST)
         if form_filters.is_valid():
             cd = form_filters.cleaned_data
-            if cd['contact']:
-                contacts = contacts.filter(contact=cd['contact'])
-            if cd['type']:
-                contacts = contacts.filter(type=cd['type'])
-            if cd['name']:
-                contacts = contacts.filter(name=cd['name'])
-            if cd['inn']:
-                contacts = contacts.filter(inn=cd['inn'])
-            if cd['email1']:
-                contacts = contacts.filter(email1=cd['email1'])
-            if cd['idtelegram']:
-                contacts = contacts.filter(idtelegram=cd['idtelegram'])
+            # save filters data into json file
+            # cast datetime to str for ability of serializing
+            cd_date_casted = form_filters.cleaned_data
+            for d in cd_date_casted:
+                if (type(cd_date_casted[d]) is date):
+                    cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
+            cd_json = json.dumps(cd_date_casted)
+            with open(FILE_FILTERS['contacts'], 'w', encoding='utf-8') as f:
+                f.write(cd_json)
 
+    else: # request.method == 'GET'
+        # load filters data from json file if it exists
+        if os.path.exists(FILE_FILTERS['contacts']):
+            with open(FILE_FILTERS['contacts'], 'r') as f:
+                cd = json.load(f)
+            form_filters = ContactFiltersForm(initial=cd)
+        # create empty form if json file doesn't exit
+        else:
+            form_filters = ContactFiltersForm()
+            return render(request,
+                    'shv_service/contact/list.html',
+                    {'contacts': contacts,
+                    'form_filters': form_filters, })
+
+    if cd['contact']:
+        contacts = contacts.filter(contact=cd['contact'])
+    if cd['type']:
+        contacts = contacts.filter(type=cd['type'])
+    if cd['name']:
+        contacts = contacts.filter(name=cd['name'])
+    if cd['inn']:
+        contacts = contacts.filter(inn=cd['inn'])
+    if cd['email1']:
+        contacts = contacts.filter(email1=cd['email1'])
+    if cd['idtelegram']:
+        contacts = contacts.filter(idtelegram=cd['idtelegram'])
 
     return render(request,
                   'shv_service/contact/list.html',
