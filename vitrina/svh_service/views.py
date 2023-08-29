@@ -203,8 +203,15 @@ def consignment_delete(request, id):
 @login_required
 def consignment_post(request, id):
     consignment = get_object_or_404(Consignment, id=id)
-    
-    # СДЕЛАТЬ ФУНКЦИЮ ПРОВЕРКИ ДАННЫХ В ФОРМЕ!!!!
+
+    # ПРОВЕРКИ ДАННЫХ
+    try:
+        get_object_or_404(Contact, contact=consignment.contact)
+        is_approved = True
+        error_msg = ''
+    except:
+        is_approved = False
+        error_msg = 'Данные указанного клиента не заведены в разделе Организации'
 
     if request.method == 'POST':
         guid_partia = consignment.key_id
@@ -255,7 +262,10 @@ def consignment_post(request, id):
     
     return render(request,
                   'shv_service/consignment/post.html',
-                  {'consignment': consignment})
+                  {'consignment': consignment,
+                   'is_approved': is_approved,
+                   'error_msg': error_msg,
+                   })
 
 
 @login_required
@@ -386,26 +396,6 @@ def carpass_list(request):
     if cd['dateen_to']:
         carpasses = carpasses.filter(dateen__lte=cd['dateen_to'])  
 
-
-    # # фильтрация данных
-    # form_filters = CarpassFiltersForm()
-    # if request.method == 'POST':
-    #     form_filters = CarpassFiltersForm(data=request.POST)
-    #     if form_filters.is_valid():
-    #         cd = form_filters.cleaned_data
-    #         if cd['id_enter']:
-    #             carpasses = carpasses.filter(id_enter=cd['id_enter'])
-    #         if cd['ncar']:
-    #             carpasses = carpasses.filter(ncar=cd['ncar'])
-    #         if cd['ntir']:
-    #             carpasses = carpasses.filter(ntir=cd['ntir'])
-    #         if cd['nkont']:
-    #             carpasses = carpasses.filter(nkont=cd['nkont'])
-    #         if cd['dateen_from']:
-    #             carpasses = carpasses.filter(dateen__gte=cd['dateen_from'])
-    #         if cd['dateen_to']:
-    #             carpasses = carpasses.filter(dateen__lte=cd['dateen_to'])
-
     return render(request,
                   'shv_service/carpass/list.html',
                   {'carpasses': carpasses,
@@ -490,7 +480,14 @@ def carpass_update(request, id):
 def carpass_post(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     
-    # СДЕЛАТЬ ФУНКЦИЮ ПРОВЕРКИ ДАННЫХ В ФОРМЕ!!!!
+    # ПРОВЕРКИ ДАННЫХ
+    try:
+        get_object_or_404(Contact, contact=carpass.contact)
+        is_approved = True
+        error_msg = ''
+    except:
+        is_approved = False
+        error_msg = 'Данные указанного клиента не заведены в разделе Организации'
 
     if request.method == 'POST':
         id_enter = carpass.id_enter
@@ -541,7 +538,10 @@ def carpass_post(request, id):
     
     return render(request,
                   'shv_service/carpass/post.html',
-                  {'carpass': carpass})
+                  {'carpass': carpass,
+                   'is_approved': is_approved,
+                   'error_msg': error_msg,
+                   })
 
 
 @login_required
@@ -708,7 +708,6 @@ def document_close(request, id):
     elif document.id_enter:
         entity = get_object_or_404(Carpass, id_enter=document.id_enter)
         entity_title = 'carpass'
-    # consignment = get_object_or_404(Consignment, key_id=document.guid_partia)
 
     if request.method == 'POST':
         return redirect(f'/svh_service/{entity_title}/{entity.id}/update')
@@ -869,6 +868,9 @@ def contact_delete(request, id):
 @login_required
 def contact_post(request, id):
     contact = get_object_or_404(Contact, id=id)
+
+    is_approved = True
+    error_msg = ''
     
     if request.method == 'POST':
         contact.post_user_id = '1'
@@ -879,7 +881,9 @@ def contact_post(request, id):
     
     return render(request,
                   'shv_service/contact/post.html',
-                  {'contact': contact})
+                  {'contact': contact,
+                   'is_approved': is_approved,
+                   'error_msg': error_msg,})
 
 
 @login_required

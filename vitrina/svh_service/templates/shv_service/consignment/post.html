@@ -3,20 +3,14 @@
 {% block content %}
 
 <h5 class="block_name">Подтверждение проводки</h5>
-<hr>
-
 <form class='detail_form' action="" method="post">
-
   {% csrf_token %}
-
-  <!-- <p>ВЫ ДЕЙСТВИТЕЛЬНО ХОТИТЕ ПРОВЕСТИ ПАРТИЮ ТОВАРОВ?</p> -->
-  
   <div class="buttons_area">
-    <!-- <hr> -->
-    <input type="submit" value="POST">
+    {% if is_approved == True %}<input type="submit" value="POST">
+    {% else %}<div>{{ error_msg }}</div><br>
+    {% endif %}
     <a href="{% url 'svh_service:consignment_update' consignment.id %}"><input type="button" value="CANCEL"></a>
   </div>
-  
 </form>
 
 {% endblock %}
