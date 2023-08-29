@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import HttpResponse, Http404
 from urllib.parse import quote
 from django.contrib.auth.decorators import login_required
+from django.utils.safestring import mark_safe
 
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
@@ -259,13 +260,14 @@ def consignment_post(request, id):
             f.save()
 
         return redirect(f'/svh_service/consignments/{consignment.id}/update')
-    
+
+    link_for_cancel = mark_safe(f'<a href="/svh_service/consignments/{id}/update">')
+
     return render(request,
-                  'shv_service/consignment/post.html',
-                  {'consignment': consignment,
-                   'is_approved': is_approved,
+                'shv_service/post_universal.html',
+                  {'is_approved': is_approved,
                    'error_msg': error_msg,
-                   })
+                   'link_for_cancel': link_for_cancel})
 
 
 @login_required
@@ -536,12 +538,20 @@ def carpass_post(request, id):
 
         return redirect(f'/svh_service/carpass/{carpass.id}/update')
     
+    link_for_cancel = mark_safe(f'<a href="/svh_service/carpass/{id}/update">')
+
     return render(request,
-                  'shv_service/carpass/post.html',
-                  {'carpass': carpass,
-                   'is_approved': is_approved,
+                'shv_service/post_universal.html',
+                  {'is_approved': is_approved,
                    'error_msg': error_msg,
-                   })
+                   'link_for_cancel': link_for_cancel})
+
+    # return render(request,
+    #               'shv_service/carpass/post.html',
+    #               {'carpass': carpass,
+    #                'is_approved': is_approved,
+    #                'error_msg': error_msg,
+    #                })
 
 
 @login_required
@@ -879,11 +889,13 @@ def contact_post(request, id):
         contact.save()
         return redirect(f'/svh_service/contacts/{contact.id}/update')
     
+    link_for_cancel = mark_safe(f'<a href="/svh_service/contacts/{id}/update">')
+
     return render(request,
-                  'shv_service/contact/post.html',
-                  {'contact': contact,
-                   'is_approved': is_approved,
-                   'error_msg': error_msg,})
+                'shv_service/post_universal.html',
+                  {'is_approved': is_approved,
+                   'error_msg': error_msg,
+                   'link_for_cancel': link_for_cancel})
 
 
 @login_required
