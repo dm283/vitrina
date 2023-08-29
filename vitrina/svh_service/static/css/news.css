@@ -1,9 +1,24 @@
+/* #header - #header_client */
+/* .button_show_sidebar - .button_show_sidebar_client */
+/* .button_show_sidebar:hover - .button_show_sidebar_client:hover */
+/* .sidebar_button_close - .sidebar_button_close_client */
+/* #header_logout - #header_logout_client */
+/* #header_logout a - #header_logout_client a */
+/* #header_logout a:hover - #header_logout_client a:hover */
+/* #header_user - #header_user_client */
+
+
 body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
 #header {
     background: RoyalBlue;
+    padding: 10px 0px 11px 20px;
+}
+
+#header_client {
+    background: SeaGreen;
     padding: 10px 0px 11px 20px;
 }
 
@@ -21,6 +36,12 @@ body {
     float: right;
 }
 
+#header_logout_client{
+    border: None;;
+    margin: 7px 20px 0 0;
+    float: right;
+}
+
 #header_logout a{
     margin-left: 20px;
     background-color: RoyalBlue;
@@ -33,11 +54,32 @@ body {
     background-color: DodgerBlue;
 }
 
+#header_logout_client a{
+    margin-left: 20px;
+    background-color: SeaGreen;
+    border: 1px solid white;
+    border-radius: 20px;
+    padding: 6px 5px 9px 5px;
+}
+
+#header_logout_client a:hover{
+    background-color: MediumSeaGreen;
+}
+
 #header_user{
     border: 1px dashed White;
     border-radius: 10px;
     padding: 5px 10px 5px 10px;
     background-color: RoyalBlue;
+    color: GhostWhite;
+    text-transform: uppercase;
+}
+
+#header_user_client{
+    border: 1px dashed White;
+    border-radius: 10px;
+    padding: 5px 10px 5px 10px;
+    background-color: SeaGreen;
     color: GhostWhite;
     text-transform: uppercase;
 }
@@ -55,6 +97,19 @@ body {
     background-color: DodgerBlue;
 }
 
+.button_show_sidebar_client {
+    background-color: SeaGreen;
+    border: 1px solid white;
+    border-radius: 20px;
+    color: White;
+    width: 40px;
+    height: 40px;
+}
+
+.button_show_sidebar_client:hover {
+    background-color: MediumSeaGreen;
+}
+
 .sidebar {
     float: left;
     display: flex;
@@ -62,6 +117,18 @@ body {
 
 .sidebar_button_close {
     background-color: RoyalBlue;
+    color: White;
+    font-weight: bold;
+    border: none;
+    height: 62px;
+    margin-bottom: 2px;
+    margin-left: 1px;
+    margin-right: 1px;
+    padding: 5% 0 0 40%;
+}
+
+.sidebar_button_close_client {
+    background-color: SeaGreen;
     color: White;
     font-weight: bold;
     border: none;
