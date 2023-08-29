@@ -1,10 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 app_name = 'svh_service'
 
 urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
     path('consignments', views.consignment_list, name='consignment_list'),
     path('consignments/<int:id>/', views.consignment_update, name='consignment_update'),
     path('consignments/add', views.consignment_add, name='consignment_add'),

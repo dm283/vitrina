@@ -8,6 +8,10 @@ from datetime import datetime, date
 from django.conf import settings
 from django.http import HttpResponse, Http404
 from urllib.parse import quote
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
 
 
 FILE_FILTERS = {}
@@ -18,6 +22,7 @@ FILE_FILTERS['contacts'] = 'temp_files/contacts_filters.json'
 # COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
 
 #  COMMON_VIEWS *************************************
+@login_required
 def erase_filters(request, entity):
     # erase all filters data - by deleting json file with it
     print('ERASE FROM - ', entity)
@@ -26,8 +31,8 @@ def erase_filters(request, entity):
     return redirect(f'/svh_service/{entity}')
 
 
-
 #  CONSIGNMENT ******************************************
+@login_required
 def consignment_list(request):
     consignments = Consignment.objects.all()
     documents = Document.objects.all()
@@ -96,6 +101,7 @@ def consignment_list(request):
                    'form_filters': form_filters, })
 
 
+@login_required
 def consignment_add(request):
     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
     key_id_list = Consignment.objects.values_list("key_id", flat=True)
@@ -108,6 +114,7 @@ def consignment_add(request):
     return render(request, 'shv_service/consignment/add.html',
                   {'form': form})
 
+@login_required
 @require_POST
 def post_consignment(request):
     form = ConsignmentForm(data=request.POST)
@@ -129,6 +136,7 @@ def post_consignment(request):
                    'entity': consignment})
 
 
+@login_required
 def consignment_update(request, id):
     consignment = get_object_or_404(Consignment, id=id)
  
@@ -164,6 +172,7 @@ def consignment_update(request, id):
                          'documents': documents})
 
 
+@login_required
 def consignment_delete(request, id):
     consignment = get_object_or_404(Consignment, id=id)
     
@@ -176,6 +185,7 @@ def consignment_delete(request, id):
                   {'consignment': consignment})
 
 
+@login_required
 def consignment_post(request, id):
     consignment = get_object_or_404(Consignment, id=id)
     
@@ -233,6 +243,7 @@ def consignment_post(request, id):
                   {'consignment': consignment})
 
 
+@login_required
 def consignment_rollback(request, id):
     consignment = get_object_or_404(Consignment, id=id)
     
@@ -248,6 +259,7 @@ def consignment_rollback(request, id):
                   {'consignment': consignment})
 
 
+@login_required
 def consignment_close(request, id):
     consignment = get_object_or_404(Consignment, id=id)
 
@@ -259,6 +271,7 @@ def consignment_close(request, id):
                   {'consignment': consignment})
 
 
+@login_required
 def consignment_add_document(request, id):
     consignment = get_object_or_404(Consignment, id=id)
 
@@ -293,6 +306,7 @@ def consignment_add_document(request, id):
 
 
 #  CARPASS ******************************************
+@login_required
 def carpass_list(request):
     carpasses = Carpass.objects.all()
     documents = Document.objects.all()
@@ -369,6 +383,7 @@ def carpass_list(request):
                    'form_filters': form_filters, })
 
 
+@login_required
 def carpass_add(request):
     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
     id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
@@ -381,6 +396,7 @@ def carpass_add(request):
     return render(request, 'shv_service/carpass/add.html',
                   {'form': form})
 
+@login_required
 @require_POST
 def post_carpass(request):
     form = CarpassForm(data=request.POST)
@@ -402,6 +418,7 @@ def post_carpass(request):
                    'entity': carpass,})
 
 
+@login_required
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
  
@@ -439,6 +456,7 @@ def carpass_update(request, id):
                    )
 
 
+@login_required
 def carpass_post(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     
@@ -496,6 +514,7 @@ def carpass_post(request, id):
                   {'carpass': carpass})
 
 
+@login_required
 def carpass_rollback(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     
@@ -511,6 +530,7 @@ def carpass_rollback(request, id):
                   {'carpass': carpass})
 
 
+@login_required
 def carpass_delete(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     
@@ -523,6 +543,7 @@ def carpass_delete(request, id):
                   {'carpass': carpass})
 
 
+@login_required
 def carpass_close(request, id):
     carpass = get_object_or_404(Carpass, id=id)
 
@@ -534,6 +555,7 @@ def carpass_close(request, id):
                   {'carpass': carpass})
 
 
+@login_required
 def carpass_add_document(request, id):
     carpass = get_object_or_404(Carpass, id=id)
 
@@ -567,6 +589,7 @@ def carpass_add_document(request, id):
 
 
 #  DOCUMENT ******************************************
+@login_required
 def document_update(request, id):
     document = get_object_or_404(Document, id=id)
     if document.guid_partia:
@@ -600,6 +623,7 @@ def document_update(request, id):
                    })
 
 
+@login_required
 def document_delete(request, id):
     document = get_object_or_404(Document, id=id)
     data = {}
@@ -645,6 +669,7 @@ def document_delete(request, id):
                   })
 
 
+@login_required
 def document_close(request, id):
     document = get_object_or_404(Document, id=id)
     if document.guid_partia:
@@ -663,6 +688,7 @@ def document_close(request, id):
                   {'document': document})
 
 
+@login_required
 def document_download(request, id):
     """
     Скачивает документ
@@ -681,6 +707,7 @@ def document_download(request, id):
 
 
 #  CONTACT ******************************************
+@login_required
 def contact_list(request):
     contacts = Contact.objects.all()
 
@@ -734,6 +761,7 @@ def contact_list(request):
                    'form_filters': form_filters, })
 
 
+@login_required
 def contact_add(request):
     # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
     contact_list = Contact.objects.values_list("contact", flat=True)
@@ -745,6 +773,7 @@ def contact_add(request):
     return render(request, 'shv_service/contact/add.html',
                   {'form': form})
 
+@login_required
 @require_POST
 def post_contact(request):
     form = ContactForm(data=request.POST)
@@ -766,6 +795,7 @@ def post_contact(request):
                    'entity': contact,})
 
 
+@login_required
 def contact_update(request, id):
     contact = get_object_or_404(Contact, id=id)
 
@@ -793,6 +823,7 @@ def contact_update(request, id):
                    'entity': contact,})
 
 
+@login_required
 def contact_delete(request, id):
     contact = get_object_or_404(Contact, id=id)
     
@@ -805,6 +836,7 @@ def contact_delete(request, id):
                   {'contact': contact})
 
 
+@login_required
 def contact_post(request, id):
     contact = get_object_or_404(Contact, id=id)
     
@@ -820,6 +852,7 @@ def contact_post(request, id):
                   {'contact': contact})
 
 
+@login_required
 def contact_rollback(request, id):
     contact = get_object_or_404(Contact, id=id)
     
@@ -835,6 +868,7 @@ def contact_rollback(request, id):
                   {'contact': contact})
 
 
+@login_required
 def contact_close(request, id):
     contact = get_object_or_404(Contact, id=id)
 
