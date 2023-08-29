@@ -3,9 +3,11 @@
 {% block content %}
   <h5 class="block_name">Пропуска</h5>
 
+  {% if request.user.profile.type == 'O' %}
   <div class='buttons_area'>
     <a href="{% url 'svh_service:carpass_add' %}"><input type="button" value="ADD"></a>
   </div>
+  {% endif %}
 
   <form class='filters_form' action="" method="post">
     <div class="filters_form_btns">

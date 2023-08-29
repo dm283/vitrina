@@ -34,8 +34,23 @@ def erase_filters(request, entity):
 #  CONSIGNMENT ******************************************
 @login_required
 def consignment_list(request):
-    consignments = Consignment.objects.all()
-    documents = Document.objects.all()
+    if request.user.profile.type == 'O':
+        consignments = Consignment.objects.all()
+        documents = Document.objects.all()
+    else:
+        try:
+            if request.user.profile.type == 'V':
+                consignments = Consignment.objects.filter(posted=True).filter(contact=request.user.profile.contact)
+            elif request.user.profile.type == 'B':
+                consignments = Consignment.objects.filter(posted=True).filter(contact_broker=request.user.profile.contact)
+        except:
+            consignments = ''
+
+        try:
+            key_id_list = consignments.values_list("key_id", flat=True)
+            documents = Document.objects.filter(guid_partia__in=key_id_list)
+        except:
+            documents = ''
 
     # фильтрация данных
     if request.method == 'POST':
@@ -308,8 +323,23 @@ def consignment_add_document(request, id):
 #  CARPASS ******************************************
 @login_required
 def carpass_list(request):
-    carpasses = Carpass.objects.all()
-    documents = Document.objects.all()
+    if request.user.profile.type == 'O':
+        carpasses = Carpass.objects.all()
+        documents = Document.objects.all()
+    else:
+        try:
+            if request.user.profile.type == 'V':
+                carpasses = Carpass.objects.filter(posted=True).filter(contact=request.user.profile.contact)
+            elif request.user.profile.type == 'B':
+                carpasses = Carpass.objects.filter(posted=True).filter(contact_broker=request.user.profile.contact)
+        except:
+            carpasses = ''
+
+        try:
+            id_enter_list = carpasses.values_list("id_enter", flat=True)
+            documents = Document.objects.filter(id_enter__in=id_enter_list)
+        except:
+            documents = ''
 
     # фильтрация данных
     if request.method == 'POST':

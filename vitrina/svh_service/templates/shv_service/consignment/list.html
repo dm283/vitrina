@@ -3,15 +3,16 @@
 {% block content %}
   <h5 class="block_name">Партии товаров</h5>
 
+  {% if request.user.profile.type == 'O' %}
   <div class='buttons_area'>
     <a href="{% url 'svh_service:consignment_add' %}"><input type="button" value="ADD"></a>
   </div>
+  {% endif %}
 
   <form class='filters_form' action="" method="post">
     <div class="filters_form_btns">
       <input type="submit" value="APPLY">
-      <a href="{% url 'svh_service:erase_filters' 'consignments' %}"><input type="button" value="ERASE"></a>
-      <!-- <a href="{% url 'svh_service:consignment_list' %}"><input type="button" value="ERASE"></a> -->
+      <a href="{% url 'svh_service:erase_filters' 'consignments' %}"><input type="button" value="CLEAR"></a>
     </div>
     <div class="filters_form_inputs">
       {{ form_filters.as_table }}

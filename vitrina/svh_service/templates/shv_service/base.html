@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- <title>{% block title %}{% endblock %}</title> -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Альта-СВХ. Витрина</title>
@@ -13,32 +12,38 @@
   <link rel="stylesheet" href="{% static 'node_modules/jquery-resizable-columns/dist/jquery.resizableColumns.css' %}">
   <link rel="stylesheet" href="{% static 'node_modules/dragtable/dragtable.css' %}">
   
-  <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
-  
-  <!-- <link href="{% static 'css/svh_service.css' %}" rel="stylesheet"> -->
   <link href="{% static 'css/news.css' %}" rel="stylesheet">
 </head>
 
 <body>
 
   <div class="sidebar" style="width: 15%; display: block" id="mySidebar">
-    <!-- <button class="sidebar_button_close" onclick="w3_close()">АЛЬТА-СОФТ &times;</button> -->
-      <div class="sidebar_button_close">
-        <button class="button_show_sidebar" onclick="w3_close()">&#9776;</button>
+      <div {% if request.user.profile.type == 'O' %} class="sidebar_button_close" 
+           {% else %} class="sidebar_button_close_client" {% endif %}>
+        <button {% if request.user.profile.type == 'O' %} class="button_show_sidebar" 
+                {% else %} class="button_show_sidebar_client" {% endif %}
+                onclick="w3_close()">&#9776;</button>
       </div>
       <a href="{% url 'svh_service:carpass_list' %}" class="a_button">ПРОПУСКА</a>
       <a href="{% url 'svh_service:consignment_list' %}" class="a_button">ПАРТИИ ТОВАРОВ</a>
-      <a href="{% url 'svh_service:contact_list' %}" class="a_button">ОРГАНИЗАЦИИ</a>
+      {% if request.user.profile.type == 'O' %} 
+        <a href="{% url 'svh_service:contact_list' %}" class="a_button">ОРГАНИЗАЦИИ</a>
+      {% endif %}
+
 
   </div>
 
   <div id="main" style="margin-left: 15%;">
-    <div id="header">
-      <button id="openNav" class="button_show_sidebar" style="display: none" onclick="w3_open()">&#9776;</button>
+    <div {% if request.user.profile.type == 'O' %} id="header" {% else %} id="header_client" {% endif %}>
+      <button id="openNav" {% if request.user.profile.type == 'O' %} class="button_show_sidebar" 
+                           {% else %} class="button_show_sidebar_client" {% endif %}
+        style="display: none" onclick="w3_open()">&#9776;
+      </button>
       <h3 id="header_title">Альта-СВХ. Витрина</h3>
-      <!-- <span id="header_user">[ {{ request.user.profile.name|default:request.user.username }} ]</span> -->
-      <span id="header_logout">
-        <span id="header_user">{{ request.user.profile.name|default:request.user.username }}</span>
+      <span {% if request.user.profile.type == 'O' %} id="header_logout" {% else %} id="header_logout_client" {% endif %}>
+        <span {% if request.user.profile.type == 'O' %} id="header_user" {% else %} id="header_user_client" {% endif %}>
+          {{ request.user.profile.name|default:request.user.username }}
+        </span>
         <a href="{% url 'svh_service:logout' %}"><img src="{% static 'icons/logout_white_24dp_1x.png' %}"></a>
       </span>
     </div>
