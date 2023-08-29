@@ -3,21 +3,13 @@
 {% block content %}
 
 <h5 class="block_name">Подтверждение выхода</h5>
-<hr>
 
 <form class='detail_form' action="" method="post">
-
-  {% csrf_token %}
-
-  <!-- <p>ВЫ ДЕЙСТВИТЕЛЬНО ХОТИТЕ ВЫЙТИ ИЗ КАРТОЧКИ ПАРТИИ ТОВАРОВ?</p> -->
-  
+  {% csrf_token %}  
   <div class="buttons_area">
-    <!-- <hr> -->
     <input type="submit" value="YES">
-    <!-- <a href="{% url 'svh_service:consignment_list' %}"><input type="button" value="YES"></a> -->
     <a href="{% url 'svh_service:consignment_update' consignment.id %}"><input type="button" value="NO"></a>
-  </div>
-  
+  </div> 
 </form>
 
 {% endblock %}
