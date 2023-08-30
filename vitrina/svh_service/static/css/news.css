@@ -12,6 +12,92 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* auth-form */
+.login_page {
+    background-color: WhiteSmoke;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-form {
+    border: 1px solid gainsboro;
+    border-radius: 3px;
+    background-color: White;
+    margin: auto;
+    margin-top: 50px;
+    width: 400px;
+}
+
+.login_header{
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color: RoyalBlue;
+    font-weight: normal;
+    font-size: 20px;
+    color: GhostWhite;
+    padding: 15px 0 15px;
+    text-align: center;
+}
+
+.login-form form {
+    overflow: auto;
+}
+
+.login-form form p {
+    width: 100%;
+    overflow: auto;
+}
+
+.login-form label {
+    float: left;
+    clear: both;
+    color: DarkSlateGray;
+    margin-bottom: 4px;
+    margin-left: 6%;
+    font-size: 14px;
+
+}
+.login-form input, .login-form textarea {
+    clear: both;
+    float: left;
+    margin: 0 2px 10px 2px;
+    margin-left: 6%;
+    border: 1px solid gainsboro;
+    border-radius: 3px;
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 330px;
+}
+
+.login-form input[type=submit], .login-form a.button {
+    border: None;
+    border-radius: 3px;
+    margin-left: 37%;
+    width: 100px;
+    background:Teal;
+    color: WhiteSmoke;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.login-form input[type=submit]:hover, .login-form a.button:hover {
+    background:lightseagreen;
+}
+
+.logout_text {
+    text-align: center;
+    color: DarkSlateGray;
+    font-size: 14px;
+}
+
+.errorlist {
+    border: 1px solid White;
+    color: Brown;
+    font-size: 14px;
+}
+
+/* base */
 #header {
     background: RoyalBlue;
     padding: 10px 0px 11px 20px;

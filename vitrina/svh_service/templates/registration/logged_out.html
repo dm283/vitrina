@@ -1,9 +1,30 @@
-{% block title %}Logged out{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="{% static 'css/news.css' %}" rel="stylesheet">
+</head>
 
-{% block content %}
-  <h1>Logged out</h1>
+
+  <!-- <h1>Logged out</h1>
   <p>
     You have been successfully logged out.
     You can <a href="{% url 'svh_service:login' %}">log-in again</a>
-  </p>
-{% endblock %}
+  </p> -->
+
+  <body class="login_page">
+    <div class="login-form">
+      <div class="login_header">
+        Альта-СВХ. Витрина
+      </div>
+      <div class="logout_text">
+        <p>You have been successfully logged out.</p>
+        <p>You can <a href="{% url 'svh_service:login' %}">log-in again</a></p>
+      </div>
+    </div>
+
+
+</body>
+</html>
