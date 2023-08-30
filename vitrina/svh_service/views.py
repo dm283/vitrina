@@ -15,10 +15,8 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 
 
+
 FILE_FILTERS = {}
-FILE_FILTERS['consignments'] = 'temp_files/consignments_filters.json'
-FILE_FILTERS['carpass'] = 'temp_files/carpass_filters.json'
-FILE_FILTERS['contacts'] = 'temp_files/contacts_filters.json'
 
 # COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
 
@@ -35,6 +33,20 @@ def erase_filters(request, entity):
 #  CONSIGNMENT ******************************************
 @login_required
 def consignment_list(request):
+    """
+    Список партии товаров
+    """
+    global FILE_FILTERS
+    CONTACT_FOLDER = f'temp_files/{request.user.profile.contact}'
+    FILE_FILTERS['consignments'] = CONTACT_FOLDER + '/consignments_filters.json'
+    FILE_FILTERS['carpass'] = CONTACT_FOLDER + '/carpass_filters.json'
+    FILE_FILTERS['contacts'] = CONTACT_FOLDER + '/contacts_filters.json'
+    if not os.path.exists('temp_files'):
+        os.mkdir('temp_files')
+    if not os.path.exists(CONTACT_FOLDER):
+        os.mkdir(CONTACT_FOLDER)
+
+
     if request.user.profile.type == 'O':
         consignments = Consignment.objects.all()
         documents = Document.objects.all()
@@ -65,8 +77,6 @@ def consignment_list(request):
                 if (type(cd_date_casted[d]) is date):
                     cd_date_casted[d] = cd_date_casted[d].strftime('%Y-%m-%d')
             cd_json = json.dumps(cd_date_casted)
-            if not os.path.exists('temp_files'):
-                os.mkdir('temp_files')
             with open(FILE_FILTERS['consignments'], 'w', encoding='utf-8') as f:
                 f.write(cd_json)
 
