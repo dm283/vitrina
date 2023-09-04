@@ -62,7 +62,7 @@ class ConsignmentFiltersForm(forms.Form):
     dateo_to = forms.DateField(label='по', widget=forms.DateInput(attrs=dict(type='date')), required=False)
     dkd = forms.CharField(label='№ документа доставки', max_length=100, required=False)
     car = forms.CharField(label='ТС', max_length=30, required=False)
-    on_terminal = forms.BooleanField(label='На складе', widget=forms.CheckboxInput(), initial=True, required=False)
+    on_terminal = forms.BooleanField(label='На складе', widget=forms.CheckboxInput(), initial=False, required=False)
 
 
 class CarpassFiltersForm(forms.Form):

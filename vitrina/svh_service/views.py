@@ -117,8 +117,8 @@ def consignment_list(request):
         consignments = consignments.filter(car=cd['car'])
     if cd['on_terminal']:
         consignments = consignments.filter(dateo__isnull=True)
-    else:
-        consignments = consignments.filter(dateo__isnull=False)
+    # else:
+    #     consignments = consignments.filter(dateo__isnull=False)
 
     return render(request,
                   'shv_service/consignment/list.html',
