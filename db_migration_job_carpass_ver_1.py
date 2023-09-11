@@ -4,8 +4,14 @@ import psycopg2.extras as extras
 
 # ************************************ READ DATA [ MS-SQL ] ************************************
 # con_string_1 = 'Driver={ODBC Driver 18 for SQL Server};Server=192.168.0.6;Database=AltaSVHDb_2015;Encrypt=no;UID=Alta;PWD=AltApoRTal2022;'
+#  LOCAL DEVELOPMENT
 con_string_1 = 'DSN=odbc_1'
 db_name = 'sanp2018'
+
+#  GUZHON
+# con_string_1 ='Driver={ODBC Driver 18 for SQL Server};Server=192.168.0.6;\
+# Database=AltaSVHDb_2015;Encrypt=no;UID=Alta;PWD=AltApoRTal2022;'
+# db_name = 'AltaSVHDb_2015'
 
 cnxn_1 = pyodbc.connect(con_string_1)  # odbc driver system dsn name
 cursor_1 = cnxn_1.cursor()
@@ -14,12 +20,54 @@ def db_read_data():
     """
     Чтение данных из БД1
     """
+    # query = f"""
+    #   SELECT top 100
+	# 	case when p.guid_prop is null then '' else p.guid_prop end guid,
+    #     --p.guid_prop guid,
+    #     p.id id_enter,
+    #     p.ncar,
+    #     p.dateen,
+    #     p.timeen,
+    #     left( case when p.ntir is null then '' else p.ntir end, 50 ) ntir,
+	# 	--case when p.ntir is null then '' else p.ntir end ntir,
+    #     --p.ntir,
+	# 	case when p.nkont is null then '' else p.nkont end nkont,
+    #     --p.nkont,
+    #     p.new1 driver,
+    #     p.drv_man,
+	# 	case when p.drv_phone is null then '' else p.drv_phone end drv_phone,
+    #     --p.drv_phone,
+    #     p.contact,
+    #     p.rec contact_name,
+    #     b.contact contact_broker,
+	# 	case when b.name is null then '' else b.name end broker_name,
+    #     --b.name broker_name, 
+    #     '' as place_n,
+    #     e.dateex,
+    #     e.timeex,
+    #     p.postdate datep,
+
+    #     'replace_false' posted,
+    #     null post_date,
+    #     'sys' post_user_id,
+    #     'replace_false' was_posted
+    #   FROM (({db_name}.dbo.prop_ent p LEFT OUTER JOIN {db_name}.dbo.prop_ext e ON e.id_ent=p.id)
+    #    LEFT OUTER JOIN {db_name}.dbo.contact c ON  c.contact=p.contact)
+    #    LEFT OUTER JOIN {db_name}.dbo.contact b ON b.contact=c.broker 
+    #    --WHERE 1=1 AND DATEPART(dy,p.postdate)=DATEPART(dy,GETDATE())
+    #   ORDER BY dateen DESC
+
+    # """
+    
     query = f"""
-      SELECT top 100
+      SELECT 
+      --top 100
+        distinct
 		case when p.guid_prop is null then '' else p.guid_prop end guid,
         --p.guid_prop guid,
         p.id id_enter,
-        p.ncar,
+        case when p.ncar is null then '' else p.ncar end ncar,
+        --p.ncar,
         p.dateen,
         p.timeen,
         left( case when p.ntir is null then '' else p.ntir end, 50 ) ntir,
@@ -27,12 +75,15 @@ def db_read_data():
         --p.ntir,
 		case when p.nkont is null then '' else p.nkont end nkont,
         --p.nkont,
-        p.new1 driver,
-        p.drv_man,
+        case when p.new1 is null then '' else p.new1 end driver,
+        --p.new1 driver,
+        case when p.drv_man is null then '' else p.drv_man end drv_man,
+        --p.drv_man,
 		case when p.drv_phone is null then '' else p.drv_phone end drv_phone,
         --p.drv_phone,
         p.contact,
-        p.rec contact_name,
+        case when p.rec is null then '' else p.rec end contact_name,
+        --p.rec contact_name,
         b.contact contact_broker,
 		case when b.name is null then '' else b.name end broker_name,
         --b.name broker_name, 
@@ -41,16 +92,17 @@ def db_read_data():
         e.timeex,
         p.postdate datep,
 
-        'replace_false' posted,
+        'replace_true' posted,
         null post_date,
         'sys' post_user_id,
-        'replace_false' was_posted
+        'replace_true' was_posted
       FROM (({db_name}.dbo.prop_ent p LEFT OUTER JOIN {db_name}.dbo.prop_ext e ON e.id_ent=p.id)
        LEFT OUTER JOIN {db_name}.dbo.contact c ON  c.contact=p.contact)
        LEFT OUTER JOIN {db_name}.dbo.contact b ON b.contact=c.broker 
        --WHERE 1=1 AND DATEPART(dy,p.postdate)=DATEPART(dy,GETDATE())
+       where p.dateen >= '2023-09-01'
+       --and p.id in ('122561', '127926') -- double id!!!
       ORDER BY dateen DESC
-
     """
 
     cursor_1.execute(query)
@@ -65,7 +117,7 @@ def data_handling(data_set):
     """
     data_set_2 = []
     for t in data_set:
-        t_2 = tuple([False if e == 'replace_false' else e for e in t])
+        t_2 = tuple([False if e == 'replace_true' else e for e in t])
         data_set_2.append(t_2)
 
     return data_set_2
@@ -76,6 +128,9 @@ data_set = data_handling(data_set)  # это набор данных загру�
 
 cursor_1.close()
 cnxn_1.close()
+
+# for r in data_set:
+#     print(r)
 
 # print(data_set)  # check mere reading
 # sys.exit()       # check mere reading

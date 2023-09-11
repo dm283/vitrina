@@ -1,0 +1,67 @@
+1. CREATE ENVIRONMENT
+install git  -  https://git-scm.com/download/win
+install python  -  https://www.python.org/
+install postgre/ms-sql (if not exist)
+download & install nodejs  -  https://nodejs.org/en/download
+install npm  -  npm install -g npm
+? check access to alta-soft db
+? check smtp/imap server access
+
+2. INSTALL VITRINA
+create folder svh-service
+cd svh-service
+git clone https://github.com/dm283/vitrina.git
+cd vitrina
+python -m venv venv
+venv\scripts\activate
+pip install -r requirements.txt
+copy or create node_modules  (see instructions below)
+
+3. CREATE DB
+in database server create db svh_service_db (may be other name) - admin or myself
+settings.py  -  set database settings
+python manage.py migrate  -  it create django tables in db (if connection is ok)
+python manage.py makemigrations [app-name] + migrate  -  ot created app tables in db
+python manage.py runserver  -  check work of Vitrina
+
+4. MIGRATE consignments from AltaSoft db
+db_migration_job_ver_1.py  -  set connection string (or odbc)
+python db_migration_job_ver_1.py  -  this should migrate records about Consignments from Alta DB to svh_service_consignment table
+check it appears in Vitrina (tab Партии товаров)
+
+5. INSTALL MSENDER
+git clone https://github.com/dm283/mSender.git
+ask admin for settings: db, smtp and imap server
+follow the install_instruction.txt  (in mSenderAdministration  -  e-mail files folder  -  set 'media\documents')
+
+6. CREATE SOME (MAYBE ONE) CONTACTS IN VITRINA
+  1)  operator svh (type = 'O', contact = -1)  - create in admin (contact -> user -> profile)
+  - client (type = 'V') - create Contact in Vitrina service -> admin create user and profile
+  - broker (type = 'B') - create Contact in Vitrina service -> admin create user and profile
+
+7. TEST VITRINA WORK
+open consignment card (with contact you've created in point 6), change some fields, save, post - check if email was send
+create some documents in consignment card, then POST  -  check email
+
+
+
+***********************  create node_modules   ***
+in static folder create folder node_modules and cd there
+
+npm install -
+- bootstrap
+- bootstrap-table
+- bootstrap-icons
+- jquery-resizable-columns
+
+install dragtable - git clone https://github.com/akottr/dragtable/
+copy jquery-ui.js from my local comp
+install tabledownload  -  git clone https://github.com/hhurz/tableExport.jquery.plugin
+for ability to download lists in vitrina  -  change in node_modules\bootstrap-table\dist\extensions\export\bootstrap-table-export.js  -  
+exportDataType: 'all',
+    // basic, all, selected
+    exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'xlsx', 'pdf'],
+
+to set css styles to bootstrap  -  add into bootstrap-table-min.css 2 additional rows:
+.bootstrap-table .fixed-table-container .table th{font-family: Arial, Helvetica, sans-serif; background-color: SteelBlue; color: GhostWhite; text-align: center; font-size: 13px;}
+.bootstrap-table .fixed-table-container .table td{font-family: Arial, Helvetica, sans-serif; color: DarkSlateGray; font-size: 14px; font-weight: normal;}
