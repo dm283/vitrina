@@ -78,6 +78,8 @@ DATABASES = {
         'NAME': 'svh_service_db',
         'USER': 'postgres',
         'PASSWORD': 's2d3f4!@',
+        # 'HOST': '',
+        # 'PORT': '',
     }
 }
 
