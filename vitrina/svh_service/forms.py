@@ -122,7 +122,7 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         # fields = '__all__'
-        fields = ['guid_partia', 'id_enter', 'docnum', 'docdate', 'docname', 'file']
+        fields = ['guid_partia', 'id_enter', 'docnum', 'docdate', 'docname', 'file', 'nfile']
 
         widgets = {
             'guid_partia': forms.HiddenInput(),
@@ -133,7 +133,7 @@ class DocumentForm(forms.ModelForm):
             'docnum': 'Номер документа', 
             'docdate': 'Дата документа', 
             'docname': 'Наименование документа', 
-            'file': 'Файл', 
+            'file': 'Файл',
         }
 
 

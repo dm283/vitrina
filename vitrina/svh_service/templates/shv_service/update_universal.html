@@ -105,9 +105,10 @@
   >  
     <thead>
     <tr>
-      <th data-sortable="true" data-field="docnum">Номер документа</th>
-      <th data-sortable="true" data-field="docdate">Дата документа</th>
-      <th data-sortable="true" data-field="docname">Наименование документа</th>
+      <th data-sortable="true" data-field="docnum">Номер</th>
+      <th data-sortable="true" data-field="docdate">Дата</th>
+      <th data-sortable="true" data-field="docname">Наименование</th>
+      <th data-sortable="true" data-field="nfile">Файл</th>
     </tr>
     </thead>
     <tbody>
@@ -116,6 +117,7 @@
         <td><a href="{% url 'svh_service:document_update' document.id %}">{{ document.docnum }}</a></td>
         <td>{{ document.docdate }}</td>
         <td>{{ document.docname }}</td>
+        <td>{{ document.nfile }}</td>
       </tr>
       {% endfor %}
     </tbody>
