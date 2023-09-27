@@ -57,7 +57,7 @@
         <td>{{ carpass.nkont }}</td>
         <td>
           {% for document in documents %}
-            {% if document.id_enter == carpass.id_enter %}  
+            {% if document.id_enter == carpass.id_enter and document.docbody %}  
               <div class='doc_download'><a href="{% url 'svh_service:document_download' document.id %}">{{ document.docnum }}</a></div>
             {% endif %}
           {% endfor %}

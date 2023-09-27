@@ -332,17 +332,10 @@ def consignment_add_document(request, id):
             if request.FILES:
                 # actions for save file as binary to database
                 form = save_file_as_blob_to_database(form, request.FILES['file'])
-                # nfile = request.FILES['file'].name
-                # docbody = request.FILES['file'].read()
-                # new_form = form.save(commit=False)
-                # new_form.nfile = nfile
-                # new_form.docbody = docbody
-                # new_form.file = ''
-                # form = new_form
 
             form.save()
             document = Document.objects.all().order_by('-id').first()
-            form = DocumentForm(instance=document)
+            # form = DocumentForm(instance=document)
             return redirect(f'/svh_service/documents/{document.id}/update')
             # return render(request,
             #       'shv_service/document/update.html',
@@ -638,16 +631,22 @@ def carpass_add_document(request, id):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
+
+            if request.FILES:
+                # actions for save file as binary to database
+                form = save_file_as_blob_to_database(form, request.FILES['file'])
+
             form.save()
             document = Document.objects.all().order_by('-id').first()
-            form = DocumentForm(instance=document)
-            return render(request,
-                  'shv_service/document/update.html',
-                  {
-                   'form': form,
-                   'document': document,
-                   'entiry': carpass,
-                   })
+            # form = DocumentForm(instance=document)
+            return redirect(f'/svh_service/documents/{document.id}/update')
+            # return render(request,
+            #       'shv_service/document/update.html',
+            #       {
+            #        'form': form,
+            #        'document': document,
+            #        'entiry': carpass,
+            #        })
     else:
         id_enter = carpass.id_enter
         docdate = datetime.now()
