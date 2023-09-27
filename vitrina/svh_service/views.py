@@ -680,7 +680,6 @@ def document_update(request, id):
         
         if form.is_valid():
             if request.FILES:
-                print('СОХРАНИЕ ФАЙЛА В БАЗУ')
                 # actions for save file as binary to database
                 form = save_file_as_blob_to_database(form, request.FILES['file'])
 
@@ -771,18 +770,33 @@ def document_close(request, id):
 @login_required
 def document_download(request, id):
     """
-    Скачивает документ
+    Downloads a file from blob in database to downloads folder in filesystem
     """
     document = get_object_or_404(Document, id=id)
-    path = str(document.file)
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="text/plain")
-            #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-            response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
-            return response
-    return Http404
+    filename = document.nfile
+    blob = document.docbody
+    response = HttpResponse(blob, content_type="text/plain")
+    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(filename)))
+    return response
+
+    # var 1 - from filesystem
+    # document = get_object_or_404(Document, id=id)
+    # path = str(document.file)
+    # file_path = os.path.join(settings.MEDIA_ROOT, path)
+    # if os.path.exists(file_path):
+    #     with open(file_path, 'rb') as fh:
+    #         response = HttpResponse(fh.read(), content_type="text/plain")
+    #         #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+    #         response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
+    #         return response
+    # return Http404
+
+    # var 2 - from blob in db
+    # document = get_object_or_404(Document, id=id)
+    # filename = document.nfile
+    # blob = document.docbody
+    # with open(os.path.join(FOLDER_DOWNLOADED_FILES, filename), 'wb') as file:
+    #     file.write(blob)
 
 
 

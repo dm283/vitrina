@@ -130,10 +130,11 @@ class DocumentForm(forms.ModelForm):
         }
 
         labels = {
-            'docnum': 'Номер документа', 
-            'docdate': 'Дата документа', 
-            'docname': 'Наименование документа', 
-            'file': 'Файл',
+            'docnum': 'Номер', 
+            'docdate': 'Дата', 
+            'docname': 'Наименование', 
+            'file': 'Загрузка файла',
+            'nfile': 'Загруженный файл'
         }
 
 
