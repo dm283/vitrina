@@ -1,4 +1,5 @@
 venv/
+db_manager/config_db.ini
 vitrina/media/
 vitrina/svh_service/migrations/
 vitrina/svh_service/migrations_postgre/
