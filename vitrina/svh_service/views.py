@@ -308,6 +308,19 @@ def consignment_close(request, id):
                   {'consignment': consignment})
 
 
+def save_file_as_blob_to_database(form, file):
+    # actions for save file as binary to database
+    nfile = file.name
+    docbody = file.read()
+    new_form = form.save(commit=False)
+    new_form.nfile = nfile
+    new_form.docbody = docbody
+    # new_form.file = ''  #  if uncommented - don't saves uploaded files into filesystem, only into database
+    form = new_form
+
+    return form
+
+
 @login_required
 def consignment_add_document(request, id):
     consignment = get_object_or_404(Consignment, id=id)
@@ -315,17 +328,23 @@ def consignment_add_document(request, id):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
+
+            if request.FILES:
+                # actions for save file as binary to database
+                form = save_file_as_blob_to_database(form, request.FILES['file'])
+
             form.save()
             document = Document.objects.all().order_by('-id').first()
-            form = DocumentForm(instance=document)
-            return render(request,
-                  'shv_service/document/update.html',
-                  {
-                   'form': form,
-                   'document': document,
-                   'entity': consignment, 
-                #    'consignment_id': consignment.id,
-                   })
+            # form = DocumentForm(instance=document)
+            return redirect(f'/svh_service/documents/{document.id}/update')
+            # return render(request,
+            #       'shv_service/document/update.html',
+            #       {
+            #        'form': form,
+            #        'document': document,
+            #        'entity': consignment, 
+            #     #    'consignment_id': consignment.id,
+            #        })
     else:
         guid_partia = consignment.key_id
         docdate = datetime.now()
@@ -612,16 +631,22 @@ def carpass_add_document(request, id):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
+
+            if request.FILES:
+                # actions for save file as binary to database
+                form = save_file_as_blob_to_database(form, request.FILES['file'])
+
             form.save()
             document = Document.objects.all().order_by('-id').first()
-            form = DocumentForm(instance=document)
-            return render(request,
-                  'shv_service/document/update.html',
-                  {
-                   'form': form,
-                   'document': document,
-                   'entiry': carpass,
-                   })
+            # form = DocumentForm(instance=document)
+            return redirect(f'/svh_service/documents/{document.id}/update')
+            # return render(request,
+            #       'shv_service/document/update.html',
+            #       {
+            #        'form': form,
+            #        'document': document,
+            #        'entiry': carpass,
+            #        })
     else:
         id_enter = carpass.id_enter
         docdate = datetime.now()
@@ -653,6 +678,10 @@ def document_update(request, id):
         # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
         
         if form.is_valid():
+            if request.FILES:
+                # actions for save file as binary to database
+                form = save_file_as_blob_to_database(form, request.FILES['file'])
+
             form.save()
             document = get_object_or_404(Document, id=id)
             form = DocumentForm(instance=document)
@@ -740,18 +769,33 @@ def document_close(request, id):
 @login_required
 def document_download(request, id):
     """
-    Скачивает документ
+    Downloads a file from blob in database to downloads folder in filesystem
     """
     document = get_object_or_404(Document, id=id)
-    path = str(document.file)
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="text/plain")
-            #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-            response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
-            return response
-    return Http404
+    filename = document.nfile
+    blob = document.docbody
+    response = HttpResponse(blob, content_type="text/plain")
+    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(filename)))
+    return response
+
+    # var 1 - from filesystem
+    # document = get_object_or_404(Document, id=id)
+    # path = str(document.file)
+    # file_path = os.path.join(settings.MEDIA_ROOT, path)
+    # if os.path.exists(file_path):
+    #     with open(file_path, 'rb') as fh:
+    #         response = HttpResponse(fh.read(), content_type="text/plain")
+    #         #response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+    #         response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(os.path.basename(file_path)))
+    #         return response
+    # return Http404
+
+    # var 2 - from blob in db
+    # document = get_object_or_404(Document, id=id)
+    # filename = document.nfile
+    # blob = document.docbody
+    # with open(os.path.join(FOLDER_DOWNLOADED_FILES, filename), 'wb') as file:
+    #     file.write(blob)
 
 
 

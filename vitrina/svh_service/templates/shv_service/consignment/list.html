@@ -65,7 +65,7 @@
         <td>{{ consignment.car }}</td>
         <td>
           {% for document in documents %}
-            {% if document.guid_partia == consignment.key_id %}  
+            {% if document.guid_partia == consignment.key_id and document.docbody %}  
               <div class='doc_download'><a href="{% url 'svh_service:document_download' document.id %}">{{ document.docnum }}</a></div>
             {% endif %}
           {% endfor %}

@@ -13,7 +13,7 @@
     {% endif %}
 
     <a href="{% url 'svh_service:document_close' document.id %}"><input type="button" value="CLOSE"></a>
-    {% if document.file %}
+    {% if document.docbody %}
       <a href="{% url 'svh_service:document_download' document.id %}"><input type="button" value="DOWNLOAD"></a>
     {% endif %}
   </div>
