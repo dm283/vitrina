@@ -315,7 +315,7 @@ def save_file_as_blob_to_database(form, file):
     new_form = form.save(commit=False)
     new_form.nfile = nfile
     new_form.docbody = docbody
-    new_form.file = ''
+    # new_form.file = ''  #  if uncommented - don't saves uploaded files into filesystem, only into database
     form = new_form
 
     return form
