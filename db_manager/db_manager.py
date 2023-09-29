@@ -1,8 +1,7 @@
 # cmd run format:  db_manage.py -[p/m] [-i]
 import sys, configparser, psycopg2, pyodbc
 
-config = configparser.ConfigParser()
-config.read('config_db.ini', encoding='utf-8')
+config = configparser.ConfigParser(); config.read('config_db.ini', encoding='utf-8')
 DB_CONNECTION_STRING = config['db']['db2_connection_string']
 
 

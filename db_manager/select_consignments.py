@@ -1,12 +1,11 @@
 import configparser
 
-config = configparser.ConfigParser()
-config.read('config_db.ini', encoding='utf-8')
+config = configparser.ConfigParser(); config.read('config_db.ini', encoding='utf-8')
 DB1_NAME = config['db']['db1_name']
+DB2_NAME = config['db']['db2_name']
+DB2_SCHEMA = config['db']['db2_schema']
 
-# postgres:                       svh_service_consignment
-# ms-sql (define db and schema):  svh_service_db_2.dbo.svh_service_consignment
-TABLE_FOR_INSERTS_CONSIGNMENTS = 'svh_service_db_2.dbo.svh_service_consignment'
+TABLE_FOR_INSERTS_CONSIGNMENTS = f'{DB2_NAME}.{DB2_SCHEMA}.svh_service_consignment'
 COLUMNS_IN_TABLE_FOR_INSERTS_CONSIGNMENTS = 'guid, key_id, contact, contact_name, contact_broker, broker_name, \
 nttn, nttn_date, dkd, dkd_date, goods, weight, dater, dateo, id_enter, car, \
 d_in, d_out, guid_user, datep, created, updated, posted, post_date, \

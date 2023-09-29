@@ -1,12 +1,11 @@
 import configparser
 
-config = configparser.ConfigParser()
-config.read('config_db.ini', encoding='utf-8')
+config = configparser.ConfigParser(); config.read('config_db.ini', encoding='utf-8')
 DB1_NAME = config['db']['db1_name']
+DB2_NAME = config['db']['db2_name']
+DB2_SCHEMA = config['db']['db2_schema']
 
-# postgres:                       svh_service_carpass
-# ms-sql (define db and schema):  svh_service_db_2.dbo.svh_service_carpass
-TABLE_FOR_INSERTS_CARPASS = 'svh_service_db_2.dbo.svh_service_carpass'
+TABLE_FOR_INSERTS_CARPASS = f'{DB2_NAME}.{DB2_SCHEMA}.svh_service_carpass'
 COLUMNS_IN_TABLE_FOR_INSERTS_CARPASS = 'guid, id_enter, ncar, dateen, timeen, ntir, nkont, driver, drv_man, dev_phone, \
     contact, contact_name, contact_broker, broker_name, place_n, dateex, timeex, datep, posted, post_date, post_user_id, was_posted'
 

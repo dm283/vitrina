@@ -1,5 +1,6 @@
 venv/
 db_manager/config_db.ini
+db_manager/__pycache__/
 vitrina/media/
 vitrina/svh_service/migrations/
 vitrina/svh_service/migrations_postgre/
