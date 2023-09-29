@@ -6,62 +6,15 @@ DB1_CONNECTION_STRING = config['db']['db1_connection_string']
 DB2_CONNECTION_STRING = config['db']['db2_connection_string']
 DB1_NAME = config['db']['db1_name']
 DB2_NAME = config['db']['db2_name']
+DB1_TYPE = config['db']['db1_type']
+DB2_TYPE = config['db']['db2_type']
 
-# -m [ms-sql] / -p [postgre]
-DB1_TYPE = '-m'
-DB2_TYPE = '-m'
-# postgres:  svh_service_consignment
-# ms-sql (define db and schema):  svh_service_db_2.dbo.svh_service_consignment
-TABLE_FOR_INSERTING_DATA = 'svh_service_db_2.dbo.svh_service_consignment'
-COLUMNS_IN_TABLE_FOR_INSERTING_DATA = 'guid, key_id, contact, contact_name, contact_broker, broker_name, \
-nttn, nttn_date, dkd, dkd_date, goods, weight, dater, dateo, id_enter, car, \
-d_in, d_out, guid_user, datep, created, updated, posted, post_date, \
-post_user_id, was_posted'
+from select_consignments import TABLE_FOR_INSERTS_CONSIGNMENTS, COLUMNS_IN_TABLE_FOR_INSERTS_CONSIGNMENTS, QUERY_LOAD_DATA_CONSIGNMENTS
+from select_carpass import TABLE_FOR_INSERTS_CARPASS, COLUMNS_IN_TABLE_FOR_INSERTS_CARPASS, QUERY_LOAD_DATA_CARPASS
 
-# table_2 = 'svh_service_db_2.dbo.svh_service_consignment'
-# cols_2 = 'guid, key_id, contact, contact_name, contact_broker, broker_name, nttn, nttn_date, dkd, dkd_date, goods, weight, \
-#     dater, dateo, id_enter, car, d_in, d_out, guid_user, datep, created, updated, posted, post_date, post_user_id, was_posted'
-
-QUERY_LOAD_DATA = f"""
--- *****  select for consignments  *****
-select 
-  case when s.guid_sub is null then '' else s.guid_sub end  guid,
-  s.ids              					                    key_id, 
-  s.receiver     					                        contact,
-  s.rname        					                        contact_name,
-  s.broker        					                        contact_broker, 
-  case when b.name is null then '' else b.name end 		    broker_name,
-  case when s.sub_id is null then '' else s.sub_id end 		nttn,
-  s.sub_date    					                        nttn_date, 
-  case when s.cmr is null then '' else s.cmr end 		    dkd,
-  s.cmr_date   					                            dkd_date,
-  case when s.goods is null then '' else s.goods end 		goods,
-  case when s.weight is null then 0 else s.weight end 		weight,
-  m.date          					                        dater, 
-  s.date_out    					                        dateo, 
-  case when m.propusk is null then '' else m.propusk end 	id_enter,
-  m.ncar           					                        car,
-  convert( datetime, convert(char(8), m.rdate, 112) + ' ' + 
-    convert(CHAR(8), m.rtime, 108) ) 			            d_in,
-  convert( datetime, convert(char(8), m.odate, 112) + ' ' + 
-    convert(CHAR(8), m.otime, 108) ) 			            d_in,
-  'sys'               					                    guid_user,
-  m.postdate   					                            datep,
-  getdate()                       				            created,
-  getdate()                       				            updated,
-  'replace_true'   					                        posted,
-  getdate()           					                    post_date,
-  'sys'                    					                post_user_id,
-  'replace_true'   					                        was_posted
-
-from ({DB1_NAME}.dbo.reg_sub s 
-    inner join {DB1_NAME}.dbo.reg_main m on m.id=s.main_id) 
-    left outer join {DB1_NAME}.dbo.contact b on b.contact=s.broker
-where 1=1
-    --and m.date >= '2023-09-01'
-    and s.sub_id is not null  --cut double recs
-order by m.date desc
-"""
+TABLE_FOR_INSERTS = TABLE_FOR_INSERTS_CARPASS
+COLUMNS_IN_TABLE_FOR_INSERTS = COLUMNS_IN_TABLE_FOR_INSERTS_CARPASS
+QUERY_LOAD_DATA = QUERY_LOAD_DATA_CARPASS
 
 
 def db_connection(db_connection_string, db_type):
@@ -162,5 +115,5 @@ cursor_1.close(); conn_1.close()
 # ************************************ INSERT DATA [ MS-SQL ] ************************************
 conn_2, cursor_2 = db_connection(DB2_CONNECTION_STRING, DB2_TYPE)
 # print(conn_2, cursor_2); sys.exit()
-db_insert_data(conn_2, cursor_2, data_set, DB2_TYPE, TABLE_FOR_INSERTING_DATA, COLUMNS_IN_TABLE_FOR_INSERTING_DATA)
+db_insert_data(conn_2, cursor_2, data_set, DB2_TYPE, TABLE_FOR_INSERTS, COLUMNS_IN_TABLE_FOR_INSERTS)
 cursor_2.close(); conn_2.close()
