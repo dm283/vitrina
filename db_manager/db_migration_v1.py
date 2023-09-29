@@ -6,14 +6,21 @@ DB1_CONNECTION_STRING = config['db']['db1_connection_string']
 DB2_CONNECTION_STRING = config['db']['db2_connection_string']
 DB1_NAME = config['db']['db1_name']
 DB2_NAME = config['db']['db2_name']
-DB1_TYPE = '-m'
-DB2_TYPE = '-p'
 
-TABLE_FOR_INSERTING_DATA = 'svh_service_consignment'
+# -m [ms-sql] / -p [postgre]
+DB1_TYPE = '-m'
+DB2_TYPE = '-m'
+# postgres:  svh_service_consignment
+# ms-sql (define db and schema):  svh_service_db_2.dbo.svh_service_consignment
+TABLE_FOR_INSERTING_DATA = 'svh_service_db_2.dbo.svh_service_consignment'
 COLUMNS_IN_TABLE_FOR_INSERTING_DATA = 'guid, key_id, contact, contact_name, contact_broker, broker_name, \
 nttn, nttn_date, dkd, dkd_date, goods, weight, dater, dateo, id_enter, car, \
 d_in, d_out, guid_user, datep, created, updated, posted, post_date, \
 post_user_id, was_posted'
+
+# table_2 = 'svh_service_db_2.dbo.svh_service_consignment'
+# cols_2 = 'guid, key_id, contact, contact_name, contact_broker, broker_name, nttn, nttn_date, dkd, dkd_date, goods, weight, \
+#     dater, dateo, id_enter, car, d_in, d_out, guid_user, datep, created, updated, posted, post_date, post_user_id, was_posted'
 
 QUERY_LOAD_DATA = f"""
 -- *****  select for consignments  *****
@@ -81,7 +88,7 @@ def db_read_data(cursor, query):
     try:
         cursor.execute(query)
         data_set = cursor_1.fetchall()  # список кортежей
-        print('ok' + f'retrieved [{len(data_set)}] rows')
+        print('ok ' + f'retrieved [{len(data_set)}] rows')
     except(Exception) as err:
         print('error'); print(err)
         sys.exit()
@@ -105,25 +112,31 @@ def data_handling(data_set):
     return data_set_handled
 
 
-def db_insert_data(data_set, db_type, table, columns):
+def db_insert_data(conn, cursor, data_set, db_type, table, columns):
     #  inserts data_set into database
     print('inserting data set to database ..... ', end='')
     try:
         if db_type == '-p':
             #  insert actions for Postgre database
             query_insert_data = "insert into %s(%s) values %%s" % (table, columns)
-            extras.execute_values(cursor_2, query_insert_data, data_set)
-            conn_2.commit()
+            extras.execute_values(cursor, query_insert_data, data_set)
+            conn.commit()
 
         if db_type == '-m':
             #  insert actions for MS-SQL database
-            pass
+            q_str = str()
+            for i in range(len(columns.split(','))):
+                q_str += '?,'
+            q_str = q_str[:-1]
+            query_insert_data = f'insert into {table} ({columns}) values ({q_str})'
+            cursor.executemany(query_insert_data, data_set)   
+            conn.commit()         
 
         print('ok')
 
     except(Exception) as err:
         print('error'); print(err)
-        conn_2.rollback()
+        conn.rollback()
         sys.exit() 
 
 
@@ -140,37 +153,14 @@ cursor_1.close(); conn_1.close()
 
 
 # ************************************ INSERT DATA [ POSTGRE ] ************************************
-conn_2, cursor_2 = db_connection(DB2_CONNECTION_STRING, DB2_TYPE)
-#print(conn_2, cursor_2); sys.exit()
-db_insert_data(data_set, DB2_TYPE, TABLE_FOR_INSERTING_DATA, COLUMNS_IN_TABLE_FOR_INSERTING_DATA)
-cursor_2.close(); conn_2.close()
+# conn_2, cursor_2 = db_connection(DB2_CONNECTION_STRING, DB2_TYPE)
+# #print(conn_2, cursor_2); sys.exit()
+# db_insert_data(data_set, DB2_TYPE, TABLE_FOR_INSERTING_DATA, COLUMNS_IN_TABLE_FOR_INSERTING_DATA)
+# cursor_2.close(); conn_2.close()
 
 
 # ************************************ INSERT DATA [ MS-SQL ] ************************************
-#con_string_2 = 'Driver={ODBC Driver 18 for SQL Server};Server=192.168.0.6;Database=AltaSVHDb_2015;Encrypt=no;UID=Alta;PWD=AltApoRTal2022;'
-# con_string_2 = 'DSN=odbc_1'
-
-# cnxn_2 = pyodbc.connect(con_string_2)  # odbc driver system dsn name
-# cursor_2 = cnxn_2.cursor()
-
-# table_2 = 'svh_service_db_2.dbo.svh_service_consignment'
-# cols_2 = 'guid, key_id, contact, contact_name, contact_broker, broker_name, nttn, nttn_date, dkd, dkd_date, goods, weight, \
-#     dater, dateo, id_enter, car, d_in, d_out, guid_user, datep, created, updated, posted, post_date, post_user_id, was_posted'
-
-# def db_save_data(data_set):
-#     """
-#     Save data into DB-2
-#     """
-#     try:
-#         cursor_2.executemany(f'insert into {table_2} ({cols_2}) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', 
-#                              data_set)
-#         cnxn_2.commit()
-#         print("Inserts done")
-#     except Exception as ex:
-#         print(f"Error: {ex}")
-#         cnxn_2.rollback()
-        
-# db_save_data(data_set)
-
-# cursor_2.close()
-# cnxn_2.close()
+conn_2, cursor_2 = db_connection(DB2_CONNECTION_STRING, DB2_TYPE)
+# print(conn_2, cursor_2); sys.exit()
+db_insert_data(conn_2, cursor_2, data_set, DB2_TYPE, TABLE_FOR_INSERTING_DATA, COLUMNS_IN_TABLE_FOR_INSERTING_DATA)
+cursor_2.close(); conn_2.close()
