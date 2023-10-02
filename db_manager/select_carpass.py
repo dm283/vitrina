@@ -1,6 +1,12 @@
-import configparser
+import sys, os, configparser
+from pathlib import Path
 
-config = configparser.ConfigParser(); config.read('config_db.ini', encoding='utf-8')
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'vitrina', 'config.ini')   
+if os.path.exists(config_file):
+  config.read(config_file, encoding='utf-8')
+else:
+  print("error! config file doesn't exist"); sys.exit()
 DB1_NAME = config['db']['db1_name']
 DB2_NAME = config['db']['db2_name']
 DB2_SCHEMA = config['db']['db2_schema']

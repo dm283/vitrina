@@ -1,8 +1,15 @@
-# cmd run format:  db_manage.py -[p/m] [-i]
-import sys, configparser, psycopg2, pyodbc
+# cmd run format:  db_manage.py [-i]
+import sys, os, configparser, psycopg2, pyodbc
+from pathlib import Path
 
-config = configparser.ConfigParser(); config.read('config_db.ini', encoding='utf-8')
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'vitrina', 'config.ini')   
+if os.path.exists(config_file):
+  config.read(config_file, encoding='utf-8')
+else:
+  print("error! config file doesn't exist"); sys.exit()
 DB_CONNECTION_STRING = config['db']['db2_connection_string']
+DB_TYPE = config['db']['db2_type']
 
 
 def db_connection(db):
@@ -50,10 +57,11 @@ select table_name from information_schema.tables where table_schema='public' --a
 """
 
 # ******************* main actions *******************
-db = sys.argv[1]
+#db = sys.argv[2]
+db = DB_TYPE
 db_connection(db)
 
-if len(sys.argv) > 2 and sys.argv[2] == '-i':
+if len(sys.argv) > 1 and sys.argv[1] == '-i':
   query = ''
   while query != 'exit':
     query = input('query:  ')

@@ -1,5 +1,7 @@
-import os
+import os, configparser, ast
 from pathlib import Path
+
+config = configparser.ConfigParser(); config.read(f'{Path(__file__).resolve().parent}/config.ini', encoding='utf-8')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,14 +76,26 @@ WSGI_APPLICATION = 'vitrina.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'svh_service_db',
-        'USER': 'postgres',
-        'PASSWORD': 's2d3f4!@',
-        # 'HOST': '',
-        # 'PORT': '',
+        'ENGINE': config['db']['db2_engine'],
+        'NAME': config['db']['db2_name'],
+        'OPTIONS': ast.literal_eval( config['db']['db2_options'] ),
+        'USER': config['db']['db2_user'],
+        'PASSWORD': config['db']['db2_password'],
+        'HOST': config['db']['db2_host'],
+        'PORT': config['db']['db2_port'],
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'svh_service_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 's2d3f4!@',
+#         # 'HOST': '',
+#         # 'PORT': '',
+#     }
+# }
 
 # !!! ПРИ ПЕРЕКЛЮЧЕНИИ БАЗЫ ДАННЫХ ОБЯЗАТЕЛЬНО ЗАМЕНИТЬ ПАПКУ MIGRATIONS !!!!
 

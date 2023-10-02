@@ -1,6 +1,12 @@
-import sys, configparser, psycopg2, pyodbc, psycopg2.extras as extras
+import sys, os, configparser, psycopg2, pyodbc, psycopg2.extras as extras
+from pathlib import Path
 
-config = configparser.ConfigParser(); config.read('config_db.ini', encoding='utf-8')
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'vitrina', 'config.ini')   
+if os.path.exists(config_file):
+  config.read(config_file, encoding='utf-8')
+else:
+  print("error! config file doesn't exist"); sys.exit()
 DB1_CONNECTION_STRING = config['db']['db1_connection_string']
 DB2_CONNECTION_STRING = config['db']['db2_connection_string']
 DB1_TYPE = config['db']['db1_type']
@@ -103,7 +109,7 @@ cursor_1.close(); conn_1.close()
 # for r in data_set:
 #     print(r)
 # print(data_set)
-#sys.exit()       # check just reading
+sys.exit()       # check just reading
 
 
 # ************************************ INSERT DATA [ POSTGRE / MS-SQL ] ************************************
