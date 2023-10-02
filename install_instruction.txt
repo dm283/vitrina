@@ -61,7 +61,7 @@ copy or create node_modules  (see instructions below)
 
 3. CREATE DB
 in database server create db svh_service_db (may be other name) - admin or myself
-rename config_template.ini to config.ini  -  set settings
+copy config_template.ini to config.ini  -  set settings
 python manage.py migrate  -  it create django tables in db (if connection is ok)
 python manage.py makemigrations [app-name] + migrate  ( it created app tables in db )
 python manage.py createsuperuser    (admin/admin135)
@@ -91,17 +91,13 @@ create some documents in consignment card, then POST  -  check email
 ***********************  create node_modules   ***
 in static folder create folder node_modules and cd there
 
-npm install
-- bootstrap
-- bootstrap-table
-- bootstrap-icons
-- jquery-resizable-columns
+npm install bootstrap bootstrap-table bootstrap-icons jquery-resizable-columns
 
 install dragtable:   git clone https://github.com/akottr/dragtable/
 copy jquery-ui.js from my local comp
 install tabledownload:   git clone https://github.com/hhurz/tableExport.jquery.plugin
 
-for ability to download lists in vitrina  -  change in node_modules\bootstrap-table\dist\extensions\export\bootstrap-table-export.js  -  
+for ability to download lists in vitrina  -  change in node_modules\bootstrap-table\dist\extensions\export\bootstrap-table-export.min.js  -  
 exportDataType: 'all',
     // basic, all, selected
     exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'xlsx', 'pdf'],
