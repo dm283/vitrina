@@ -1,7 +1,12 @@
-import os, configparser, ast
+import sys, os, configparser, ast
 from pathlib import Path
 
-config = configparser.ConfigParser(); config.read(f'{Path(__file__).resolve().parent}/config.ini', encoding='utf-8')
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent, 'config.ini')
+if os.path.exists(config_file):
+  config.read(config_file, encoding='utf-8')
+else:
+  print("error! config file doesn't exist"); sys.exit()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

@@ -8,6 +8,7 @@ if os.path.exists(config_file):
   config.read(config_file, encoding='utf-8')
 else:
   print("error! config file doesn't exist"); sys.exit()
+  
 DB_CONNECTION_STRING = config['db']['db2_connection_string']
 DB_TYPE = config['db']['db2_type']
 

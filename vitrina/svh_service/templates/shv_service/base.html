@@ -39,7 +39,10 @@
                            {% else %} class="button_show_sidebar_client" {% endif %}
         style="display: none" onclick="w3_open()">&#9776;
       </button>
-      <h3 id="header_title">Альта-СВХ. Витрина</h3>
+      <h3 id="header_title">
+        Альта-СВХ. Витрина.
+        {% if request.user.profile.type == 'O' %} Оператор СВХ. {% else %} Кабинет клиента. {% endif %}
+      </h3>
       <span {% if request.user.profile.type == 'O' %} id="header_logout" {% else %} id="header_logout_client" {% endif %}>
         <span {% if request.user.profile.type == 'O' %} id="header_user" {% else %} id="header_user_client" {% endif %}>
           {{ request.user.profile.name|default:request.user.username }}

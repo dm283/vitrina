@@ -1,4 +1,4 @@
-import os, json
+import sys, os, json, configparser
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
 from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
@@ -13,8 +13,14 @@ from django.utils.safestring import mark_safe
 
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
+from pathlib import Path
 
-
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
+if os.path.exists(config_file):
+    config.read(config_file, encoding='utf-8')
+else:
+    print("error! config file doesn't exist"); sys.exit()
 
 FILE_FILTERS = {}
 
@@ -24,7 +30,6 @@ FILE_FILTERS = {}
 @login_required
 def erase_filters(request, entity):
     # erase all filters data - by deleting json file with it
-    print('ERASE FROM - ', entity)
     if os.path.exists(FILE_FILTERS[entity]):
         os.remove(FILE_FILTERS[entity])
     return redirect(f'/svh_service/{entity}')
@@ -47,7 +52,7 @@ def consignment_list(request):
         os.mkdir(CONTACT_FOLDER)
 
 
-    if request.user.profile.type == 'O':
+    if request.user.profile.type == 'O' and config['app']['app_type'] == 'operator':
         consignments = Consignment.objects.all()
         documents = Document.objects.all()
     else:
@@ -364,7 +369,7 @@ def consignment_add_document(request, id):
 #  CARPASS ******************************************
 @login_required
 def carpass_list(request):
-    if request.user.profile.type == 'O':
+    if request.user.profile.type == 'O' and config['app']['app_type'] == 'operator':
         carpasses = Carpass.objects.all()
         documents = Document.objects.all()
     else:

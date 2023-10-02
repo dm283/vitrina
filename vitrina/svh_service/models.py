@@ -1,5 +1,14 @@
+import sys, os, configparser
 from django.db import models
 from django.conf import settings
+from pathlib import Path
+
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
+if os.path.exists(config_file):
+    config.read(config_file, encoding='utf-8')
+else:
+    print("error! config file doesn't exist"); sys.exit()
 
 
 class Profile(models.Model):
@@ -12,11 +21,13 @@ class Profile(models.Model):
     type = models.CharField(max_length=1, blank=True, default='') # Тип пользователя
     name = models.CharField(max_length=150, blank=True, default='') # Наименование организации
 
-    # class Meta:
-    #     managed = False
-    #     db_table = 'svh_service_profile'
+    class Meta:
+        ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_profile'
+        
     
-
 class Consignment(models.Model):
     """
     Партии товаров
@@ -50,9 +61,10 @@ class Consignment(models.Model):
     was_posted = models.BooleanField(default=False) # флаг первичной проводки
 
     class Meta:
-        # managed = False
-        # db_table = 'svh_service_consignment'
         ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_consignment'
 
 
 class Carpass(models.Model):
@@ -84,9 +96,10 @@ class Carpass(models.Model):
     was_posted = models.BooleanField(default=False) # флаг первичной проводки
 
     class Meta:
-        # managed = False
-        # db_table = 'svh_service_carpass'
         ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_carpass'
 
 
 class Contact(models.Model):
@@ -115,9 +128,10 @@ class Contact(models.Model):
 
 
     class Meta:
-        # managed = False
-        # db_table = 'svh_service_contact'
         ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_contact'
         
 
 class Document(models.Model):
@@ -142,9 +156,11 @@ class Document(models.Model):
     guid_user = models.CharField(max_length=36, blank=True, default='') # GUID пользователя который создал эту запись
     datep = models.DateTimeField(auto_now_add=True) # Дата создания записи
 
-    # class Meta:
-    #     managed = False
-    #     db_table = 'svh_service_document'
+    class Meta:
+        ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_document'
 
 
 class Message(models.Model):
@@ -157,9 +173,11 @@ class Message(models.Model):
     datep = models.DateTimeField(auto_now_add=True) # Дата создания записи
     dater = models.DateTimeField() # Дата прочтения сообщения
 
-    # class Meta:
-    #     managed = False
-    #     db_table = 'svh_service_document'
+    class Meta:
+        ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_document'
 
 
 class Uemail(models.Model):
@@ -182,9 +200,11 @@ class Uemail(models.Model):
     errortxt = models.CharField(max_length=100, default='') # Ошибка отправки - ответ SMTP сервера
     id = models.CharField(max_length=8, null=True) # для совместимости в старой таблицей альты
 
-    # class Meta:
-    #     managed = False
-    #     db_table = 'svh_service_message'
+    class Meta:
+        ordering = ['-id']
+        if config['app']['app_type'] == 'client':
+            managed = False
+            db_table = 'svh_service_message'
 
     def __str__(self):
         return self.key_id
