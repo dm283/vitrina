@@ -1,30 +1,6 @@
-{% extends "shv_service/base.html" %}
+  <h5 class="block_name">Партии товаров</h5>
 
-{% block content %}
-
-<script>
-  function filters_open() {
-    console.log(document.getElementById("form_filters").style.display);
-    if (document.getElementById("form_filters").style.display === "none") {
-      document.getElementById("form_filters").style.display = "block"
-    } else {
-      document.getElementById("form_filters").style.display = "none"
-    }
-  }
-</script>
-
-
-  <div class="list_header">
-    <h5 class="block_name">Партии товаров</h5>
-    {% if request.user.profile.type == 'O' %}
-    <div class='buttons_area'>
-      <input type="button" value="FILTERS" onclick="filters_open()">
-      <a href="{% url 'svh_service:consignment_add' %}"><input type="button" value="ADD"></a>
-    </div>
-    {% endif %}
-  </div>
-
-  <form id='form_filters' class='filters_form' action="" method="post" style="display: none">
+  <form class='filters_form' action="" method="post">
     <div class="filters_form_btns">
       <input type="submit" value="APPLY">
       <a href="{% url 'svh_service:erase_filters' 'consignments' %}"><input type="button" value="CLEAR"></a>
@@ -35,11 +11,13 @@
     </div>
   </form>
 
-  <!-- data-pagination="true" -->
+  {% include "shv_service/pagination.html" with page=consignments %}
+
   <table
       id="table"
       data-toggle="table"
       data-show-export="true"
+      data-pagination="true"
       data-show-columns="true"
       data-search="true"
       data-advanced-search="true"
@@ -88,7 +66,3 @@
       {% endfor %}
     </tbody>
   </table>
-
-  {% include "shv_service/pagination.html" with page=consignments %}
-  
-{% endblock %}

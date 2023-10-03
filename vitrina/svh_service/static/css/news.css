@@ -246,13 +246,6 @@ body {
     padding: 0 20px 20px 20px;
 }
 
-
-
-.block_name{
-    margin: 10px 0px 0px 0px;
-    color: SlateGray;
-}
-
 .detail_form label { 
     font-size: 13px;
     font-weight: bold;
@@ -270,8 +263,19 @@ body {
     padding:6px 10px;
 }
 
+.list_header {
+    border: None;
+}
+
+.block_name{
+    border: None;
+    margin: 3px;
+    color: SlateGray;
+}
+
 .buttons_area {
-    margin: 15px 0px 0px 0px;
+    border: None;
+    margin: 3px 0px 0px 0px;
     padding: 0px;
 }
 
@@ -280,16 +284,17 @@ body {
 }
 
 .buttons_area input[type=submit], .buttons_area input[type=button] {
-    border-radius: 5px;
-    width: 100px;
+    border: None;
+    border-radius: 3px;
     background:Teal;
     color: WhiteSmoke;
+    width: 100px;
     margin-right: 5px;
+    /* padding: 6px 10px; */
+    padding: 1px;
     font-weight: bold;
     font-size: 13px;
     text-transform: uppercase;
-    padding:6px 10px;
-    border: None;
 }
 
 .buttons_area input[type=submit]:hover, .buttons_area input[type=button]:hover{
@@ -339,7 +344,6 @@ body {
 }
 
 .filters_form {
-    /* background-color: orange; */
     margin-top: 10px;
     border: 1px solid grey;
     border-radius: 5px;
@@ -357,7 +361,7 @@ body {
 
 .filters_form_btns input[type=submit], .filters_form_btns input[type=button]  {
     border: 1px solid White;
-    border-radius: 5px;
+    border-radius: 3px;
     width: 100px;
     background:SlateGray;
     color: WhiteSmoke;

@@ -15,6 +15,8 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from pathlib import Path
 
+from django.core.paginator import Paginator
+
 
 config = configparser.ConfigParser()
 config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
@@ -95,6 +97,12 @@ def consignment_list(request):
         # create empty form if json file doesn't exit
         else:
             form_filters = ConsignmentFiltersForm()
+
+            # Pagination with 3 posts per page
+            paginator = Paginator(consignments, 10)
+            page_number = request.GET.get('page', 1)
+            consignments = paginator.page(page_number)
+
             return render(request,
                     'shv_service/consignment/list.html',
                     {'consignments': consignments,
@@ -125,6 +133,11 @@ def consignment_list(request):
         consignments = consignments.filter(dateo__isnull=True)
     # else:
     #     consignments = consignments.filter(dateo__isnull=False)
+
+    # Pagination with 3 posts per page
+    paginator = Paginator(consignments, 10)
+    page_number = request.GET.get('page', 1)
+    consignments = paginator.page(page_number)
 
     return render(request,
                   'shv_service/consignment/list.html',
