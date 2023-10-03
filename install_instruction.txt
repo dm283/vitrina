@@ -1,107 +1,83 @@
-*********** COMMON ENVIRONMENT *************
+************************ COMMON ENVIRONMENT (for both apps Client & Operator servers) ********************
 WinRar (https://www.rarlab.com/download.htm)
-Git ()
-Python ()
-NodeJS ()
-NPM ()
+Git (https://git-scm.com/download/win)
+Python (https://www.python.org/)
+NodeJS (https://nodejs.org/en/download)
+NPM (npm install -g npm)
 VisualStudioCode ()
 
 
-***************************************************--- CLIENT SERVICE ---***************************************************
+*************************************************** CLIENT-APP ***************************************************
 1. CREATE ENVIRONMENT
-install git  -  https://git-scm.com/download/win
-install python  -  https://www.python.org/
-download & install nodejs  -  https://nodejs.org/en/download
-install npm  -  npm install -g npm
-
-test remote db connection:  powershell:  test-netconnection HOST -port 5432
-if problem - check system firewall
-run script db_manage_*.py  (part with connection only)
-(if problems occurs - check postgre sql is there remote server IP in pg_hba.conf )
-
+    1.1. as in COMMON ENVIRONMENT
+    1.2. install database Postgre or MS-SQL (if not exist)
+    1.3. for access from remote server (Operator-app) add to c:\Program Files\PostgreSQL\***\data\pg_hba.conf    
+	# IPv4 local connections:   host    all             all             host-ip/32            md5
 
 2. INSTALL VITRINA
-create folder svh-service
-cd svh-service
-git clone https://github.com/dm283/vitrina.git
-cd vitrina
-python -m venv venv
-venv\scripts\activate
-pip install -r requirements.txt
-copy or create node_modules  (see instructions below)
+    2.1. create folder svh-service -> cd svh-service
+    2.2. git clone https://github.com/dm283/vitrina.git
+    2.3. cd vitrina
+    2.4. python -m venv venv -> venv\scripts\activate
+    2.5. pip install -r requirements.txt
+    2.6. copy or create node_modules  (see instructions below)
 
-3. DB
-models.py:  add   class Meta:          managed = False          db_table = 'svh_service_document'
-settings.py:   add HOST & PORT 
+3. CREATE DATABASE
+    3.1. create database 'svh_service_db'
+
+4. SET CONFIGURATION
+    4.1. copy config_template.ini to config.ini  ->  set settings [app] & [db]   (app_type = client)
 
 
-***************************************************--- OPERATOR SVH SERVICE --- ******************************************************
+************************************************** OPERATOR-APP ************************************************
 1. CREATE ENVIRONMENT
-install git  -  https://git-scm.com/download/win
-install python  -  https://www.python.org/
+    1.1. as in COMMON ENVIRONMENT
 
-install postgre/ms-sql (if not exist)
-! for access from remote server (client service app) - add to c:\Program Files\PostgreSQL\***\data\pg_hba.conf    
-# IPv4 local connections:   host    all             all             host-ip/32            md5
+2. INSTALL VITRINA (as for Client-app)
 
-download & install nodejs  -  https://nodejs.org/en/download
-install npm  -  npm install -g npm
-? check access to alta-soft db
-? check smtp/imap server access
+3. SET CONFIGURATION
+-  copy config_template.ini to config.ini  ->  set settings [app] & [db]   (app_type = operator)
 
-2. INSTALL VITRINA
-create folder svh-service
-cd svh-service
-git clone https://github.com/dm283/vitrina.git
-cd vitrina
-python -m venv venv
-venv\scripts\activate
-pip install -r requirements.txt
-copy or create node_modules  (see instructions below)
+4. DATABASE
+-  test remote db connection in powershell:  test-netconnection HOST -port 5432
+-  if test has a problem - check system firewall on Client-app server
+-  run script db_manage_*.py  (part with connection only)
+-  if script has a problem - check point 1.3. for Client-app installation
 
-3. CREATE DB
-in database server create db svh_service_db (may be other name) - admin or myself
-copy config_template.ini to config.ini  -  set settings
-python manage.py migrate  -  it create django tables in db (if connection is ok)
-python manage.py makemigrations [app-name] + migrate  ( it created app tables in db )
-python manage.py createsuperuser    (admin/admin135)
-python manage.py runserver  -  check work of Vitrina
+-  python manage.py migrate
+-  python manage.py makemigrations -> python manage.py makemigrations [app-name] -> migrate
+-  python manage.py createsuperuser    (admin/admin135)
+-  python manage.py runserver
 
-4. MIGRATE consignments from AltaSoft db
-db_migration_job_ver_1.py  -  set connection string (or odbc)
-python db_migration_job_ver_1.py  -  this should migrate records about Consignments from Alta DB to svh_service_consignment table
-check it appears in Vitrina (tab Партии товаров)
+5. MIGRATE DATA FROM AltaSoft DATABASE
+    5.1. python db_migration.py (before running - uncomment inside code appropriated blocks for Consignments and then for Carpass)
 
-5. INSTALL MSENDER
-git clone https://github.com/dm283/mSender.git
-ask admin for settings: db, smtp and imap server
-follow the install_instruction.txt  (in mSenderAdministration  -  e-mail files folder  -  set 'media\documents')
+6. INSTALL MSENDER
+    6.1. git clone https://github.com/dm283/mSender.git
+    6.2. ask admin for settings: smtp and imap server
+    6.3. follow the install_instruction.txt  (in mSenderAdministration:  e-mail_files_folder='media\documents', db_table='svh_service_uemail')
 
-6. CREATE SOME (MAYBE ONE) CONTACTS IN VITRINA
-  1)  operator svh (type = 'O', contact = -1)  - create in admin (contact -> user -> profile)
-  - client (type = 'V') - create Contact in Vitrina service -> admin create user and profile
-  - broker (type = 'B') - create Contact in Vitrina service -> admin create user and profile
+7. CREATE SOME (MAYBE ONE) CONTACTS IN VITRINA
+    7.1. operator svh (type = 'O', contact = -1)  - create in admin (contact -> user -> profile)
+    7.2. client (type = 'V') - create Contact in Vitrina service -> admin create user and profile
+    7.3. broker (type = 'B') - create Contact in Vitrina service -> admin create user and profile
 
-7. TEST VITRINA WORK
-open consignment card (with contact you've created in point 6), change some fields, save, post - check if email was send
-create some documents in consignment card, then POST  -  check email
+8. TEST VITRINA WORK
+    8.1. open consignment card, change some fields, save, post - check if email was send
+    8.2. create some documents in consignment card, then POST  -  check email
+
+9. TEST Client-app
 
 
-
-***********************  create node_modules   ***
-in static folder create folder node_modules and cd there
-
-npm install bootstrap bootstrap-table bootstrap-icons jquery-resizable-columns
-
-install dragtable:   git clone https://github.com/akottr/dragtable/
-copy jquery-ui.js from my local comp
-install tabledownload:   git clone https://github.com/hhurz/tableExport.jquery.plugin
-
-for ability to download lists in vitrina  -  change in node_modules\bootstrap-table\dist\extensions\export\bootstrap-table-export.min.js  -  
-exportDataType: 'all',
-    // basic, all, selected
-    exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'xlsx', 'pdf'],
-
-to set css styles to bootstrap  -  add into bootstrap-table-min.css 2 additional rows:
-.bootstrap-table .fixed-table-container .table th{font-family: Arial, Helvetica, sans-serif; background-color: SteelBlue; color: GhostWhite; text-align: center; font-size: 13px;}
-.bootstrap-table .fixed-table-container .table td{font-family: Arial, Helvetica, sans-serif; color: DarkSlateGray; font-size: 14px; font-weight: normal;}
+********************************************  CREATE NPM MODULES  ********************************************
+1. in '/static/' folder create '/node_modules/' folder  -> cd node_modules
+2. npm install bootstrap bootstrap-table bootstrap-icons jquery-resizable-columns
+3. git clone https://github.com/akottr/dragtable/
+4. copy 'jquery-ui.js' from '/static/' to '/node_modules/'
+5. git clone https://github.com/hhurz/tableExport.jquery.plugin
+6. change in "node_modules\bootstrap-table\dist\extensions\export\bootstrap-table-export.min.js":
+    - exportDataType: "all'
+    - exportTypes: ["json","xml","csv","txt","sql","excel","xlsx","pdf"]
+7. add into "bootstrap-table-min.css" :
+    .bootstrap-table .fixed-table-container .table th{font-family: Arial, Helvetica, sans-serif; background-color: SteelBlue; color: GhostWhite; text-align: center; font-size: 13px;}
+    .bootstrap-table .fixed-table-container .table td{font-family: Arial, Helvetica, sans-serif; color: DarkSlateGray; font-size: 14px; font-weight: normal;}
