@@ -48,7 +48,7 @@ from (({DB1_NAME}.dbo.prop_ent p left outer join {DB1_NAME}.dbo.prop_ext e ON e.
   left outer join {DB1_NAME}.dbo.contact b on b.contact=c.broker 
 where 1=1 
   --AND DATEPART(dy,p.postdate)=DATEPART(dy,GETDATE())
-  --and p.dateen >= '2023-09-01'
+  and p.dateen >= '2023-09-01'
   and e.posted > 0
   and p.posted > 0
 order by dateen desc

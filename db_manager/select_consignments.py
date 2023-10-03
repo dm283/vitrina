@@ -54,7 +54,7 @@ from ({DB1_NAME}.dbo.reg_sub s
     inner join {DB1_NAME}.dbo.reg_main m on m.id=s.main_id) 
     left outer join {DB1_NAME}.dbo.contact b on b.contact=s.broker
 where 1=1
-    --and m.date >= '2023-09-01'
+    and m.date >= '2023-09-01'
     and s.sub_id is not null  --cut double recs
 order by m.date desc
 """
