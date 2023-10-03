@@ -10,6 +10,8 @@ if os.path.exists(config_file):
 else:
     print("error! config file doesn't exist"); sys.exit()
 
+APP_TYPE = config['app']['app_type']
+
 
 class Profile(models.Model):
     """
@@ -23,7 +25,7 @@ class Profile(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_profile'
         
@@ -62,7 +64,7 @@ class Consignment(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_consignment'
 
@@ -97,7 +99,7 @@ class Carpass(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_carpass'
 
@@ -129,7 +131,7 @@ class Contact(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_contact'
         
@@ -158,7 +160,7 @@ class Document(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_document'
 
@@ -175,7 +177,7 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_document'
 
@@ -202,7 +204,7 @@ class Uemail(models.Model):
 
     class Meta:
         ordering = ['-id']
-        if config['app']['app_type'] == 'client':
+        if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_message'
 

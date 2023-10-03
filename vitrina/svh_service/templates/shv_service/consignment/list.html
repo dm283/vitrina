@@ -51,7 +51,6 @@
     </thead>
     <tbody>
       {% for consignment in consignments %}
-      
       <tr>
         <td><a href="{% url 'svh_service:consignment_update' consignment.id %}">{{ consignment.key_id }}</a></td>
         <td>{{ consignment.contact_name }}</td>

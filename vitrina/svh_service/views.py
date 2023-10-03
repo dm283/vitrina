@@ -15,6 +15,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from pathlib import Path
 
+
 config = configparser.ConfigParser()
 config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
 if os.path.exists(config_file):
@@ -22,6 +23,7 @@ if os.path.exists(config_file):
 else:
     print("error! config file doesn't exist"); sys.exit()
 
+APP_TYPE = config['app']['app_type']
 FILE_FILTERS = {}
 
 # COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
@@ -51,8 +53,7 @@ def consignment_list(request):
     if not os.path.exists(CONTACT_FOLDER):
         os.mkdir(CONTACT_FOLDER)
 
-
-    if request.user.profile.type == 'O' and config['app']['app_type'] == 'operator':
+    if request.user.profile.type == 'O' and APP_TYPE == 'operator':
         consignments = Consignment.objects.all()
         documents = Document.objects.all()
     else:
@@ -369,7 +370,7 @@ def consignment_add_document(request, id):
 #  CARPASS ******************************************
 @login_required
 def carpass_list(request):
-    if request.user.profile.type == 'O' and config['app']['app_type'] == 'operator':
+    if request.user.profile.type == 'O' and APP_TYPE == 'operator':
         carpasses = Carpass.objects.all()
         documents = Document.objects.all()
     else:

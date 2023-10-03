@@ -1,4 +1,5 @@
-import sys, os, configparser, ast
+import sys, os
+import configparser, ast
 from pathlib import Path
 
 config = configparser.ConfigParser()
@@ -7,6 +8,15 @@ if os.path.exists(config_file):
   config.read(config_file, encoding='utf-8')
 else:
   print("error! config file doesn't exist"); sys.exit()
+
+ENGINE = config['db']['db2_engine']
+NAME = config['db']['db2_name']
+OPTIONS = ast.literal_eval( config['db']['db2_options'] )
+USER = config['db']['db2_user']
+PASSWORD = config['db']['db2_password']
+HOST = config['db']['db2_host']
+PORT = config['db']['db2_port']
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,13 +89,13 @@ WSGI_APPLICATION = 'vitrina.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': config['db']['db2_engine'],
-        'NAME': config['db']['db2_name'],
-        'OPTIONS': ast.literal_eval( config['db']['db2_options'] ),
-        'USER': config['db']['db2_user'],
-        'PASSWORD': config['db']['db2_password'],
-        'HOST': config['db']['db2_host'],
-        'PORT': config['db']['db2_port'],
+        'ENGINE': ENGINE,
+        'NAME': NAME,
+        'OPTIONS': OPTIONS,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': PORT,
     }
 }
 
