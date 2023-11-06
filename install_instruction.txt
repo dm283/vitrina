@@ -81,3 +81,9 @@ VisualStudioCode ()
 7. add into "bootstrap-table-min.css" :
     .bootstrap-table .fixed-table-container .table th{font-family: Arial, Helvetica, sans-serif; background-color: SteelBlue; color: GhostWhite; text-align: center; font-size: 13px;}
     .bootstrap-table .fixed-table-container .table td{font-family: Arial, Helvetica, sans-serif; color: DarkSlateGray; font-size: 14px; font-weight: normal;}
+
+
+********************************************  ACCESS FROM INTERNET  ********************************************
+1. settings.py - ALLOWED_HOSTS = ['*']
+2. windows firewall - inbound rules - create new 'port-80-access' - port 80 - tcp
+3. python manage.py runserver 0.0.0.0:80
