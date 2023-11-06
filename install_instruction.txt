@@ -1,7 +1,7 @@
 ************************ COMMON ENVIRONMENT (for both apps Client & Operator servers) ********************
 WinRar (https://www.rarlab.com/download.htm)
 Git (https://git-scm.com/download/win)
-Python (https://www.python.org/)
+Python (https://www.python.org/) version 3.10.8
 NodeJS (https://nodejs.org/en/download)
 NPM (npm install -g npm)
 VisualStudioCode ()
@@ -10,9 +10,11 @@ VisualStudioCode ()
 *************************************************** CLIENT-APP ***************************************************
 1. CREATE ENVIRONMENT
     1.1. as in COMMON ENVIRONMENT
-    1.2. install database Postgre or MS-SQL (if not exist)
-    1.3. for access from remote server (Operator-app) add to c:\Program Files\PostgreSQL\***\data\pg_hba.conf    
-	# IPv4 local connections:   host    all             all             host-ip/32            md5
+    1.2. install database Postgre or MS-SQL (if not exist) https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+    1.3. for access from remote server (Operator-app) 
+          -  add to c:\Program Files\PostgreSQL\***\data\pg_hba.conf  [ # IPv4 local connections:  host  all  all  host-ip/32  <md5 or the same as for localhost> ]
+          -  restart postgres:  win+R -> servoces.msc -> postgres restart
+          - control panel - ... - windows defender firewall - advanced settings - actions - inbound rules - new rule - port - specific port - 5432
 
 2. INSTALL VITRINA
     2.1. create folder svh-service -> cd svh-service
