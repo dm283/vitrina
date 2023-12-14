@@ -1,6 +1,14 @@
 # cmd run format:  db_manage.py [-i]
 import sys, os, configparser, psycopg2, pyodbc
+import struct
 from pathlib import Path
+
+def handle_datetimeoffset(dto_value):
+    # ref: https://github.com/mkleehammer/pyodbc/issues/134#issuecomment-281739794
+    tup = struct.unpack("<6hI2h", dto_value)  # e.g., (2017, 3, 16, 10, 35, 18, 0, -6, 0)
+    tweaked = [tup[i] // 100 if i == 6 else tup[i] for i in range(len(tup))]
+    return "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}.{:07d} {:+03d}:{:02d}".format(*tweaked)
+
 
 config = configparser.ConfigParser()
 config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'vitrina', 'config.ini')   
@@ -27,6 +35,7 @@ def db_connection(db):
       CONN = psycopg2.connect(DB_CONNECTION_STRING)  # postgre database
     elif db == '-m':
       CONN = pyodbc.connect(DB_CONNECTION_STRING)     # ms-sql database
+      CONN.add_output_converter(-155, handle_datetimeoffset)
     CURSOR = CONN.cursor()
     print('ok')
   except(Exception) as err:
@@ -40,7 +49,7 @@ def db_action(query):
     CURSOR.execute(query)
     if 'select ' in query:
       dataset = CURSOR.fetchall(); 
-      # print(dataset)
+      print(dataset)
       for n, r in enumerate(dataset):
         print(f'[{n}] ', r); print()
       print(f'retrieved [{len(dataset)}] rows'); print()
@@ -54,12 +63,12 @@ def db_action(query):
 
 #  set of queries
 q = """
-select * from svh_service_document
+select * from svh_service_consignment --svh_service_db_2.dbo.svh_service_consignment
 """
 
-q = """
-select table_name from information_schema.tables where table_schema='public' --and table_type='base table';
-"""
+# q = """
+# select table_name from information_schema.tables where table_schema='public' --and table_type='base table';
+# """
 
 # ******************* main actions *******************
 #db = sys.argv[2]
