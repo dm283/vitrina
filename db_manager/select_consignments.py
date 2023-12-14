@@ -17,9 +17,10 @@ nttn, nttn_date, dkd, dkd_date, goods, weight, dater, dateo, id_enter, car, \
 d_in, d_out, guid_user, datep, created, updated, posted, post_date, \
 post_user_id, was_posted'
 
+
 QUERY_LOAD_DATA_CONSIGNMENTS = f"""
--- *****  select for consignments  *****
-select 
+with init_select as
+(select 
   case when s.guid_sub is null then '' else s.guid_sub end  guid,
   s.ids              					                              key_id, 
   s.receiver     					                                  contact,
@@ -39,7 +40,7 @@ select
   convert( datetime, convert(char(8), m.rdate, 112) + ' ' + 
     convert(CHAR(8), m.rtime, 108) ) 			                  d_in,
   convert( datetime, convert(char(8), m.odate, 112) + ' ' + 
-    convert(CHAR(8), m.otime, 108) ) 			                  d_in,
+    convert(CHAR(8), m.otime, 108) ) 			                  d_out,
 
   'sys'               					                            guid_user,
   m.postdate   					                                    datep,
@@ -56,5 +57,36 @@ from ({DB1_NAME}.dbo.reg_sub s
 where 1=1
     and m.date >= '2023-09-01'
     and s.sub_id is not null  --cut double recs
-order by m.date desc
+	)
+----------
+
+select
+left(guid, 36) guid,
+left(key_id, 16) key_id,
+contact,
+left(contact_name, 150) contact_name,
+contact_broker,
+left(broker_name, 150) broker_name,
+left(nttn, 100) nttn,
+nttn_date,
+left(dkd, 100) dkd,
+dkd_date,
+left(goods, 100) goods,
+weight,
+dater,
+dateo,
+left(id_enter, 8) id_enter,
+left(car, 30) car,
+d_in,
+d_out,
+left(guid_user, 36) guid_user,
+datep,
+created,
+updated,
+posted,
+post_date,
+left(post_user_id, 36) post_user_id,
+was_posted
+from init_select
+order by dater desc
 """
