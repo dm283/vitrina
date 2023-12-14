@@ -11,6 +11,10 @@ else:
   
 DB_CONNECTION_STRING = config['db']['db2_connection_string']
 DB_TYPE = config['db']['db2_type']
+DB_USER = config['db']['db2_user']
+DB_PASSWORD = config['db']['db2_password']
+if DB_TYPE == '-m' and 'DSN' in DB_CONNECTION_STRING:
+  DB_CONNECTION_STRING += (';UID='+DB_USER+';PWD='+DB_PASSWORD)
 
 
 def db_connection(db):
