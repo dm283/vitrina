@@ -11,6 +11,14 @@ DB1_CONNECTION_STRING = config['db']['db1_connection_string']
 DB2_CONNECTION_STRING = config['db']['db2_connection_string']
 DB1_TYPE = config['db']['db1_type']
 DB2_TYPE = config['db']['db2_type']
+DB1_USER = config['db']['db1_user']
+DB1_PASSWORD = config['db']['db1_password']
+if DB1_TYPE == '-m' and 'DSN' in DB1_CONNECTION_STRING:
+  DB1_CONNECTION_STRING += (';UID='+DB1_USER+';PWD='+DB1_PASSWORD)
+DB2_USER = config['db']['db2_user']
+DB2_PASSWORD = config['db']['db2_password']
+if DB2_TYPE == '-m' and 'DSN' in DB2_CONNECTION_STRING:
+  DB2_CONNECTION_STRING += (';UID='+DB2_USER+';PWD='+DB2_PASSWORD)
 
 from select_consignments import TABLE_FOR_INSERTS_CONSIGNMENTS, COLUMNS_IN_TABLE_FOR_INSERTS_CONSIGNMENTS, QUERY_LOAD_DATA_CONSIGNMENTS
 from select_carpass import TABLE_FOR_INSERTS_CARPASS, COLUMNS_IN_TABLE_FOR_INSERTS_CARPASS, QUERY_LOAD_DATA_CARPASS
