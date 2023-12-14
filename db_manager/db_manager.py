@@ -49,7 +49,7 @@ def db_action(query):
     CURSOR.execute(query)
     if 'select ' in query:
       dataset = CURSOR.fetchall(); 
-      print(dataset)
+      #print(dataset)
       for n, r in enumerate(dataset):
         print(f'[{n}] ', r); print()
       print(f'retrieved [{len(dataset)}] rows'); print()
@@ -62,8 +62,12 @@ def db_action(query):
 
 
 #  set of queries
+# q = """
+# select * from svh_service_db_2.dbo.svh_service_consignment
+# """
+
 q = """
-select * from svh_service_consignment --svh_service_db_2.dbo.svh_service_consignment
+select * from svh_service_db_2.information_schema.tables
 """
 
 # q = """
