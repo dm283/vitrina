@@ -118,8 +118,8 @@ class Contact(models.Model):
     email2 = models.CharField(max_length=100, blank=True, default='') # Почта для передачи документов партии товара
     idtelegram = models.CharField(max_length=36, blank=True, default='') # Идентификатор ID messenger Telegram
     tags = models.CharField(max_length=100, blank=True, default='') # Список хэштегов
-    login = models.CharField(max_length=30, blank=True, default='') # Логин клиента (организации)
-    pwd = models.CharField(max_length=20, blank=True, default='') # Пароль входа в портал. Должен быть зашифрован
+    # login = models.CharField(max_length=30, blank=True, default='') # Логин клиента (организации)
+    # pwd = models.CharField(max_length=20, blank=True, default='') # Пароль входа в портал. Должен быть зашифрован
 
     f_stop = models.BooleanField(default=False) # Флаг приостановки пользования порталом
     guid_user = models.CharField(max_length=36, blank=True, default='') # GUID пользователя который создал эту запись
