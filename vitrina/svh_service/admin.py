@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Consignment, Contact, Document, Message, Uemail
+from .models import Profile, Consignment, Carpass, Contact, Document, Message, Uemail
 
 
 @admin.register(Profile)
@@ -9,6 +9,10 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(Consignment)
 class ConsignmentAdmin(admin.ModelAdmin):
     list_display = ['key_id', 'contact_name', 'broker_name', 'dater', 'car', 'datep']
+
+@admin.register(Carpass)
+class CarpassAdmin(admin.ModelAdmin):
+    list_display = ['id_enter', 'ncar', 'contact_name', 'broker_name', 'dateen', 'timeen']
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):

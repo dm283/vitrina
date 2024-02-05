@@ -19,6 +19,10 @@ class ConsignmentForm(forms.ModelForm):
             'key_id': forms.HiddenInput(),
             'nttn_date': forms.DateInput(attrs=dict(type='date')),
             'dkd_date': forms.DateInput(attrs=dict(type='date')),
+            'dater': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'dateo': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'd_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}), 
+            'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local'})
         }
 
         labels = {
@@ -96,6 +100,8 @@ class CarpassForm(forms.ModelForm):
             'id_enter': forms.HiddenInput(),
             'dateen': forms.DateInput(attrs=dict(type='date')),
             'dateex': forms.DateInput(attrs=dict(type='date')),
+            'timeen': forms.TimeInput(attrs={'type': 'time'}),
+            'timeex': forms.TimeInput(attrs={'type': 'time'}),
         }
 
         labels = {
@@ -142,7 +148,7 @@ class DocumentForm(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
-        fields = ['contact', 'type', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', 'login', 'pwd', ]
+        fields = ['contact', 'type', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', ]
         
         # widgets = {
         #     'contact': forms.HiddenInput(),
@@ -159,6 +165,4 @@ class ContactForm(forms.ModelForm):
             'email2': 'Почта для передачи документов партии товара', 
             'idtelegram': 'Telegram ID', 
             'tags': 'Хэштеги', 
-            'login': 'Логин', 
-            'pwd': 'Пароль', 
         }
