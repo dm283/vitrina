@@ -56,6 +56,9 @@ def consignment_list(request):
     if request.user.profile.type == 'O' and APP_TYPE == 'operator':
         consignments = Consignment.objects.all()
         documents = Document.objects.all()
+    elif request.user.profile.type == 'O' and APP_TYPE == 'client':
+        # if client try to login as operator svh
+        return redirect('/svh_service/login')
     else:
         try:
             if request.user.profile.type == 'V':
