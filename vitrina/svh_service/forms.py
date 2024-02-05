@@ -87,7 +87,8 @@ class CarpassForm(forms.ModelForm):
     class Meta:
         model = Carpass
         fields = ['guid', 'id_enter', 'ncar', 'dateen', 'timeen', 'ntir', 'nkont',
-                  'driver', 'drv_man', 'dev_phone', 'contact', 'contact_name', 'contact_broker', 'broker_name', 'place_n', 'dateex', 'timeex']
+                  'driver', 'drv_man', 'dev_phone', 'contact', 'contact_name', 'contact_broker', 'broker_name', 
+                  'place_n', 'dateex', 'timeex']
         # fields = '__all__'
 
         widgets = {

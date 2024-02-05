@@ -86,4 +86,8 @@ VisualStudioCode ()
 ********************************************  ACCESS FROM INTERNET  ********************************************
 1. settings.py - ALLOWED_HOSTS = ['*']
 2. windows firewall - inbound rules - create new 'port-80-access' - port 80 - tcp
-3. python manage.py runserver 0.0.0.0:80
+3. python manage.py runserver 0.0.0.0:<port>  (или <ip address>:<port>) порт может быть любым, например 80,7000,8000 (но его нужно открыть в файерволе)
+Error: You don't have permission to access that port  -  check IIS is runnung
+локально через браузер открывается 127.0.0.1:<port> (или <ip address>:<port>) 
+из интернета открывается <ip address>:<port>
+если 80 порт, то <port> указывать не нужно
