@@ -157,18 +157,21 @@ def post_consignment(request):
         form.save()
     
     consignment = Consignment.objects.all().order_by('-id').first()
-    form = ConsignmentForm(instance=consignment)
-    
-    data = {}
-    data['block_name'] = 'Партия товаров'
-    data['entity'] = 'consignment'
-    data['id'] = consignment.key_id
 
-    return render(request,
-                  'shv_service/update_universal.html',
-                  {'form': form,
-                   'data': data,
-                   'entity': consignment})
+    return redirect(f'/svh_service/consignments/{consignment.id}/update')    #####
+
+    # form = ConsignmentForm(instance=consignment)
+    
+    # data = {}
+    # data['block_name'] = 'Партия товаров'
+    # data['entity'] = 'consignment'
+    # data['id'] = consignment.key_id
+
+    # return render(request,
+    #               'shv_service/update_universal.html',
+    #               {'form': form,
+    #                'data': data,
+    #                'entity': consignment})
 
 
 @login_required
@@ -464,18 +467,21 @@ def post_carpass(request):
         form.save()
     
     carpass = Carpass.objects.all().order_by('-id').first()
-    form = CarpassForm(instance=carpass)
-    
-    data = {}
-    data['block_name'] = 'Пропуск'
-    data['entity'] = 'carpass'
-    data['id'] = carpass.id_enter
 
-    return render(request,
-                  'shv_service/update_universal.html',
-                  {'form': form,
-                   'data': data, 
-                   'entity': carpass,})
+    return redirect(f'/svh_service/carpass/{carpass.id}/update')    #####
+
+    # form = CarpassForm(instance=carpass)
+    
+    # data = {}
+    # data['block_name'] = 'Пропуск'
+    # data['entity'] = 'carpass'
+    # data['id'] = carpass.id_enter
+
+    # return render(request,
+    #               'shv_service/update_universal.html',
+    #               {'form': form,
+    #                'data': data, 
+    #                'entity': carpass,})
 
 
 @login_required
@@ -883,18 +889,21 @@ def post_contact(request):
         form.save()
 
     contact = Contact.objects.all().order_by('-id').first()
-    form = ContactForm(instance=contact)
 
-    data = {}
-    data['block_name'] = 'Организация'
-    data['entity'] = 'contact'
-    data['id'] = contact.contact
+    return redirect(f'/svh_service/contacts/{contact.id}/update')    #####
 
-    return render(request,
-                  'shv_service/update_universal.html',
-                  {'form': form,
-                   'data': data, 
-                   'entity': contact,})
+    # form = ContactForm(instance=contact)
+
+    # data = {}
+    # data['block_name'] = 'Организация'
+    # data['entity'] = 'contact'
+    # data['id'] = contact.contact
+
+    # return render(request,
+    #               'shv_service/update_universal.html',
+    #               {'form': form,
+    #                'data': data, 
+    #                'entity': contact,})
 
 
 @login_required
