@@ -2,6 +2,7 @@ import sys, os, configparser
 from django.db import models
 from django.conf import settings
 from pathlib import Path
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 config = configparser.ConfigParser()
 config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
@@ -115,7 +116,10 @@ class Contact(models.Model):
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, blank=False, default='') # Тип пользователя (литера)
     type_name = models.CharField(max_length=100, blank=True, default='')  # Тип пользователя (наименование)
     name = models.CharField(max_length=150, blank=True, default='') # Наименование организации
-    inn = models.CharField(max_length=12, blank=True, default='') # ИНН организации
+    inn = models.PositiveBigIntegerField(
+        validators=[MaxValueValidator(999999999999), MinValueValidator(1000000000)], 
+                              blank=True, default='') # ИНН организации
+    #inn = models.CharField(max_length=12, blank=True, default='') # ИНН организации
     fio = models.CharField(max_length=100, blank=True, default='') # ФИО физлица организации. ФИО оператора СВХ
     email0 = models.EmailField(max_length=100, blank=True, default='')  # Почта для смены пароля и контактов по работе портала
     email1 = models.EmailField(max_length=100, blank=True, default='') # Почта отсылки сообщений

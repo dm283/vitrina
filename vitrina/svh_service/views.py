@@ -238,10 +238,10 @@ def consignment_post(request, id):
     try:
         get_object_or_404(Contact, contact=consignment.contact)
         is_approved = True
-        error_msg = ''
+        error_msg = []
     except:
         is_approved = False
-        error_msg = 'Данные указанного клиента не заведены в разделе Организации'
+        error_msg = ['Данные указанного клиента не заведены в разделе Организации']
 
     if request.method == 'POST':
         guid_partia = consignment.key_id
@@ -537,10 +537,10 @@ def carpass_post(request, id):
     try:
         get_object_or_404(Contact, contact=carpass.contact)
         is_approved = True
-        error_msg = ''
+        error_msg = []
     except:
         is_approved = False
-        error_msg = 'Данные указанного клиента не заведены в разделе Организации'
+        error_msg = ['Данные указанного клиента не заведены в разделе Организации']
 
     if request.method == 'POST':
         id_enter = carpass.id_enter
@@ -975,8 +975,27 @@ def contact_delete(request, id):
 def contact_post(request, id):
     contact = get_object_or_404(Contact, id=id)
 
-    is_approved = True
-    error_msg = ''
+    # ПРОВЕРКИ ДАННЫХ
+    check_fields = {'name': 'Наименование организации', 
+            'inn': 'ИНН организации', 
+            'fio': 'ФИО представителя', 
+            'email0': 'Почта для смены пароля и контактов по работе портала', 
+            'email1': 'Почта отсылки сообщений', 
+            'email2': 'Почта для передачи документов партии товара', }
+    #check_fields = list(check_fields.keys())
+    #['name', 'inn', 'fio', 'email0', 'email1', 'email2']
+    entity_fields = contact.__dict__
+    empty_fields_list = []
+    for e in list(check_fields.keys()):
+        if entity_fields[e] in ['', None]:
+            empty_fields_list.append(f'[ {check_fields[e]} ] не заполнено')
+    if len(empty_fields_list) > 0:
+        is_approved = False
+        error_msg = empty_fields_list
+        print(error_msg)
+    else:
+        is_approved = True
+        error_msg = []
     
     if request.method == 'POST':
         contact.post_user_id = '1'

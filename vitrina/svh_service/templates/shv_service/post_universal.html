@@ -7,7 +7,12 @@
   {% csrf_token %}
   <div class="buttons_area">
     {% if is_approved == True %}<input type="submit" value="POST">
-    {% else %}<div>{{ error_msg }}</div><br>
+    {% else %}
+      <p><b>Ошибки:</b></p>
+      {% for er in error_msg %}
+        <div>- {{ er }}</div>
+      {% endfor %}
+      <br>
     {% endif %}
     {{ link_for_cancel }}<input type="button" value="CANCEL"></a>
   </div>

@@ -168,6 +168,10 @@ class ContactForm(forms.ModelForm):
             'tags': 'Хэштеги', 
         }
 
+        # help_texts = {
+        #             'contact': '*',
+        # }
+
     # def clean(self): 
 
     #     if self.cleaned_data['inn'] == '0': 
