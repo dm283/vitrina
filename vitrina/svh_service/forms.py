@@ -1,6 +1,7 @@
 from django import forms
 from .models import Consignment, Carpass, Contact, Document
 from django.contrib.admin.widgets import AdminDateWidget
+from django.core.exceptions import ValidationError
 
 
 class LoginForm(forms.Form):
@@ -166,3 +167,11 @@ class ContactForm(forms.ModelForm):
             'idtelegram': 'Telegram ID', 
             'tags': 'Хэштеги', 
         }
+
+    # def clean(self): 
+
+    #     if self.cleaned_data['inn'] == '0': 
+    #         raise ValidationError("Age cannot be negative.")
+
+    # def clean_contact(self):
+    #     raise ValidationError("You have forgotten about Fred!")

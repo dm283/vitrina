@@ -26,6 +26,13 @@ else:
 APP_TYPE = config['app']['app_type']
 FILE_FILTERS = {}
 
+TYPE_NAME = {
+            "V": "участник ВЭД", 
+            "B": "таможенный представитель (брокер)", 
+            "O": "оператор СВХ", 
+            "H": "руководство СВХ",
+        }
+
 # COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
 
 #  COMMON_VIEWS *************************************
@@ -885,8 +892,21 @@ def contact_add(request):
 @require_POST
 def post_contact(request):
     form = ContactForm(data=request.POST)
+
     if form.is_valid:
-        form.save()
+        # check contact (id) exits
+        print(form)
+        # cd = form.cleaned_data
+        # print(cd)
+        # print(cd['contact'])
+
+        # contact_exist_check = Contact.objects.get(contact=cd['contact'])
+        # print('contact_exist_check = ', contact_exist_check)
+
+        form_type = form.cleaned_data['type']
+        new_form = form.save(commit=False)
+        new_form.type_name = TYPE_NAME[form_type]
+        new_form.save()
 
     contact = Contact.objects.all().order_by('-id').first()
 
@@ -918,7 +938,11 @@ def contact_update(request, id):
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
-            form.save()
+            form_type = form.cleaned_data['type']
+            new_form = form.save(commit=False)
+            new_form.type_name = TYPE_NAME[form_type]
+            new_form.save()
+            #form.save()
             return render(request,
                         'shv_service/update_universal.html',
                         {'form': form,
