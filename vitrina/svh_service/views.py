@@ -14,6 +14,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 from pathlib import Path
+from django.core.exceptions import ValidationError
 
 
 config = configparser.ConfigParser()
@@ -25,6 +26,13 @@ else:
 
 APP_TYPE = config['app']['app_type']
 FILE_FILTERS = {}
+
+TYPE_NAME = {
+            "V": "участник ВЭД", 
+            "B": "таможенный представитель (брокер)", 
+            "O": "оператор СВХ", 
+            "H": "руководство СВХ",
+        }
 
 # COMMON_VIEWS - CONSIGNMENT - CARPASS - DOCUMENT - CONTACT
 
@@ -231,10 +239,10 @@ def consignment_post(request, id):
     try:
         get_object_or_404(Contact, contact=consignment.contact)
         is_approved = True
-        error_msg = ''
+        error_msg = []
     except:
         is_approved = False
-        error_msg = 'Данные указанного клиента не заведены в разделе Организации'
+        error_msg = ['Данные указанного клиента не заведены в разделе Организации']
 
     if request.method == 'POST':
         guid_partia = consignment.key_id
@@ -530,10 +538,10 @@ def carpass_post(request, id):
     try:
         get_object_or_404(Contact, contact=carpass.contact)
         is_approved = True
-        error_msg = ''
+        error_msg = []
     except:
         is_approved = False
-        error_msg = 'Данные указанного клиента не заведены в разделе Организации'
+        error_msg = ['Данные указанного клиента не заведены в разделе Организации']
 
     if request.method == 'POST':
         id_enter = carpass.id_enter
@@ -869,41 +877,82 @@ def contact_list(request):
                    'form_filters': form_filters, })
 
 
+
 @login_required
 def contact_add(request):
-    # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
+    #
     contact_list = Contact.objects.values_list("contact", flat=True)
-    if len(contact_list) == 0:
-        contact_list = ['0']
-    contact_new = str(max(list(map(int, contact_list))) + 1)  # key_id_max_from_list_increased_1
-    form = ContactForm(initial={'contact': contact_new})
+    
+    if request.method == 'GET':
+        # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
+        if len(contact_list) == 0:
+            contact_list = ['0']
+        contact_new = int(max(list(map(int, contact_list))) + 1)  # key_id_max_from_list_increased_1
+        form = ContactForm(initial={'contact': contact_new})
 
-    return render(request, 'shv_service/contact/add.html',
-                  {'form': form})
+        return render(request, 'shv_service/contact/add.html',
+                    {'form': form})
+    
+    if request.method == 'POST':
+        form = ContactForm(data=request.POST)
+        
+        print('form add = ', form) # почему-то без print у form отсутсвует clean_data (?) - выяснить
 
-@login_required
-@require_POST
-def post_contact(request):
-    form = ContactForm(data=request.POST)
-    if form.is_valid:
-        form.save()
+        if form.is_valid:
+            cd = form.cleaned_data
+            # почему-то при дубликате contact в форме, при валидации пропадает поле contact
+            if 'contact' not in list(cd.keys()):
+                error_msg = ['Организация с данным ID уже существует']
+                link_for_cancel = mark_safe(f'<a href="/svh_service/contacts/add">')
+                return render(request, 'shv_service/error_page.html',
+                  {'error_msg': error_msg, 'link_for_cancel': link_for_cancel})
 
-    contact = Contact.objects.all().order_by('-id').first()
+            form_type = cd['type']
+            new_form = form.save(commit=False)
+            new_form.type_name = TYPE_NAME[form_type]
+            new_form.save()
 
-    return redirect(f'/svh_service/contacts/{contact.id}/update')    #####
+        contact = Contact.objects.all().order_by('-id').first()
 
-    # form = ContactForm(instance=contact)
+        return redirect(f'/svh_service/contacts/{contact.id}/update')    #####
 
-    # data = {}
-    # data['block_name'] = 'Организация'
-    # data['entity'] = 'contact'
-    # data['id'] = contact.contact
 
-    # return render(request,
-    #               'shv_service/update_universal.html',
-    #               {'form': form,
-    #                'data': data, 
-    #                'entity': contact,})
+
+# @login_required
+# def contact_add(request):
+#     # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
+#     contact_list = Contact.objects.values_list("contact", flat=True)
+#     if len(contact_list) == 0:
+#         contact_list = ['0']
+#     contact_new = str(max(list(map(int, contact_list))) + 1)  # key_id_max_from_list_increased_1
+#     form = ContactForm(initial={'contact': contact_new})
+
+#     return render(request, 'shv_service/contact/add.html',
+#                   {'form': form})
+
+# @login_required
+# @require_POST
+# def post_contact(request):
+#     form = ContactForm(data=request.POST)
+#     print('add form =', form)
+#     if form.is_valid:
+#         # check contact (id) exits
+#         print(form)
+#         # cd = form.cleaned_data
+#         # print(cd)
+#         # print(cd['contact'])
+
+#         # contact_exist_check = Contact.objects.get(contact=cd['contact'])
+#         # print('contact_exist_check = ', contact_exist_check)
+
+#         form_type = form.cleaned_data['type']
+#         new_form = form.save(commit=False)
+#         new_form.type_name = TYPE_NAME[form_type]
+#         new_form.save()
+
+#     contact = Contact.objects.all().order_by('-id').first()
+
+#     return redirect(f'/svh_service/contacts/{contact.id}/update')    #####
 
 
 @login_required
@@ -917,8 +966,18 @@ def contact_update(request, id):
 
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
+
+        # print('form update = ', form)
+        #print('update form type = ', type(form))
+        # print('update contact = ', form.cleaned_data['contact'], type(form.cleaned_data['contact']))
+
         if form.is_valid():
-            form.save()
+            # print('UPDATE VALID =', form.is_valid)
+            form_type = form.cleaned_data['type']
+            new_form = form.save(commit=False)
+            new_form.type_name = TYPE_NAME[form_type]
+            new_form.save()
+
             return render(request,
                         'shv_service/update_universal.html',
                         {'form': form,
@@ -951,8 +1010,27 @@ def contact_delete(request, id):
 def contact_post(request, id):
     contact = get_object_or_404(Contact, id=id)
 
-    is_approved = True
-    error_msg = ''
+    # ПРОВЕРКИ ДАННЫХ
+    check_fields = {'name': 'Наименование организации', 
+            'inn': 'ИНН организации', 
+            'fio': 'ФИО представителя', 
+            'email0': 'Почта для смены пароля и контактов по работе портала', 
+            'email1': 'Почта отсылки сообщений', 
+            'email2': 'Почта для передачи документов партии товара', }
+    #check_fields = list(check_fields.keys())
+    #['name', 'inn', 'fio', 'email0', 'email1', 'email2']
+    entity_fields = contact.__dict__
+    empty_fields_list = []
+    for e in list(check_fields.keys()):
+        if entity_fields[e] in ['', None]:
+            empty_fields_list.append(f'[ {check_fields[e]} ] не заполнено')
+    if len(empty_fields_list) > 0:
+        is_approved = False
+        error_msg = empty_fields_list
+        print(error_msg)
+    else:
+        is_approved = True
+        error_msg = []
     
     if request.method == 'POST':
         contact.post_user_id = '1'

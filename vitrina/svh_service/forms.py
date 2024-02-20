@@ -1,6 +1,7 @@
 from django import forms
 from .models import Consignment, Carpass, Contact, Document
 from django.contrib.admin.widgets import AdminDateWidget
+from django.core.exceptions import ValidationError
 
 
 class LoginForm(forms.Form):
@@ -149,11 +150,6 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ['contact', 'type', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', ]
-        
-        # widgets = {
-        #     'contact': forms.HiddenInput(),
-        # }
-
         labels = {
             'contact': 'Код клиента', 
             'type': 'Тип пользователя', 
@@ -165,4 +161,14 @@ class ContactForm(forms.ModelForm):
             'email2': 'Почта для передачи документов партии товара', 
             'idtelegram': 'Telegram ID', 
             'tags': 'Хэштеги', 
+        }
+        help_texts = {
+            'contact': '*', 
+            'type': '*', 
+            'name': '*', 
+            'inn': '*', 
+            'fio': '*', 
+            'email0': '*', 
+            'email1': '*', 
+            'email2': '*', 
         }

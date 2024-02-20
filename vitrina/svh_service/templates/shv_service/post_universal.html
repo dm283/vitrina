@@ -2,12 +2,19 @@
 
 {% block content %}
 
-<h5 class="block_name">Подтверждение проводки</h5>
+{% if is_approved == True %}<h5 class="block_name">Подтверждение проводки</h5>
+{% else %}<h5 class="block_name">Ошибки при проводке</h5>
+{% endif %}
 <form class='detail_form' action="" method="post">
   {% csrf_token %}
   <div class="buttons_area">
     {% if is_approved == True %}<input type="submit" value="POST">
-    {% else %}<div>{{ error_msg }}</div><br>
+    {% else %}
+      <!-- <p><b>Ошибки:</b></p> -->
+      {% for er in error_msg %}
+        <div>- {{ er }}</div>
+      {% endfor %}
+      <br>
     {% endif %}
     {{ link_for_cancel }}<input type="button" value="CANCEL"></a>
   </div>
