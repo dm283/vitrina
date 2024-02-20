@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from pathlib import Path
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 
 config = configparser.ConfigParser()
 config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
@@ -103,6 +104,7 @@ class Carpass(models.Model):
         if APP_TYPE == 'client':
             managed = False
             db_table = 'svh_service_carpass'
+
 
 
 class Contact(models.Model):

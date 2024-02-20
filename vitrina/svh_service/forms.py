@@ -150,11 +150,6 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ['contact', 'type', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', ]
-        
-        # widgets = {
-        #     'contact': forms.HiddenInput(),
-        # }
-
         labels = {
             'contact': 'Код клиента', 
             'type': 'Тип пользователя', 
@@ -167,15 +162,13 @@ class ContactForm(forms.ModelForm):
             'idtelegram': 'Telegram ID', 
             'tags': 'Хэштеги', 
         }
-
-        # help_texts = {
-        #             'contact': '*',
-        # }
-
-    # def clean(self): 
-
-    #     if self.cleaned_data['inn'] == '0': 
-    #         raise ValidationError("Age cannot be negative.")
-
-    # def clean_contact(self):
-    #     raise ValidationError("You have forgotten about Fred!")
+        help_texts = {
+            'contact': '*', 
+            'type': '*', 
+            'name': '*', 
+            'inn': '*', 
+            'fio': '*', 
+            'email0': '*', 
+            'email1': '*', 
+            'email2': '*', 
+        }
