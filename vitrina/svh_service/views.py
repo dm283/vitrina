@@ -900,13 +900,20 @@ def contact_add(request):
 
         if form.is_valid:
             cd = form.cleaned_data
-            # почему-то при дубликате contact в форме, при валидации пропадает поле contact
-            if 'contact' not in list(cd.keys()):
-                error_msg = ['Организация с данным ID уже существует']
-                link_for_cancel = mark_safe(f'<a href="/svh_service/contacts/add">')
-                return render(request, 'shv_service/error_page.html',
-                  {'error_msg': error_msg, 'link_for_cancel': link_for_cancel})
+            # почему-то при дубликате contact в форме, при валидации пропадают невалидные поля
+            for e in ['contact', 'inn', 'email0', 'email1', 'email2']:
+                if e not in list(cd.keys()):
+                    if e == 'contact':
+                        error_msg = ['Организация с данным ID уже существует']
+                    elif e == 'inn':
+                        error_msg = ['Некорректное количество цифр в ИНН (должно быть 10 для юридических, 12 для физических лиц)']
+                    if e in ['email0', 'email1', 'email2']:
+                        error_msg = ['Некорректный формат e-mail поля']
+                    link_for_cancel = mark_safe(f'<a href="/svh_service/contacts/add">')
+                    return render(request, 'shv_service/error_page.html',
+                    {'error_msg': error_msg, 'link_for_cancel': link_for_cancel})
 
+            # добавление наименования тип организации в зависимости от литеры
             form_type = cd['type']
             new_form = form.save(commit=False)
             new_form.type_name = TYPE_NAME[form_type]
