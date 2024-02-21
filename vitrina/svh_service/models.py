@@ -14,6 +14,9 @@ else:
 
 APP_TYPE = config['app']['app_type']
 
+TYPE_CHOICES = ( 
+        ("V", "участник ВЭД"), ("B", "таможенный представитель (брокер)"), ("O", "оператор СВХ"), ("H", "руководство СВХ"), )
+
 
 class Profile(models.Model):
     """
@@ -111,9 +114,6 @@ class Contact(models.Model):
     """
     Организации/Контакты (клиенты/брокеры/операторы свх/руководство свх)
     """
-    TYPE_CHOICES = ( 
-        ("V", "участник ВЭД"), ("B", "таможенный представитель (брокер)"), ("O", "оператор СВХ"), ("H", "руководство СВХ"), )
-
     contact = models.IntegerField(unique=True) # Код клиента из программы Альта-СВХ
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, blank=False, default='') # Тип пользователя (литера)
     type_name = models.CharField(max_length=100, blank=True, default='')  # Тип пользователя (наименование)

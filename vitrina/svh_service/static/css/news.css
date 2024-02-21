@@ -382,7 +382,7 @@ body {
     width: 200px;
 }
 
-.filters_form input { 
+.filters_form input, .filters_form select { 
     font-size: 13px;
     width: 190px;
     color: DarkSlateGray;
