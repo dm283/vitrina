@@ -880,90 +880,21 @@ def contact_list(request):
 
 @login_required
 def contact_add(request):
-    #
+    # creates a new record in database with generated 'contact' field and then redirects to update page
     contact_list = Contact.objects.values_list("contact", flat=True)
+    if len(contact_list) == 0:
+        contact_list = ['0']
+    contact_new = int(max(list(map(int, contact_list))) + 1)  # max existing contact number from db increased on 1
+    c = Contact(contact=contact_new)
+    c.save()
+    contact = get_object_or_404(Contact, contact=contact_new)
+
+    return redirect(f'/svh_service/contacts/{contact.id}/update')
     
-    if request.method == 'GET':
-        # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
-        if len(contact_list) == 0:
-            contact_list = ['0']
-        contact_new = int(max(list(map(int, contact_list))) + 1)  # key_id_max_from_list_increased_1
-        form = ContactForm(initial={'contact': contact_new})
-
-        return render(request, 'shv_service/contact/add.html',
-                    {'form': form})
-    
-    if request.method == 'POST':
-        form = ContactForm(data=request.POST)
-        
-        print('form add = ', form) # почему-то без print у form отсутсвует clean_data (?) - выяснить
-
-        if form.is_valid:
-            cd = form.cleaned_data
-            # почему-то при дубликате contact в форме, при валидации пропадают невалидные поля
-            for e in ['contact', 'inn', 'email0', 'email1', 'email2']:
-                if e not in list(cd.keys()):
-                    if e == 'contact':
-                        error_msg = ['Организация с данным ID уже существует']
-                    elif e == 'inn':
-                        error_msg = ['Некорректное количество цифр в ИНН (должно быть 10 для юридических, 12 для физических лиц)']
-                    if e in ['email0', 'email1', 'email2']:
-                        error_msg = ['Некорректный формат e-mail поля']
-                    link_for_cancel = mark_safe(f'<a href="/svh_service/contacts/add">')
-                    return render(request, 'shv_service/error_page.html',
-                    {'error_msg': error_msg, 'link_for_cancel': link_for_cancel})
-
-            # добавление наименования тип организации в зависимости от литеры
-            form_type = cd['type']
-            new_form = form.save(commit=False)
-            new_form.type_name = TYPE_NAME[form_type]
-            new_form.save()
-
-        contact = Contact.objects.all().order_by('-id').first()
-
-        return redirect(f'/svh_service/contacts/{contact.id}/update')    #####
-
-
-
-# @login_required
-# def contact_add(request):
-#     # # выбираем из бд max contact, увеличиваем на 1 - это contact Новой организации
-#     contact_list = Contact.objects.values_list("contact", flat=True)
-#     if len(contact_list) == 0:
-#         contact_list = ['0']
-#     contact_new = str(max(list(map(int, contact_list))) + 1)  # key_id_max_from_list_increased_1
-#     form = ContactForm(initial={'contact': contact_new})
-
-#     return render(request, 'shv_service/contact/add.html',
-#                   {'form': form})
-
-# @login_required
-# @require_POST
-# def post_contact(request):
-#     form = ContactForm(data=request.POST)
-#     print('add form =', form)
-#     if form.is_valid:
-#         # check contact (id) exits
-#         print(form)
-#         # cd = form.cleaned_data
-#         # print(cd)
-#         # print(cd['contact'])
-
-#         # contact_exist_check = Contact.objects.get(contact=cd['contact'])
-#         # print('contact_exist_check = ', contact_exist_check)
-
-#         form_type = form.cleaned_data['type']
-#         new_form = form.save(commit=False)
-#         new_form.type_name = TYPE_NAME[form_type]
-#         new_form.save()
-
-#     contact = Contact.objects.all().order_by('-id').first()
-
-#     return redirect(f'/svh_service/contacts/{contact.id}/update')    #####
-
 
 @login_required
 def contact_update(request, id):
+    # update page
     contact = get_object_or_404(Contact, id=id)
 
     data = {}
@@ -973,15 +904,10 @@ def contact_update(request, id):
 
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
-
-        # print('form update = ', form)
-        #print('update form type = ', type(form))
-        # print('update contact = ', form.cleaned_data['contact'], type(form.cleaned_data['contact']))
-
         if form.is_valid():
-            # print('UPDATE VALID =', form.is_valid)
-            form_type = form.cleaned_data['type']
             new_form = form.save(commit=False)
+            # create type name depends on type litera
+            form_type = form.cleaned_data['type']
             new_form.type_name = TYPE_NAME[form_type]
             new_form.save()
 
