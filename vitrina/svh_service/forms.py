@@ -1,5 +1,5 @@
 from django import forms
-from .models import Consignment, Carpass, Contact, Document
+from .models import Consignment, Carpass, Contact, Document, TYPE_CHOICES
 from django.shortcuts import get_object_or_404
 
 
@@ -79,8 +79,9 @@ class CarpassFiltersForm(forms.Form):
 
 
 class ContactFiltersForm(forms.Form):
+    TYPE_CHOICES += (('', 'любой'),)
     contact = forms.IntegerField(label='Код клиента', required=False) # Код клиента из программы Альта-СВХ
-    type = forms.CharField(label='Тип', max_length=1, required=False) # Тип пользователя
+    type = forms.ChoiceField(label='Тип', choices=TYPE_CHOICES, initial='', required=False) # Тип пользователя
     name = forms.CharField(label='Организация', max_length=150, required=False) # Наименование организации
     inn = forms.CharField(label='ИНН', max_length=12, required=False) # ИНН организации
     email1 = forms.CharField(label='E-mail', max_length=100, required=False) # Почта отсылки сообщений
