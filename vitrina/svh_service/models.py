@@ -117,11 +117,11 @@ class Contact(models.Model):
     contact = models.IntegerField(unique=True) # Код клиента из программы Альта-СВХ
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, blank=False, default='') # Тип пользователя (литера)
     type_name = models.CharField(max_length=100, blank=True, default='')  # Тип пользователя (наименование)
-    name = models.CharField(max_length=150, blank=True, default='') # Наименование организации
-    inn = models.PositiveBigIntegerField(
-        validators=[MaxValueValidator(999999999999), MinValueValidator(1000000000)], 
-                              blank=True, default='') # ИНН организации
-    #inn = models.CharField(max_length=12, blank=True, default='') # ИНН организации
+    name = models.CharField(max_length=150, blank=True, default='') # Наименование организации  
+    #inn = models.PositiveBigIntegerField(
+        #validators=[MaxValueValidator(999999999999), MinValueValidator(1000000000)], 
+                              #blank=True, default='') # ИНН организации
+    inn = models.CharField(max_length=12, blank=True, default='') # ИНН организации
     fio = models.CharField(max_length=100, blank=True, default='') # ФИО физлица организации. ФИО оператора СВХ
     email0 = models.EmailField(max_length=100, blank=True, default='')  # Почта для смены пароля и контактов по работе портала
     email1 = models.EmailField(max_length=100, blank=True, default='') # Почта отсылки сообщений

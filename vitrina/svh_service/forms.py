@@ -1,7 +1,6 @@
 from django import forms
 from .models import Consignment, Carpass, Contact, Document
-from django.contrib.admin.widgets import AdminDateWidget
-from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
 
 class LoginForm(forms.Form):
@@ -172,3 +171,17 @@ class ContactForm(forms.ModelForm):
             'email1': '*', 
             'email2': '*', 
         }
+
+    def clean(self):
+        super(ContactForm, self).clean()
+        cd = self.cleaned_data
+
+        if cd['inn'] != '':
+            if not cd['inn'].isdigit():
+                self._errors['inn'] = self.error_class(['Некорректный формат ИНН'])
+            if cd['inn'].isdigit() and len(cd['inn']) < 10:
+                self._errors['inn'] = self.error_class(['Некорректный формат ИНН: менее 10 цифр'])
+            if cd['inn'].isdigit() and cd['inn'][0] == '0':
+                self._errors['inn'] = self.error_class(['Некорректный формат ИНН: не может начинаться с 0'])
+    
+        return self.cleaned_data
