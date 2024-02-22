@@ -328,56 +328,37 @@ def consignment_close(request, id):
                   {'consignment': consignment})
 
 
-def save_file_as_blob_to_database(form, file):
-    # actions for save file as binary to database
-    nfile = file.name
-    docbody = file.read()
-    new_form = form.save(commit=False)
-    new_form.nfile = nfile
-    new_form.docbody = docbody
-    # new_form.file = ''  #  if uncommented - don't saves uploaded files into filesystem, only into database
-    form = new_form
-
-    return form
 
 
-@login_required
-def consignment_add_document(request, id):
-    consignment = get_object_or_404(Consignment, id=id)
+# @login_required
+# def consignment_add_document(request, id):
+#     consignment = get_object_or_404(Consignment, id=id)
 
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
+#     if request.method == 'POST':
+#         form = DocumentForm(request.POST, request.FILES)
+#         if form.is_valid():
 
-            if request.FILES:
-                # actions for save file as binary to database
-                form = save_file_as_blob_to_database(form, request.FILES['file'])
+#             if request.FILES:
+#                 # actions for save file as binary to database
+#                 form = save_file_as_blob_to_database(form, request.FILES['file'])
 
-            form.save()
-            document = Document.objects.all().order_by('-id').first()
-            # form = DocumentForm(instance=document)
-            return redirect(f'/svh_service/documents/{document.id}/update')
-            # return render(request,
-            #       'shv_service/document/update.html',
-            #       {
-            #        'form': form,
-            #        'document': document,
-            #        'entity': consignment, 
-            #     #    'consignment_id': consignment.id,
-            #        })
-    else:
-        guid_partia = consignment.key_id
-        docdate = datetime.now()
-        form = DocumentForm(initial={'docdate': docdate, 'guid_partia': guid_partia})
+#             form.save()
+#             document = Document.objects.all().order_by('-id').first()
+#             return redirect(f'/svh_service/documents/{document.id}/update')
+
+#     else:
+#         guid_partia = consignment.key_id
+#         docdate = datetime.now()
+#         form = DocumentForm(initial={'docdate': docdate, 'guid_partia': guid_partia})
         
-    context = {
-        'form': form,
-        'consignment_id': consignment.id
-    }
+#     context = {
+#         'form': form,
+#         'consignment_id': consignment.id
+#     }
     
-    return render(request, 
-                  'shv_service/consignment/add_document.html', 
-                  context)
+#     return render(request, 
+#                   'shv_service/consignment/add_document.html', 
+#                   context)
 
 
 
@@ -647,46 +628,97 @@ def carpass_close(request, id):
                   {'carpass': carpass})
 
 
-@login_required
-def carpass_add_document(request, id):
-    carpass = get_object_or_404(Carpass, id=id)
+# @login_required
+# def carpass_add_document(request, id):
+#     carpass = get_object_or_404(Carpass, id=id)
 
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
+#     if request.method == 'POST':
+#         form = DocumentForm(request.POST, request.FILES)
+#         if form.is_valid():
 
-            if request.FILES:
-                # actions for save file as binary to database
-                form = save_file_as_blob_to_database(form, request.FILES['file'])
+#             if request.FILES:
+#                 # actions for save file as binary to database
+#                 form = save_file_as_blob_to_database(form, request.FILES['file'])
 
-            form.save()
-            document = Document.objects.all().order_by('-id').first()
-            # form = DocumentForm(instance=document)
-            return redirect(f'/svh_service/documents/{document.id}/update')
-            # return render(request,
-            #       'shv_service/document/update.html',
-            #       {
-            #        'form': form,
-            #        'document': document,
-            #        'entiry': carpass,
-            #        })
-    else:
-        id_enter = carpass.id_enter
-        docdate = datetime.now()
-        form = DocumentForm(initial={'docdate': docdate, 'id_enter': id_enter})
+#             form.save()
+#             document = Document.objects.all().order_by('-id').first()
+#             return redirect(f'/svh_service/documents/{document.id}/update')
+
+#     else:
+#         id_enter = carpass.id_enter
+#         docdate = datetime.now()
+#         form = DocumentForm(initial={'docdate': docdate, 'id_enter': id_enter})
         
-    context = {
-        'form': form,
-        'carpass_id': carpass.id
-    }
+#     context = {
+#         'form': form,
+#         'carpass_id': carpass.id
+#     }
     
-    return render(request, 
-                  'shv_service/carpass/add_document.html', 
-                  context)
+#     return render(request, 
+#                   'shv_service/carpass/add_document.html', 
+#                   context)
 
 
 
 #  DOCUMENT ******************************************
+def save_file_as_blob_to_database(form, file):
+    # actions for save file as binary to database
+    nfile = file.name
+    docbody = file.read()
+    new_form = form.save(commit=False)
+    new_form.nfile = nfile
+    new_form.docbody = docbody
+    # new_form.file = ''  #  if uncommented - don't saves uploaded files into filesystem, only into database
+    form = new_form
+
+    return form
+
+
+@login_required
+def document_add(request, entity_type, entity_id):  # new 22.02.2024 function!
+    # entity_type in ['consignment', 'carpass]  # id = entity.id
+    entity, entity['consignment'], entity['carpass'] = {}, {}, {}
+    entity['consignment']['model'] = Consignment
+    entity['carpass']['model'] = Carpass
+    get_object = get_object_or_404(entity[entity_type]['model'], id=entity_id)
+    if entity_type == 'consignment':
+        entity_specific_id = get_object.key_id
+    elif entity_type == 'carpass':
+        entity_specific_id = get_object.id_enter
+
+    entity['consignment']['entity_id_type'] = 'guid_partia'
+    entity['carpass']['entity_id_type'] = 'id_enter'
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            if request.FILES:
+                # actions for save file as binary to database
+                form = save_file_as_blob_to_database(form, request.FILES['file'])
+            form.save()
+            document = Document.objects.all().order_by('-id').first()
+            return redirect(f'/svh_service/documents/{document.id}/update')
+
+    else:
+        docdate = datetime.now()
+        form = DocumentForm(initial={'docdate': docdate,  entity[entity_type]['entity_id_type']: entity_specific_id})
+        
+    id_for_link = get_object.id
+    entity_type_for_link = entity_type + 's' if entity_type == 'consignment' else entity_type
+    link_for_cancel = mark_safe(f'<a href="/svh_service/{entity_type_for_link}/{id_for_link}/update">')
+
+    context = {
+        'form': form,
+        'entity_type': entity_type,
+        'entity_id': get_object.id,
+        'link_for_cancel': link_for_cancel
+    }
+    
+    return render(request, 
+                  'shv_service/document_add.html', 
+                  context)
+
+
 @login_required
 def document_update(request, id):
     document = get_object_or_404(Document, id=id)

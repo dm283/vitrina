@@ -70,10 +70,18 @@
 
   <h5 class="block_name">Документы</h5>
 
-  {% if data.entity == 'carpass' %}
+  {% if not entity.posted %}
+  <div class='buttons_area'>
+    <a href="{% url 'svh_service:document_add' data.entity entity.id %}">
+      <input type="button" value="ADD"></a>
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- {% if data.entity == 'carpass' %}
     {% if not entity.posted %}
     <div class='buttons_area'>
-      <a href="{% url 'svh_service:carpass_add_document' entity.id %}">
+      <a href="{% url 'svh_service:document_add' data.entity entity.id %}">
         <input type="button" value="ADD"></a>
       </a>
     </div>
@@ -83,12 +91,12 @@
   {% if data.entity == 'consignment' %}
     {% if not entity.posted %}
     <div class='buttons_area'>
-      <a href="{% url 'svh_service:consignment_add_document' entity.id %}">
+      <a href="{% url 'svh_service:document_add' data.entity entity.id %}">
         <input type="button" value="ADD"></a>
       </a>
     </div>
     {% endif %}
-  {% endif %}
+  {% endif %} -->
 
   <table
       id="table"

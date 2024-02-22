@@ -135,6 +135,7 @@ class DocumentForm(forms.ModelForm):
         widgets = {
             'guid_partia': forms.HiddenInput(),
             'id_enter': forms.HiddenInput(),
+            'docdate': forms.DateTimeInput(attrs={'type': 'datetime-local'})
         }
 
         labels = {
