@@ -18,7 +18,7 @@ urlpatterns = [
     path('consignments/<int:id>/post', views.consignment_post, name='consignment_post'),
     path('consignments/<int:id>/rollback', views.consignment_rollback, name='consignment_rollback'),
     path('consignments/<int:id>/close', views.consignment_close, name='consignment_close'),
-    path('consignments/<int:id>/add_document', views.consignment_add_document, name='consignment_add_document'),
+    # path('consignments/<int:id>/add_document', views.consignment_add_document, name='consignment_add_document'),
 
     path('erase_filters/<str:entity>/', views.erase_filters, name='erase_filters'),
 
@@ -31,7 +31,9 @@ urlpatterns = [
     path('carpass/<int:id>/post', views.carpass_post, name='carpass_post'),
     path('carpass/<int:id>/rollback', views.carpass_rollback, name='carpass_rollback'),
     path('carpass/<int:id>/close', views.carpass_close, name='carpass_close'),
-    path('carpass/<int:id>/add_document', views.carpass_add_document, name='carpass_add_document'),
+    # path('carpass/<int:id>/add_document', views.carpass_add_document, name='carpass_add_document'),
+
+    path('documents/<str:entity_type>/<int:entity_id>/add_document', views.document_add, name='document_add'),
 
     path('documents/<int:id>/update', views.document_update, name='document_update'),
     path('documents/<int:id>/delete', views.document_delete, name='document_delete'),
