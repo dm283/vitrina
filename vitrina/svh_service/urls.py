@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('consignments', views.consignment_list, name='consignment_list'),
     path('consignments/<int:id>/', views.consignment_update, name='consignment_update'),
-    path('consignments/add', views.consignment_add, name='consignment_add'),
+    # path('consignments/add', views.consignment_add, name='consignment_add'),
     # path('consignments/add_complete', views.post_consignment, name='post_consignment'),
     path('consignments/<int:id>/update', views.consignment_update, name='consignment_update'),
     path('consignments/<int:id>/delete', views.consignment_delete, name='consignment_delete'),
@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('carpass', views.carpass_list, name='carpass_list'),
     path('carpass/<int:id>/', views.carpass_update, name='carpass_update'),
-    path('carpass/add', views.carpass_add, name='carpass_add'),
+    #path('carpass/add', views.carpass_add, name='carpass_add'),
     # path('carpass/add_complete', views.post_carpass, name='post_carpass'),
     path('carpass/<int:id>/update', views.carpass_update, name='carpass_update'),
     path('carpass/<int:id>/delete', views.carpass_delete, name='carpass_delete'),
@@ -44,7 +44,7 @@ urlpatterns = [
 
     path('contacts', views.contact_list, name='contact_list'),
     path('contacts/<int:id>/', views.contact_update, name='contact_update'),
-    path('contacts/add', views.contact_add, name='contact_add'),
+    #path('contacts/add', views.contact_add, name='contact_add'),
     # path('contacts/add_complete', views.post_contact, name='post_contact'),
     path('contacts/<int:id>/update', views.contact_update, name='contact_update'),
     path('contacts/<int:id>/delete', views.contact_delete, name='contact_delete'),
