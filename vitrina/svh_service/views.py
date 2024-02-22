@@ -45,6 +45,35 @@ def erase_filters(request, entity):
     return redirect(f'/svh_service/{entity}')
 
 
+@login_required
+def object_add(request, entity_type):
+    # universal function for adding object (consignment, carpass, contact)
+
+    entity, entity['consignment'], entity['carpass'] = {}, {}, {}
+    entity['consignment'] = { 'model': Consignment, 'id_name': 'key_id' }
+    entity['carpass'] = { 'model': Carpass, 'id_name': 'id_enter' }
+    entity['contact'] = { 'model': Contact, 'id_name': 'contact' }
+
+    # calculate new object id = get from db max related to entity_type (model) ID and increase it on 1
+    object_id_list = entity[entity_type]['model'].objects.values_list(
+        entity[entity_type]['id_name'], flat=True)
+    if len(object_id_list) == 0:
+        object_id_list = ['0']
+    object_id_new = max(list(map(int, object_id_list))) + 1
+    object_id_new = int(object_id_new) if entity_type == 'contact' else str(object_id_new)
+
+    # create empty object with entity id only and save it to db
+    c = entity[entity_type]['model']()
+    c.__setattr__(entity[entity_type]['id_name'], object_id_new)
+    c.save()
+
+    # get id or the newest created object and redirect to update page
+    get_object = entity[entity_type]['model'].objects.all().order_by('-id')[0]
+    id_for_link = get_object.id
+    entity_type_for_link = entity_type if entity_type == 'carpass' else entity_type+'s'
+    return redirect(f'/svh_service/{entity_type_for_link}/{id_for_link}/update')
+
+
 #  CONSIGNMENT ******************************************
 @login_required
 def consignment_list(request):
@@ -144,29 +173,51 @@ def consignment_list(request):
                    'form_filters': form_filters, })
 
 
-@login_required
-def consignment_add(request):
-    # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
-    key_id_list = Consignment.objects.values_list("key_id", flat=True)
-    if len(key_id_list) == 0:
-        key_id_list = ['0']
-    key_id_new = str(max(list(map(int, key_id_list))) + 1)  # key_id_max_from_list_increased_1
+# @login_required
+# def consignment_add(request):
+#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
+#     key_id_list = Consignment.objects.values_list("key_id", flat=True)
+#     if len(key_id_list) == 0:
+#         key_id_list = ['0']
+#     key_id_new = str(max(list(map(int, key_id_list))) + 1)  # key_id_max_from_list_increased_1
 
-    form = ConsignmentForm(initial={'key_id': key_id_new})
+#     c = Consignment(key_id=key_id_new)
+#     c.save()
+#     consignment = get_object_or_404(Consignment, key_id=key_id_new)
 
-    return render(request, 'shv_service/consignment/add.html',
-                  {'form': form})
+#     return redirect(f'/svh_service/consignments/{consignment.id}/update')
 
-@login_required
-@require_POST
-def post_consignment(request):
-    form = ConsignmentForm(data=request.POST)
-    if form.is_valid:
-        form.save()
+
+    # form = ConsignmentForm(initial={'key_id': key_id_new})
+
+    # return render(request, 'shv_service/consignment/add.html',
+    #               {'form': form})
+
+
+
+# @login_required
+# def consignment_add(request):
+#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
+#     key_id_list = Consignment.objects.values_list("key_id", flat=True)
+#     if len(key_id_list) == 0:
+#         key_id_list = ['0']
+#     key_id_new = str(max(list(map(int, key_id_list))) + 1)  # key_id_max_from_list_increased_1
+
+#     form = ConsignmentForm(initial={'key_id': key_id_new})
+
+#     return render(request, 'shv_service/consignment/add.html',
+#                   {'form': form})
+
+# @login_required
+# @require_POST
+# def post_consignment(request):
+#     form = ConsignmentForm(data=request.POST)
+#     if form.is_valid:
+#         form.save()
     
-    consignment = Consignment.objects.all().order_by('-id').first()
+#     consignment = Consignment.objects.all().order_by('-id').first()
 
-    return redirect(f'/svh_service/consignments/{consignment.id}/update')    #####
+#     return redirect(f'/svh_service/consignments/{consignment.id}/update')    #####
 
     # form = ConsignmentForm(instance=consignment)
     
@@ -435,29 +486,45 @@ def carpass_list(request):
                    'form_filters': form_filters, })
 
 
-@login_required
-def carpass_add(request):
-    # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
-    id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
-    if len(id_enter_list) == 0:
-        id_enter_list = ['0']
-    id_enter_new = str(max(list(map(int, id_enter_list))) + 1)  # key_id_max_from_list_increased_1
 
-    form = CarpassForm(initial={'id_enter': id_enter_new})
+# @login_required
+# def carpass_add(request):
+#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
+#     id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
+#     if len(id_enter_list) == 0:
+#         id_enter_list = ['0']
+#     id_enter_new = str(max(list(map(int, id_enter_list))) + 1)  # key_id_max_from_list_increased_1
 
-    return render(request, 'shv_service/carpass/add.html',
-                  {'form': form})
+#     c = Carpass(id_enter=id_enter_new)
+#     c.save()
+#     carpass = get_object_or_404(Carpass, id_enter=id_enter_new)
 
-@login_required
-@require_POST
-def post_carpass(request):
-    form = CarpassForm(data=request.POST)
-    if form.is_valid:
-        form.save()
+#     return redirect(f'/svh_service/carpass/{carpass.id}/update')
+
+
+# @login_required
+# def carpass_add(request):
+#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
+#     id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
+#     if len(id_enter_list) == 0:
+#         id_enter_list = ['0']
+#     id_enter_new = str(max(list(map(int, id_enter_list))) + 1)  # key_id_max_from_list_increased_1
+
+#     form = CarpassForm(initial={'id_enter': id_enter_new})
+
+#     return render(request, 'shv_service/carpass/add.html',
+#                   {'form': form})
+
+# @login_required
+# @require_POST
+# def post_carpass(request):
+#     form = CarpassForm(data=request.POST)
+#     if form.is_valid:
+#         form.save()
     
-    carpass = Carpass.objects.all().order_by('-id').first()
+#     carpass = Carpass.objects.all().order_by('-id').first()
 
-    return redirect(f'/svh_service/carpass/{carpass.id}/update')    #####
+#     return redirect(f'/svh_service/carpass/{carpass.id}/update')    #####
 
     # form = CarpassForm(instance=carpass)
     
@@ -910,18 +977,18 @@ def contact_list(request):
 
 
 
-@login_required
-def contact_add(request):
-    # creates a new record in database with generated 'contact' field and then redirects to update page
-    contact_list = Contact.objects.values_list("contact", flat=True)
-    if len(contact_list) == 0:
-        contact_list = ['0']
-    contact_new = int(max(list(map(int, contact_list))) + 1)  # max existing contact number from db increased on 1
-    c = Contact(contact=contact_new)
-    c.save()
-    contact = get_object_or_404(Contact, contact=contact_new)
+# @login_required
+# def contact_add(request):
+#     # creates a new record in database with generated 'contact' field and then redirects to update page
+#     contact_list = Contact.objects.values_list("contact", flat=True)
+#     if len(contact_list) == 0:
+#         contact_list = ['0']
+#     contact_new = int(max(list(map(int, contact_list))) + 1)  # max existing contact number from db increased on 1
+#     c = Contact(contact=contact_new)
+#     c.save()
+#     contact = get_object_or_404(Contact, contact=contact_new)
 
-    return redirect(f'/svh_service/contacts/{contact.id}/update')
+#     return redirect(f'/svh_service/contacts/{contact.id}/update')
     
 
 @login_required

@@ -5,7 +5,7 @@
 
   {% if request.user.profile.type == 'O' %}
   <div class='buttons_area'>
-    <a href="{% url 'svh_service:consignment_add' %}"><input type="button" value="ADD"></a>
+    <a href="{% url 'svh_service:object_add' 'consignment' %}"><input type="button" value="ADD"></a>
   </div>
   {% endif %}
 
