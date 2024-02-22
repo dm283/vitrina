@@ -1,6 +1,18 @@
+import os, configparser
 from django import forms
 from .models import Consignment, Carpass, Contact, Document, TYPE_CHOICES
 from django.shortcuts import get_object_or_404
+from pathlib import Path
+
+
+config = configparser.ConfigParser()
+config_file = os.path.join(Path(__file__).resolve().parent.parent, 'vitrina', 'config.ini')
+if os.path.exists(config_file):
+    config.read(config_file, encoding='utf-8')
+else:
+    print("error! config file doesn't exist"); sys.exit()
+
+APP_TYPE = config['app']['app_type']
 
 
 class LoginForm(forms.Form):
@@ -44,15 +56,6 @@ class ConsignmentForm(forms.ModelForm):
             'd_in': 'Дата въезда ТС на терминал', 
             'd_out': 'Дата выезда ТС с терминала',
         }
-
-        # help_texts = {
-        #     'dater': 'format: yyyy-mm-dd hh:mm:ss',
-        #     'dateo': 'format: yyyy-mm-dd hh:mm:ss',
-        #     'd_in': 'format: yyyy-mm-dd hh:mm:ss',
-        #     'd_out': 'format: yyyy-mm-dd hh:mm:ss',
-        # }
-        # labels = {
-        # }
 
 
 class ConsignmentFiltersForm(forms.Form):
@@ -130,13 +133,23 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         # fields = '__all__'
-        fields = ['guid_partia', 'id_enter', 'docnum', 'docdate', 'docname', 'file', 'nfile']
+        if APP_TYPE == 'operator':
+            fields = ['guid_partia', 'id_enter', 'docnum', 'docdate', 'docname', 'file', 'nfile', ]
+            is_ro = False
+        elif APP_TYPE == 'client':
+            fields = ['guid_partia', 'id_enter', 'docnum', 'docdate', 'docname', 'nfile', ]
+            is_ro = True
 
         widgets = {
             'guid_partia': forms.HiddenInput(),
             'id_enter': forms.HiddenInput(),
-            'docdate': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+            'docnum': forms.TextInput(attrs={'readonly': is_ro}),
+            'docdate': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'docname': forms.TextInput(attrs={'readonly': is_ro}),
+            'nfile': forms.TextInput(attrs={'readonly': True}),
+            'file': forms.FileInput(),
         }
+        # forms.TextInput(attrs={'disabled': 'disabled'})
 
         labels = {
             'docnum': 'Номер', 
