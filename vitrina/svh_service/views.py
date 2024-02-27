@@ -163,8 +163,6 @@ def consignment_list(request):
         consignments = consignments.filter(car=cd['car'])
     if cd['on_terminal']:
         consignments = consignments.filter(dateo__isnull=True)
-    # else:
-    #     consignments = consignments.filter(dateo__isnull=False)
 
     return render(request,
                   'shv_service/consignment/list.html',
@@ -173,100 +171,37 @@ def consignment_list(request):
                    'form_filters': form_filters, })
 
 
-# @login_required
-# def consignment_add(request):
-#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
-#     key_id_list = Consignment.objects.values_list("key_id", flat=True)
-#     if len(key_id_list) == 0:
-#         key_id_list = ['0']
-#     key_id_new = str(max(list(map(int, key_id_list))) + 1)  # key_id_max_from_list_increased_1
-
-#     c = Consignment(key_id=key_id_new)
-#     c.save()
-#     consignment = get_object_or_404(Consignment, key_id=key_id_new)
-
-#     return redirect(f'/svh_service/consignments/{consignment.id}/update')
-
-
-    # form = ConsignmentForm(initial={'key_id': key_id_new})
-
-    # return render(request, 'shv_service/consignment/add.html',
-    #               {'form': form})
-
-
-
-# @login_required
-# def consignment_add(request):
-#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
-#     key_id_list = Consignment.objects.values_list("key_id", flat=True)
-#     if len(key_id_list) == 0:
-#         key_id_list = ['0']
-#     key_id_new = str(max(list(map(int, key_id_list))) + 1)  # key_id_max_from_list_increased_1
-
-#     form = ConsignmentForm(initial={'key_id': key_id_new})
-
-#     return render(request, 'shv_service/consignment/add.html',
-#                   {'form': form})
-
-# @login_required
-# @require_POST
-# def post_consignment(request):
-#     form = ConsignmentForm(data=request.POST)
-#     if form.is_valid:
-#         form.save()
-    
-#     consignment = Consignment.objects.all().order_by('-id').first()
-
-#     return redirect(f'/svh_service/consignments/{consignment.id}/update')    #####
-
-    # form = ConsignmentForm(instance=consignment)
-    
-    # data = {}
-    # data['block_name'] = 'Партия товаров'
-    # data['entity'] = 'consignment'
-    # data['id'] = consignment.key_id
-
-    # return render(request,
-    #               'shv_service/update_universal.html',
-    #               {'form': form,
-    #                'data': data,
-    #                'entity': consignment})
-
-
 @login_required
 def consignment_update(request, id):
     consignment = get_object_or_404(Consignment, id=id)
- 
-    try:
-        documents = Document.objects.filter(guid_partia=consignment.key_id)
-    except:
-        documents = ''
-
-    data = {}
-    data['block_name'] = 'Партия товаров'
-    data['entity'] = 'consignment'
-    data['id'] = consignment.key_id
+    documents = Document.objects.filter(guid_partia=consignment.key_id)
 
     if request.method == 'POST':
         form = ConsignmentForm(request.POST, instance=consignment)
         if form.is_valid():
             form.save()
-
-            return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': consignment,
-                         'documents': documents})
-    else:
+    else:  # request.method == 'GET
         form = ConsignmentForm(instance=consignment)
 
+    # various data for render template
+    data = {}
+    data['block_name'] = 'Партия товаров'
+    data['entity'] = 'consignment'
+    data['id'] = consignment.key_id
+
+    link = {}  #  links for buttons
+    for k in ['post', 'delete', 'rollback', 'close']:
+        link[k] = mark_safe(f'<a href="/svh_service/consignments/{id}/{k}">')
+
+    context_data = {'form': form,
+        'data': data, 
+        'entity': consignment,
+        'documents': documents,
+        'link': link}
+
     return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': consignment,
-                         'documents': documents})
+        'shv_service/update_universal.html',
+        context=context_data)
 
 
 @login_required
@@ -379,40 +314,6 @@ def consignment_close(request, id):
                   {'consignment': consignment})
 
 
-
-
-# @login_required
-# def consignment_add_document(request, id):
-#     consignment = get_object_or_404(Consignment, id=id)
-
-#     if request.method == 'POST':
-#         form = DocumentForm(request.POST, request.FILES)
-#         if form.is_valid():
-
-#             if request.FILES:
-#                 # actions for save file as binary to database
-#                 form = save_file_as_blob_to_database(form, request.FILES['file'])
-
-#             form.save()
-#             document = Document.objects.all().order_by('-id').first()
-#             return redirect(f'/svh_service/documents/{document.id}/update')
-
-#     else:
-#         guid_partia = consignment.key_id
-#         docdate = datetime.now()
-#         form = DocumentForm(initial={'docdate': docdate, 'guid_partia': guid_partia})
-        
-#     context = {
-#         'form': form,
-#         'consignment_id': consignment.id
-#     }
-    
-#     return render(request, 
-#                   'shv_service/consignment/add_document.html', 
-#                   context)
-
-
-
 #  CARPASS ******************************************
 @login_required
 def carpass_list(request):
@@ -486,96 +387,37 @@ def carpass_list(request):
                    'form_filters': form_filters, })
 
 
-
-# @login_required
-# def carpass_add(request):
-#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
-#     id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
-#     if len(id_enter_list) == 0:
-#         id_enter_list = ['0']
-#     id_enter_new = str(max(list(map(int, id_enter_list))) + 1)  # key_id_max_from_list_increased_1
-
-#     c = Carpass(id_enter=id_enter_new)
-#     c.save()
-#     carpass = get_object_or_404(Carpass, id_enter=id_enter_new)
-
-#     return redirect(f'/svh_service/carpass/{carpass.id}/update')
-
-
-# @login_required
-# def carpass_add(request):
-#     # выбираем из бд max key_id, увеличиваем на 1 - это key_id Новой партии
-#     id_enter_list = Carpass.objects.values_list("id_enter", flat=True)
-#     if len(id_enter_list) == 0:
-#         id_enter_list = ['0']
-#     id_enter_new = str(max(list(map(int, id_enter_list))) + 1)  # key_id_max_from_list_increased_1
-
-#     form = CarpassForm(initial={'id_enter': id_enter_new})
-
-#     return render(request, 'shv_service/carpass/add.html',
-#                   {'form': form})
-
-# @login_required
-# @require_POST
-# def post_carpass(request):
-#     form = CarpassForm(data=request.POST)
-#     if form.is_valid:
-#         form.save()
-    
-#     carpass = Carpass.objects.all().order_by('-id').first()
-
-#     return redirect(f'/svh_service/carpass/{carpass.id}/update')    #####
-
-    # form = CarpassForm(instance=carpass)
-    
-    # data = {}
-    # data['block_name'] = 'Пропуск'
-    # data['entity'] = 'carpass'
-    # data['id'] = carpass.id_enter
-
-    # return render(request,
-    #               'shv_service/update_universal.html',
-    #               {'form': form,
-    #                'data': data, 
-    #                'entity': carpass,})
-
-
 @login_required
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
- 
-    try:
-        documents = Document.objects.filter(id_enter=carpass.id_enter)
-    except:
-        documents = ''
+    documents = Document.objects.filter(id_enter=carpass.id_enter)
 
-    data = {}
-    data['block_name'] = 'Пропуск'
-    data['entity'] = 'carpass'
-    data['id'] = carpass.id_enter
-    
     if request.method == 'POST':
         form = CarpassForm(request.POST, instance=carpass)
         if form.is_valid():
             form.save()
-            return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': carpass,
-                         'documents': documents})
     else:
         form = CarpassForm(instance=carpass)
 
+    # various data for render template
+    data = {}
+    data['block_name'] = 'Пропуск'
+    data['entity'] = 'carpass'
+    data['id'] = carpass.id_enter
+
+    link = {}  #  links for buttons
+    for k in ['post', 'delete', 'rollback', 'close']:
+        link[k] = mark_safe(f'<a href="/svh_service/carpass/{id}/{k}">')
+
+    context_data = {'form': form,
+        'data': data, 
+        'entity': carpass,
+        'documents': documents,
+        'link': link}
+
     return render(request,
-                  'shv_service/update_universal.html',
-                  {
-                   'form': form,
-                   'data': data, 
-                   'entity': carpass,
-                   'documents': documents
-                   }
-                   )
+        'shv_service/update_universal.html',
+        context=context_data)
 
 
 @login_required
@@ -646,13 +488,6 @@ def carpass_post(request, id):
                    'error_msg': error_msg,
                    'link_for_cancel': link_for_cancel})
 
-    # return render(request,
-    #               'shv_service/carpass/post.html',
-    #               {'carpass': carpass,
-    #                'is_approved': is_approved,
-    #                'error_msg': error_msg,
-    #                })
-
 
 @login_required
 def carpass_rollback(request, id):
@@ -693,38 +528,6 @@ def carpass_close(request, id):
     return render(request,
                   'shv_service/carpass/close.html',
                   {'carpass': carpass})
-
-
-# @login_required
-# def carpass_add_document(request, id):
-#     carpass = get_object_or_404(Carpass, id=id)
-
-#     if request.method == 'POST':
-#         form = DocumentForm(request.POST, request.FILES)
-#         if form.is_valid():
-
-#             if request.FILES:
-#                 # actions for save file as binary to database
-#                 form = save_file_as_blob_to_database(form, request.FILES['file'])
-
-#             form.save()
-#             document = Document.objects.all().order_by('-id').first()
-#             return redirect(f'/svh_service/documents/{document.id}/update')
-
-#     else:
-#         id_enter = carpass.id_enter
-#         docdate = datetime.now()
-#         form = DocumentForm(initial={'docdate': docdate, 'id_enter': id_enter})
-        
-#     context = {
-#         'form': form,
-#         'carpass_id': carpass.id
-#     }
-    
-#     return render(request, 
-#                   'shv_service/carpass/add_document.html', 
-#                   context)
-
 
 
 #  DOCUMENT ******************************************
@@ -796,9 +599,6 @@ def document_update(request, id):
 
     if request.method == 'POST':
         form = DocumentForm(data=request.POST, files=request.FILES, instance=document)
-        
-        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
-        
         if form.is_valid():
             if request.FILES:
                 # actions for save file as binary to database
@@ -807,13 +607,9 @@ def document_update(request, id):
             form.save()
             document = get_object_or_404(Document, id=id)
             form = DocumentForm(instance=document)
-            # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
-            # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
 
     else:
         form = DocumentForm(instance=document)
-        # form.fields['guid_partia'].widget = form.fields['guid_partia'].hidden_widget()  ###
-        # form.fields['id_enter'].widget = form.fields['id_enter'].hidden_widget()  ###
 
     return render(request,
                   'shv_service/document/update.html',
@@ -827,41 +623,17 @@ def document_update(request, id):
 @login_required
 def document_delete(request, id):
     document = get_object_or_404(Document, id=id)
-    data = {}
+
     if document.guid_partia:
         entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-        data['block_name'] = 'Партия товаров'
-        data['entity'] = 'consignment'
-        data['id'] = entity.key_id
+        entity_for_redirect = 'consignments'
     elif document.id_enter:
         entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-        data['block_name'] = 'Пропуск'
-        data['entity'] = 'carpass'
-        data['id'] = entity.id_enter
+        entity_for_redirect = 'carpass'
     
     if request.method == 'POST':
         document.delete()
-
-        if document.guid_partia:
-            form = ConsignmentForm(instance=entity)
-            try:
-                documents = Document.objects.filter(guid_partia=entity.key_id)
-            except:
-                documents = ''
-        elif document.id_enter:
-            form = CarpassForm(instance=entity)
-            try:
-                documents = Document.objects.filter(id_enter=entity.id_enter)
-            except:
-                documents = ''
-
-        return render(request,
-                    'shv_service/update_universal.html',
-                    {'form': form,
-                    'data': data, 
-                    'entity': entity,
-                    'documents': documents,})
-
+        return redirect(f'/svh_service/{entity_for_redirect}/{entity.id}/update')
 
     return render(request,
                   'shv_service/document/delete.html',
@@ -974,32 +746,12 @@ def contact_list(request):
                   'shv_service/contact/list.html',
                   {'contacts': contacts,
                    'form_filters': form_filters, })
-
-
-
-# @login_required
-# def contact_add(request):
-#     # creates a new record in database with generated 'contact' field and then redirects to update page
-#     contact_list = Contact.objects.values_list("contact", flat=True)
-#     if len(contact_list) == 0:
-#         contact_list = ['0']
-#     contact_new = int(max(list(map(int, contact_list))) + 1)  # max existing contact number from db increased on 1
-#     c = Contact(contact=contact_new)
-#     c.save()
-#     contact = get_object_or_404(Contact, contact=contact_new)
-
-#     return redirect(f'/svh_service/contacts/{contact.id}/update')
     
 
 @login_required
 def contact_update(request, id):
     # update page
     contact = get_object_or_404(Contact, id=id)
-
-    data = {}
-    data['block_name'] = 'Организация'
-    data['entity'] = 'contact'
-    data['id'] = contact.contact
 
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
@@ -1009,20 +761,27 @@ def contact_update(request, id):
             form_type = form.cleaned_data['type']
             new_form.type_name = TYPE_NAME[form_type]
             new_form.save()
-
-            return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': contact,})
     else:
         form = ContactForm(instance=contact)
 
+    # various data for render template
+    data = {}
+    data['block_name'] = 'Организация'
+    data['entity'] = 'contact'
+    data['id'] = contact.contact
+
+    link = {}  #  links for buttons
+    for k in ['post', 'delete', 'rollback', 'close']:
+        link[k] = mark_safe(f'<a href="/svh_service/contacts/{id}/{k}">')
+
+    context_data = {'form': form,
+        'data': data, 
+        'entity': contact,
+        'link': link}
+
     return render(request,
-                  'shv_service/update_universal.html',
-                  {'form': form,
-                   'data': data, 
-                   'entity': contact,})
+        'shv_service/update_universal.html',
+        context=context_data)
 
 
 @login_required
