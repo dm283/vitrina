@@ -236,37 +236,34 @@ def consignment_list(request):
 @login_required
 def consignment_update(request, id):
     consignment = get_object_or_404(Consignment, id=id)
- 
-    try:
-        documents = Document.objects.filter(guid_partia=consignment.key_id)
-    except:
-        documents = ''
-
-    data = {}
-    data['block_name'] = 'Партия товаров'
-    data['entity'] = 'consignment'
-    data['id'] = consignment.key_id
+    documents = Document.objects.filter(guid_partia=consignment.key_id)
 
     if request.method == 'POST':
         form = ConsignmentForm(request.POST, instance=consignment)
         if form.is_valid():
             form.save()
-
-            return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': consignment,
-                         'documents': documents})
-    else:
+    else:  # request.method == 'GET
         form = ConsignmentForm(instance=consignment)
 
+    # various data for render template
+    data = {}
+    data['block_name'] = 'Партия товаров'
+    data['entity'] = 'consignment'
+    data['id'] = consignment.key_id
+
+    link = {}  #  links for buttons
+    for k in ['post', 'delete', 'rollback', 'close']:
+        link[k] = mark_safe(f'<a href="/svh_service/consignments/{id}/{k}">')
+
+    context_data = {'form': form,
+        'data': data, 
+        'entity': consignment,
+        'documents': documents,
+        'link': link}
+
     return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': consignment,
-                         'documents': documents})
+        'shv_service/update_universal.html',
+        context=context_data)
 
 
 @login_required
@@ -543,39 +540,34 @@ def carpass_list(request):
 @login_required
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
- 
-    try:
-        documents = Document.objects.filter(id_enter=carpass.id_enter)
-    except:
-        documents = ''
+    documents = Document.objects.filter(id_enter=carpass.id_enter)
 
-    data = {}
-    data['block_name'] = 'Пропуск'
-    data['entity'] = 'carpass'
-    data['id'] = carpass.id_enter
-    
     if request.method == 'POST':
         form = CarpassForm(request.POST, instance=carpass)
         if form.is_valid():
             form.save()
-            return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': carpass,
-                         'documents': documents})
     else:
         form = CarpassForm(instance=carpass)
 
+    # various data for render template
+    data = {}
+    data['block_name'] = 'Пропуск'
+    data['entity'] = 'carpass'
+    data['id'] = carpass.id_enter
+
+    link = {}  #  links for buttons
+    for k in ['post', 'delete', 'rollback', 'close']:
+        link[k] = mark_safe(f'<a href="/svh_service/carpass/{id}/{k}">')
+
+    context_data = {'form': form,
+        'data': data, 
+        'entity': carpass,
+        'documents': documents,
+        'link': link}
+
     return render(request,
-                  'shv_service/update_universal.html',
-                  {
-                   'form': form,
-                   'data': data, 
-                   'entity': carpass,
-                   'documents': documents
-                   }
-                   )
+        'shv_service/update_universal.html',
+        context=context_data)
 
 
 @login_required
@@ -827,40 +819,44 @@ def document_update(request, id):
 @login_required
 def document_delete(request, id):
     document = get_object_or_404(Document, id=id)
-    data = {}
+
+    # data = {}
     if document.guid_partia:
         entity = get_object_or_404(Consignment, key_id=document.guid_partia)
-        data['block_name'] = 'Партия товаров'
-        data['entity'] = 'consignment'
-        data['id'] = entity.key_id
+        # data['block_name'] = 'Партия товаров'
+        # data['entity'] = 'consignment'
+        # data['id'] = entity.key_id
+        entity_for_redirect = 'consignments'
     elif document.id_enter:
         entity = get_object_or_404(Carpass, id_enter=document.id_enter)
-        data['block_name'] = 'Пропуск'
-        data['entity'] = 'carpass'
-        data['id'] = entity.id_enter
+        # data['block_name'] = 'Пропуск'
+        # data['entity'] = 'carpass'
+        # data['id'] = entity.id_enter
+        entity_for_redirect = 'carpass'
     
     if request.method == 'POST':
         document.delete()
+        return redirect(f'/svh_service/{entity_for_redirect}/{entity.id}/update')
 
-        if document.guid_partia:
-            form = ConsignmentForm(instance=entity)
-            try:
-                documents = Document.objects.filter(guid_partia=entity.key_id)
-            except:
-                documents = ''
-        elif document.id_enter:
-            form = CarpassForm(instance=entity)
-            try:
-                documents = Document.objects.filter(id_enter=entity.id_enter)
-            except:
-                documents = ''
+        # if document.guid_partia:
+        #     form = ConsignmentForm(instance=entity)
+        #     try:
+        #         documents = Document.objects.filter(guid_partia=entity.key_id)
+        #     except:
+        #         documents = ''
+        # elif document.id_enter:
+        #     form = CarpassForm(instance=entity)
+        #     try:
+        #         documents = Document.objects.filter(id_enter=entity.id_enter)
+        #     except:
+        #         documents = ''
 
-        return render(request,
-                    'shv_service/update_universal.html',
-                    {'form': form,
-                    'data': data, 
-                    'entity': entity,
-                    'documents': documents,})
+        # return render(request,
+        #             'shv_service/update_universal.html',
+        #             {'form': form,
+        #             'data': data, 
+        #             'entity': entity,
+        #             'documents': documents,})
 
 
     return render(request,
@@ -996,11 +992,6 @@ def contact_update(request, id):
     # update page
     contact = get_object_or_404(Contact, id=id)
 
-    data = {}
-    data['block_name'] = 'Организация'
-    data['entity'] = 'contact'
-    data['id'] = contact.contact
-
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
@@ -1010,19 +1001,38 @@ def contact_update(request, id):
             new_form.type_name = TYPE_NAME[form_type]
             new_form.save()
 
-            return render(request,
-                        'shv_service/update_universal.html',
-                        {'form': form,
-                         'data': data, 
-                         'entity': contact,})
+            # return render(request,
+            #             'shv_service/update_universal.html',
+            #             {'form': form,
+            #              'data': data, 
+            #              'entity': contact,})
     else:
         form = ContactForm(instance=contact)
 
+    # various data for render template
+    data = {}
+    data['block_name'] = 'Организация'
+    data['entity'] = 'contact'
+    data['id'] = contact.contact
+
+    link = {}  #  links for buttons
+    for k in ['post', 'delete', 'rollback', 'close']:
+        link[k] = mark_safe(f'<a href="/svh_service/contacts/{id}/{k}">')
+
+    context_data = {'form': form,
+        'data': data, 
+        'entity': contact,
+        'link': link}
+
     return render(request,
-                  'shv_service/update_universal.html',
-                  {'form': form,
-                   'data': data, 
-                   'entity': contact,})
+        'shv_service/update_universal.html',
+        context=context_data)
+
+    # return render(request,
+    #               'shv_service/update_universal.html',
+    #               {'form': form,
+    #                'data': data, 
+    #                'entity': contact,})
 
 
 @login_required
