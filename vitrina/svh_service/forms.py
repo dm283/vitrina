@@ -23,7 +23,7 @@ class LoginForm(forms.Form):
 class ConsignmentForm(forms.ModelForm):
     class Meta:
         model = Consignment
-        fields = ['key_id', 'contact', 'contact_name', 'contact_broker', 'broker_name', 'nttn', 'nttn_date',
+        fields = ['key_id', 'contact_name', 'contact', 'broker_name', 'contact_broker', 'nttn', 'nttn_date',
                   'dkd', 'dkd_date', 'goods', 'weight', 'dater', 'dateo', 'id_enter', 'car', 'd_in', 'd_out']
         # fields = '__all__'
 
@@ -34,7 +34,9 @@ class ConsignmentForm(forms.ModelForm):
             'dater': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'dateo': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'd_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}), 
-            'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+            'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'contact': forms.TextInput(attrs={'readonly': True}),
+            'contact_broker': forms.TextInput(attrs={'readonly': True})
         }
 
         labels = {
