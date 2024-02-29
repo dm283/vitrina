@@ -263,22 +263,24 @@ body {
 
 .detail_form input { 
     font-size: 13px;
+    font-weight: bold;
+    color: DarkSlateGray;
     width: 320px;
-    margin:0 0 0px;
-    border:1px solid gainsboro;
+    margin: 0 0 0px;
+    border: 1px solid gainsboro;
     border-radius: 5px;
-    padding:6px 10px;
+    padding: 6px 10px;
 }
 
 .form_fields_area { #id_contact_name:hover, #id_broker_name:hover {
-    border: 2px solid royalblue;
+    border: 2px dashed SteelBlue;
     cursor: pointer;
     } }
 
 .form_fields_area { #id_contact, #id_contact_broker {
     background-color: WhiteSmoke;
+    color: gray;
     } }
-
 
 
 /* The Modal (background) */

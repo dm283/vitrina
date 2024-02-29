@@ -35,8 +35,10 @@ class ConsignmentForm(forms.ModelForm):
             'dateo': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'd_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}), 
             'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'contact': forms.TextInput(attrs={'readonly': True}),
-            'contact_broker': forms.TextInput(attrs={'readonly': True})
+            'contact': forms.HiddenInput(),
+            'contact_broker': forms.HiddenInput(),
+            # 'contact': forms.TextInput(attrs={'readonly': True}),
+            # 'contact_broker': forms.TextInput(attrs={'readonly': True})
         }
 
         labels = {
@@ -97,7 +99,7 @@ class CarpassForm(forms.ModelForm):
     class Meta:
         model = Carpass
         fields = ['guid', 'id_enter', 'ncar', 'dateen', 'timeen', 'ntir', 'nkont',
-                  'driver', 'drv_man', 'dev_phone', 'contact', 'contact_name', 'contact_broker', 'broker_name', 
+                  'driver', 'drv_man', 'dev_phone', 'contact_name', 'contact', 'broker_name', 'contact_broker', 
                   'place_n', 'dateex', 'timeex']
         # fields = '__all__'
 
@@ -108,6 +110,10 @@ class CarpassForm(forms.ModelForm):
             'dateex': forms.DateInput(attrs=dict(type='date')),
             'timeen': forms.TimeInput(attrs={'type': 'time'}),
             'timeex': forms.TimeInput(attrs={'type': 'time'}),
+            'contact': forms.TextInput(attrs={'readonly': True}),
+            'contact_broker': forms.TextInput(attrs={'readonly': True})
+            # 'contact': forms.HiddenInput(),
+            # 'contact_broker': forms.HiddenInput(),
         }
 
         labels = {

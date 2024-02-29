@@ -393,6 +393,7 @@ def carpass_list(request):
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     documents = Document.objects.filter(id_enter=carpass.id_enter)
+    contacts = Contact.objects.all()
 
     if request.method == 'POST':
         form = CarpassForm(request.POST, instance=carpass)
@@ -415,6 +416,7 @@ def carpass_update(request, id):
         'data': data, 
         'entity': carpass,
         'documents': documents,
+        'contacts': contacts,
         'link': link}
 
     return render(request,
