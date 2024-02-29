@@ -257,18 +257,73 @@ body {
     font-size: 13px;
     font-weight: bold;
     color: SlateGray;
-    margin-bottom:4px; 
+    margin-bottom: 4px; 
     width: 260px;
 }
 
 .detail_form input { 
     font-size: 13px;
+    font-weight: bold;
+    color: DarkSlateGray;
     width: 320px;
-    margin:0 0 0px;
-    border:1px solid gainsboro;
+    margin: 0 0 0px;
+    border: 1px solid gainsboro;
     border-radius: 5px;
-    padding:6px 10px;
+    padding: 6px 10px;
 }
+
+.form_fields_area { #id_contact_name:hover, #id_broker_name:hover {
+    border: 2px dashed SteelBlue;
+    cursor: pointer;
+    } }
+
+.form_fields_area { #id_contact, #id_contact_broker {
+    background-color: WhiteSmoke;
+    color: gray;
+    } }
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+  
+/* Modal Content */
+.modal-content {
+    border-radius: 5px;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 95%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
 
 .buttons_area {
     margin: 15px 0px 0px 0px;

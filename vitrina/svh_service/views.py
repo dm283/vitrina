@@ -175,6 +175,7 @@ def consignment_list(request):
 def consignment_update(request, id):
     consignment = get_object_or_404(Consignment, id=id)
     documents = Document.objects.filter(guid_partia=consignment.key_id)
+    contacts = Contact.objects.all()
 
     if request.method == 'POST':
         form = ConsignmentForm(request.POST, instance=consignment)
@@ -197,6 +198,7 @@ def consignment_update(request, id):
         'data': data, 
         'entity': consignment,
         'documents': documents,
+        'contacts': contacts,
         'link': link}
 
     return render(request,
@@ -391,6 +393,7 @@ def carpass_list(request):
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     documents = Document.objects.filter(id_enter=carpass.id_enter)
+    contacts = Contact.objects.all()
 
     if request.method == 'POST':
         form = CarpassForm(request.POST, instance=carpass)
@@ -413,6 +416,7 @@ def carpass_update(request, id):
         'data': data, 
         'entity': carpass,
         'documents': documents,
+        'contacts': contacts,
         'link': link}
 
     return render(request,

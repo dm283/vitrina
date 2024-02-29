@@ -2,6 +2,51 @@
 
 {% block content %}
 
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="close_modal_catalog()">&times;</span>
+    
+    <table
+    id="table"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true"
+    data-advanced-search="true"
+    data-id-table="advancedTable"
+    data-search-align="left"
+    data-buttons-align="left"
+  >  
+    <thead>
+    <tr>
+      <th data-sortable="true" data-field="contact">Код клиента</th>
+      <th data-sortable="true" data-field="type">Тип</th>
+      <th data-sortable="true" data-field="name">Наименование организации</th>
+      <th data-sortable="true" data-field="inn">ИНН</th>
+      <th data-sortable="true" data-field="email1">E-mail</th>
+      <th data-sortable="true" data-field="idtelegram">Telegram ID</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_content">
+      <!-- {% for contact in contacts %}
+      <tr>
+        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
+        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.type_name }}</div></td>
+        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
+        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
+        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
+        <td><div onclick="pick_contact('V', {{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
+      </tr>
+      {% endfor %} -->
+    </tbody>
+  </table>
+
+
+  </div>
+</div>
+
+
+
+
 <div>
   <h5 class="block_name_detail_page">{{ data.block_name }} [ ID {{ data.id }} ]</h5>
 
@@ -84,5 +129,73 @@
     </tbody>
   </table>
 {% endif %}
+
+<script>
+  document.getElementById("id_contact_name").addEventListener("click", function () {open_modal_catalog('V');},);
+  document.getElementById("id_broker_name").addEventListener("click", function () {open_modal_catalog('B');},);
+
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+  function open_modal_catalog(contact_type) {
+    //
+    console.log(contact_type);
+    var tbody_c = document.getElementById("tbody_content");
+
+    if (contact_type == 'V') {
+      table_in_modal = `
+      {% for contact in contacts %}
+        {% if contact.type == 'V' %}
+        <tr>
+                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
+                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.type_name }}</div></td>
+                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
+                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
+                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
+                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
+              </tr>
+        {% endif %}
+      {% endfor %}
+    `}
+    else if (contact_type == 'B') {
+      table_in_modal = `
+      {% for contact in contacts %}
+        {% if contact.type == 'B' %}
+        <tr>
+                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
+                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.type_name }}</div></td>
+                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
+                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
+                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
+                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
+              </tr>
+        {% endif %}
+      {% endfor %}
+      `}
+
+    tbody_c.innerHTML = table_in_modal
+    modal.style.display = "block";
+  }
+
+  function close_modal_catalog() {
+    modal.style.display = "none";
+  }
+
+  function pick_contact(contact_type, picked_contact_id, picked_contact_name) {
+    console.log('PICKED CONTACT = ', picked_contact_id, picked_contact_name)
+
+    if (contact_type == 'V') {
+      var id_1 = 'id_contact'; var id_2 = 'id_contact_name'
+    }
+    else if (contact_type == 'B') {
+      var id_1 = 'id_contact_broker'; var id_2 = 'id_broker_name'
+    }
+    document.getElementById(id_1).value = picked_contact_id
+    document.getElementById(id_2).value = picked_contact_name
+    modal.style.display = "none";
+  }
+
+
+</script>
 
 {% endblock %}
