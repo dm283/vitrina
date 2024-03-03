@@ -72,6 +72,30 @@ class ConsignmentForm(forms.ModelForm):
         }
 
 
+class ConsignmentPostedForm(ConsignmentForm):
+    class Meta(ConsignmentForm.Meta):
+        is_ro = True
+        widgets = {
+            'key_id': forms.HiddenInput(),
+            'nttn_date': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'dkd_date': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'dater': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'dateo': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'd_in': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}), 
+            'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'contact': forms.HiddenInput(),
+            'contact_broker': forms.HiddenInput(),
+            'contact_name': forms.TextInput(attrs={'readonly': is_ro}),
+            'broker_name': forms.TextInput(attrs={'readonly': is_ro}),
+            'nttn': forms.TextInput(attrs={'readonly': is_ro}),
+            'dkd': forms.TextInput(attrs={'readonly': is_ro}),
+            'goods': forms.TextInput(attrs={'readonly': is_ro}),
+            'weight': forms.TextInput(attrs={'readonly': is_ro}),
+            'id_enter': forms.TextInput(attrs={'readonly': is_ro}),
+            'car': forms.TextInput(attrs={'readonly': is_ro}),
+        }
+
+
 class ConsignmentFiltersForm(forms.Form):
     key_id = forms.CharField(label='ID партии', max_length=16, required=False)
     contact_name = forms.CharField(label='Клиент', max_length=150, required=False)
@@ -124,10 +148,10 @@ class CarpassForm(forms.ModelForm):
             'dateex': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
             'timeen': forms.TimeInput(attrs={'type': 'time', 'readonly': is_ro}),
             'timeex': forms.TimeInput(attrs={'type': 'time', 'readonly': is_ro}),
-            'contact': forms.TextInput(attrs={'readonly': True, 'readonly': True}),
-            'contact_broker': forms.TextInput(attrs={'readonly': True, 'readonly': True}),
-            # 'contact': forms.HiddenInput(),
-            # 'contact_broker': forms.HiddenInput(),
+            # 'contact': forms.TextInput(attrs={'readonly': True, 'readonly': True}),
+            # 'contact_broker': forms.TextInput(attrs={'readonly': True, 'readonly': True}),
+            'contact': forms.HiddenInput(),
+            'contact_broker': forms.HiddenInput(),
             'ncar': forms.TextInput(attrs={'readonly': is_ro}),
             'ntir': forms.TextInput(attrs={'readonly': is_ro}),
             'nkont': forms.TextInput(attrs={'readonly': is_ro}),
@@ -160,6 +184,32 @@ class CarpassForm(forms.ModelForm):
         }
 
 
+class CarpassPostedForm(CarpassForm):
+    class Meta(CarpassForm.Meta):
+        is_ro = True
+        widgets = {
+            'guid': forms.HiddenInput(),
+            'id_enter': forms.HiddenInput(),
+            'dateen': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'dateex': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'timeen': forms.TimeInput(attrs={'type': 'time', 'readonly': is_ro}),
+            'timeex': forms.TimeInput(attrs={'type': 'time', 'readonly': is_ro}),
+            # 'contact': forms.TextInput(attrs={'readonly': True, 'readonly': True}),
+            # 'contact_broker': forms.TextInput(attrs={'readonly': True, 'readonly': True}),
+            'contact': forms.HiddenInput(),
+            'contact_broker': forms.HiddenInput(),
+            'ncar': forms.TextInput(attrs={'readonly': is_ro}),
+            'ntir': forms.TextInput(attrs={'readonly': is_ro}),
+            'nkont': forms.TextInput(attrs={'readonly': is_ro}),
+            'driver': forms.TextInput(attrs={'readonly': is_ro}),
+            'drv_man': forms.TextInput(attrs={'readonly': is_ro}),
+            'dev_phone': forms.TextInput(attrs={'readonly': is_ro}),
+            'place_n': forms.TextInput(attrs={'readonly': is_ro}),
+            'contact_name': forms.TextInput(attrs={'readonly': is_ro}),
+            'broker_name': forms.TextInput(attrs={'readonly': is_ro}),
+        }
+
+
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
@@ -188,6 +238,20 @@ class DocumentForm(forms.ModelForm):
             'docname': 'Наименование', 
             'file': 'Загрузка файла',
             'nfile': 'Загруженный файл'
+        }
+
+
+class DocumentPostedForm(DocumentForm):
+    class Meta(DocumentForm.Meta):
+        is_ro = True
+        widgets = {
+            'guid_partia': forms.HiddenInput(),
+            'id_enter': forms.HiddenInput(),
+            'docnum': forms.TextInput(attrs={'readonly': is_ro}),
+            'docdate': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'docname': forms.TextInput(attrs={'readonly': is_ro}),
+            'nfile': forms.TextInput(attrs={'readonly': True}),
+            'file': forms.HiddenInput(),
         }
 
 
@@ -231,3 +295,22 @@ class ContactForm(forms.ModelForm):
                 self._errors['inn'] = self.error_class(['Некорректный формат ИНН: не может начинаться с 0'])
     
         return self.cleaned_data
+
+
+class ContactPostedForm(ContactForm):
+    class Meta(ContactForm.Meta):
+        is_ro = True
+        widgets = {
+            'contact': forms.TextInput(attrs={'readonly': is_ro}),
+            'type': forms.TextInput(attrs={'readonly': is_ro}),
+            'name': forms.TextInput(attrs={'readonly': is_ro}),
+            'inn': forms.TextInput(attrs={'readonly': is_ro}),
+            'fio': forms.TextInput(attrs={'readonly': is_ro}),
+            'email0': forms.TextInput(attrs={'readonly': is_ro}),
+            'email1': forms.TextInput(attrs={'readonly': is_ro}),
+            'email2': forms.TextInput(attrs={'readonly': is_ro}),
+            'idtelegram': forms.TextInput(attrs={'readonly': is_ro}),
+            'tags': forms.TextInput(attrs={'readonly': is_ro}),
+        
+        }
+

@@ -122,7 +122,7 @@
 {% endif %}
 
 <script>
-  {% if app_type == 'operator' %}
+  {% if app_type == 'operator' and not is_posted %}
     document.getElementById("id_contact_name").addEventListener("click", function () {open_modal_catalog('V');},);
     document.getElementById("id_broker_name").addEventListener("click", function () {open_modal_catalog('B');},);
   {% endif %}
