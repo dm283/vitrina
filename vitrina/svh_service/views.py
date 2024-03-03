@@ -199,7 +199,8 @@ def consignment_update(request, id):
         'entity': consignment,
         'documents': documents,
         'contacts': contacts,
-        'link': link}
+        'link': link,
+        'app_type': APP_TYPE,}
 
     return render(request,
         'shv_service/update_universal.html',
@@ -417,7 +418,8 @@ def carpass_update(request, id):
         'entity': carpass,
         'documents': documents,
         'contacts': contacts,
-        'link': link}
+        'link': link,
+        'app_type': APP_TYPE,}
 
     return render(request,
         'shv_service/update_universal.html',

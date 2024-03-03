@@ -23,22 +23,32 @@ class LoginForm(forms.Form):
 class ConsignmentForm(forms.ModelForm):
     class Meta:
         model = Consignment
+        if APP_TYPE == 'operator':
+            is_ro = False
+        elif APP_TYPE == 'client':
+            is_ro = True
+
         fields = ['key_id', 'contact_name', 'contact', 'broker_name', 'contact_broker', 'nttn', 'nttn_date',
                   'dkd', 'dkd_date', 'goods', 'weight', 'dater', 'dateo', 'id_enter', 'car', 'd_in', 'd_out']
-        # fields = '__all__'
 
         widgets = {
             'key_id': forms.HiddenInput(),
-            'nttn_date': forms.DateInput(attrs=dict(type='date')),
-            'dkd_date': forms.DateInput(attrs=dict(type='date')),
-            'dater': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'dateo': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'd_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}), 
-            'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'nttn_date': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'dkd_date': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'dater': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'dateo': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
+            'd_in': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}), 
+            'd_out': forms.DateTimeInput(attrs={'type': 'datetime-local', 'readonly': is_ro}),
             'contact': forms.HiddenInput(),
             'contact_broker': forms.HiddenInput(),
-            # 'contact': forms.TextInput(attrs={'readonly': True}),
-            # 'contact_broker': forms.TextInput(attrs={'readonly': True})
+            'contact_name': forms.TextInput(attrs={'readonly': is_ro}),
+            'broker_name': forms.TextInput(attrs={'readonly': is_ro}),
+            'nttn': forms.TextInput(attrs={'readonly': is_ro}),
+            'dkd': forms.TextInput(attrs={'readonly': is_ro}),
+            'goods': forms.TextInput(attrs={'readonly': is_ro}),
+            'weight': forms.TextInput(attrs={'readonly': is_ro}),
+            'id_enter': forms.TextInput(attrs={'readonly': is_ro}),
+            'car': forms.TextInput(attrs={'readonly': is_ro}),
         }
 
         labels = {
@@ -98,22 +108,35 @@ class ContactFiltersForm(forms.Form):
 class CarpassForm(forms.ModelForm):
     class Meta:
         model = Carpass
+        if APP_TYPE == 'operator':
+            is_ro = False
+        elif APP_TYPE == 'client':
+            is_ro = True
+
         fields = ['guid', 'id_enter', 'ncar', 'dateen', 'timeen', 'ntir', 'nkont',
                   'driver', 'drv_man', 'dev_phone', 'contact_name', 'contact', 'broker_name', 'contact_broker', 
                   'place_n', 'dateex', 'timeex']
-        # fields = '__all__'
 
         widgets = {
             'guid': forms.HiddenInput(),
             'id_enter': forms.HiddenInput(),
-            'dateen': forms.DateInput(attrs=dict(type='date')),
-            'dateex': forms.DateInput(attrs=dict(type='date')),
-            'timeen': forms.TimeInput(attrs={'type': 'time'}),
-            'timeex': forms.TimeInput(attrs={'type': 'time'}),
-            'contact': forms.TextInput(attrs={'readonly': True}),
-            'contact_broker': forms.TextInput(attrs={'readonly': True})
+            'dateen': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'dateex': forms.DateInput(attrs=dict(type='date', readonly=is_ro)),
+            'timeen': forms.TimeInput(attrs={'type': 'time', 'readonly': is_ro}),
+            'timeex': forms.TimeInput(attrs={'type': 'time', 'readonly': is_ro}),
+            'contact': forms.TextInput(attrs={'readonly': True, 'readonly': is_ro}),
+            'contact_broker': forms.TextInput(attrs={'readonly': True, 'readonly': is_ro}),
             # 'contact': forms.HiddenInput(),
             # 'contact_broker': forms.HiddenInput(),
+            'ncar': forms.TextInput(attrs={'readonly': is_ro}),
+            'ntir': forms.TextInput(attrs={'readonly': is_ro}),
+            'nkont': forms.TextInput(attrs={'readonly': is_ro}),
+            'driver': forms.TextInput(attrs={'readonly': is_ro}),
+            'drv_man': forms.TextInput(attrs={'readonly': is_ro}),
+            'dev_phone': forms.TextInput(attrs={'readonly': is_ro}),
+            'place_n': forms.TextInput(attrs={'readonly': is_ro}),
+            'contact_name': forms.TextInput(attrs={'readonly': is_ro}),
+            'broker_name': forms.TextInput(attrs={'readonly': is_ro}),
         }
 
         labels = {

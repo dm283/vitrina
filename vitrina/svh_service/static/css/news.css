@@ -273,7 +273,8 @@ body {
 }
 
 .form_fields_area { #id_contact_name:hover, #id_broker_name:hover {
-    border: 2px dashed SteelBlue;
+    border: 1px solid SteelBlue;
+    box-shadow: 2px 2px SteelBlue;
     cursor: pointer;
     } }
 

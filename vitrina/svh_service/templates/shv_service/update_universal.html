@@ -2,54 +2,66 @@
 
 {% block content %}
 
-<div id="myModal" class="modal">
+<div id="modal_catalog_client" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="close_modal_catalog()">&times;</span>
-    
-    <table
-    id="table"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true"
-    data-advanced-search="true"
-    data-id-table="advancedTable"
-    data-search-align="left"
-    data-buttons-align="left"
-  >  
-    <thead>
-    <tr>
+    <div>
+      <h5 class='block_name_detail_page'>Участники ВЭД</h5>
+      <span class="close" onclick="close_modal_catalog('V')">&times;</span>
+    </div>
+    <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-id-table="advancedTable"
+    data-search-align="left" data-buttons-align="left">  
+    <thead><tr>
       <th data-sortable="true" data-field="contact">Код клиента</th>
-      <th data-sortable="true" data-field="type">Тип</th>
       <th data-sortable="true" data-field="name">Наименование организации</th>
       <th data-sortable="true" data-field="inn">ИНН</th>
       <th data-sortable="true" data-field="email1">E-mail</th>
       <th data-sortable="true" data-field="idtelegram">Telegram ID</th>
-    </tr>
-    </thead>
-    <tbody id="tbody_content">
-      <!-- {% for contact in contacts %}
+    </tr></thead>
+    <tbody>
+      {% for contact in contacts %}
+      {% if contact.type == 'V' %}
       <tr>
         <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
-        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.type_name }}</div></td>
         <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
         <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
         <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
-        <td><div onclick="pick_contact('V', {{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
+        <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
       </tr>
-      {% endfor %} -->
-    </tbody>
-  </table>
+      {% endif %}
+      {% endfor %}
+</tbody></table></div></div>
 
-
-  </div>
-</div>
-
-
-
+<div id="modal_catalog_broker" class="modal">
+  <div class="modal-content">
+    <div>
+      <h5 class='block_name_detail_page'>Таможенные представители (брокеры)</h5>
+      <span class="close" onclick="close_modal_catalog('B')">&times;</span>
+    </div>
+    <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-id-table="advancedTable"
+    data-search-align="left" data-buttons-align="left">  
+    <thead><tr>
+      <th data-sortable="true" data-field="contact">Код клиента</th>
+      <th data-sortable="true" data-field="name">Наименование организации</th>
+      <th data-sortable="true" data-field="inn">ИНН</th>
+      <th data-sortable="true" data-field="email1">E-mail</th>
+      <th data-sortable="true" data-field="idtelegram">Telegram ID</th>
+    </tr></thead>
+    <tbody>
+      {% for contact in contacts %}
+      {% if contact.type == 'B' %}
+      <tr>
+        <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
+        <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
+        <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
+        <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
+        <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+</tbody></table></div></div>
 
 <div>
   <h5 class="block_name_detail_page">{{ data.block_name }} [ ID {{ data.id }} ]</h5>
-
   {% if request.user.profile.type == 'O' %}
   <div {% if entity.posted %}class="div_posted_status"{% else %}class="div_not_posted_status"{% endif %} >
     Статус проводки: {% if not entity.posted %}НЕ {% endif %}ПРОВЕДЕН
@@ -57,9 +69,7 @@
   {% endif %}
 </div>
 
-
 <form class='detail_form' action="" method="post">
-
   <div class="buttons_area">
     {% if request.user.profile.type == 'O' %}
       {% if not entity.posted %}
@@ -72,21 +82,16 @@
     {% endif %}
       {{ link.close }}<input type="button" value="CLOSE"></a>
   </div>
-
   <div class="form_fields_area">
     {{ form.as_p }}
     {% csrf_token %}
   </div>
-
   <div>* - обязательные поля при проводке документа</div>
-  
 </form>
 
 {% if data.entity != 'contact' %}
   <hr>
-
   <h5 class="block_name">Документы</h5>
-
   {% if not entity.posted %}
   <div class='buttons_area'>
     <a href="{% url 'svh_service:document_add' data.entity entity.id %}">
@@ -94,29 +99,15 @@
     </a>
   </div>
   {% endif %}
-
-  <table
-      id="table"
-      data-toggle="table"
-      data-show-export="true"
-      data-pagination="true"
-      data-show-columns="true"
-      data-search="true"
-      data-advanced-search="true"
-      data-id-table="advancedTable"
-      data-reorderable-columns="true"
-      data-resizable="true"
-      data-search-align="left"
-      data-buttons-align="left"
-  >  
-    <thead>
-    <tr>
+  <table id="table" data-toggle="table" data-show-export="true" data-pagination="true" data-show-columns="true"
+      data-search="true" data-advanced-search="true" data-id-table="advancedTable" data-reorderable-columns="true"
+      data-resizable="true" data-search-align="left" data-buttons-align="left">  
+    <thead><tr>
       <th data-sortable="true" data-field="docnum">Номер</th>
       <th data-sortable="true" data-field="docdate">Дата</th>
       <th data-sortable="true" data-field="docname">Наименование</th>
       <th data-sortable="true" data-field="nfile">Файл</th>
-    </tr>
-    </thead>
+    </tr></thead>
     <tbody>
       {% for document in documents %}
       <tr>
@@ -131,70 +122,46 @@
 {% endif %}
 
 <script>
-  document.getElementById("id_contact_name").addEventListener("click", function () {open_modal_catalog('V');},);
-  document.getElementById("id_broker_name").addEventListener("click", function () {open_modal_catalog('B');},);
-
-  // Get the modal
-  var modal = document.getElementById("myModal");
+  {% if app_type == 'operator' %}
+    document.getElementById("id_contact_name").addEventListener("click", function () {open_modal_catalog('V');},);
+    document.getElementById("id_broker_name").addEventListener("click", function () {open_modal_catalog('B');},);
+  {% endif %}
+  var modal_catalog_client = document.getElementById("modal_catalog_client");
+  var modal_catalog_broker = document.getElementById("modal_catalog_broker");
 
   function open_modal_catalog(contact_type) {
     //
-    console.log(contact_type);
-    var tbody_c = document.getElementById("tbody_content");
-
     if (contact_type == 'V') {
-      table_in_modal = `
-      {% for contact in contacts %}
-        {% if contact.type == 'V' %}
-        <tr>
-                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
-                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.type_name }}</div></td>
-                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
-                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
-                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
-                <td><div onclick="pick_contact('V', '{{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
-              </tr>
-        {% endif %}
-      {% endfor %}
-    `}
+      modal_catalog_client.style.display = "block";
+    }
     else if (contact_type == 'B') {
-      table_in_modal = `
-      {% for contact in contacts %}
-        {% if contact.type == 'B' %}
-        <tr>
-                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.contact }}</div></td>
-                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.type_name }}</div></td>
-                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.name }}</div></td>
-                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.inn }}</div></td>
-                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.email1 }}</div></td>
-                <td><div onclick="pick_contact('B', '{{contact.contact}}', '{{contact.name}}')">{{ contact.idtelegram }}</div></td>
-              </tr>
-        {% endif %}
-      {% endfor %}
-      `}
-
-    tbody_c.innerHTML = table_in_modal
-    modal.style.display = "block";
+      modal_catalog_broker.style.display = "block";
+    }
   }
 
-  function close_modal_catalog() {
-    modal.style.display = "none";
+  function close_modal_catalog(contact_type) {
+    //
+    if (contact_type == 'V') {
+      modal_catalog_client.style.display = "none";
+    }
+    else if (contact_type == 'B') {
+      modal_catalog_broker.style.display = "none";
+    }
   }
 
   function pick_contact(contact_type, picked_contact_id, picked_contact_name) {
-    console.log('PICKED CONTACT = ', picked_contact_id, picked_contact_name)
-
+    //
     if (contact_type == 'V') {
       var id_1 = 'id_contact'; var id_2 = 'id_contact_name'
+      modal_catalog_client.style.display = "none";
     }
     else if (contact_type == 'B') {
       var id_1 = 'id_contact_broker'; var id_2 = 'id_broker_name'
+      modal_catalog_broker.style.display = "none";
     }
     document.getElementById(id_1).value = picked_contact_id
     document.getElementById(id_2).value = picked_contact_name
-    modal.style.display = "none";
   }
-
 
 </script>
 
