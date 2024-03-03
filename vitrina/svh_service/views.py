@@ -2,6 +2,7 @@ import sys, os, json, configparser
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Consignment, Carpass, Contact, Document, Uemail
 from .forms import ConsignmentForm, CarpassForm, ContactForm, DocumentForm
+from .forms import ConsignmentPostedForm, CarpassPostedForm, ContactPostedForm, DocumentPostedForm
 from .forms import ConsignmentFiltersForm, CarpassFiltersForm, ContactFiltersForm
 from django.views.decorators.http import require_POST
 from datetime import datetime, date
@@ -182,7 +183,10 @@ def consignment_update(request, id):
         if form.is_valid():
             form.save()
     else:  # request.method == 'GET
-        form = ConsignmentForm(instance=consignment)
+        if consignment.posted:
+            form = ConsignmentPostedForm(instance=consignment)
+        else:
+            form = ConsignmentForm(instance=consignment)
 
     # various data for render template
     data = {}
@@ -200,7 +204,8 @@ def consignment_update(request, id):
         'documents': documents,
         'contacts': contacts,
         'link': link,
-        'app_type': APP_TYPE,}
+        'app_type': APP_TYPE,
+        'is_posted': consignment.posted}
 
     return render(request,
         'shv_service/update_universal.html',
@@ -401,7 +406,10 @@ def carpass_update(request, id):
         if form.is_valid():
             form.save()
     else:
-        form = CarpassForm(instance=carpass)
+        if carpass.posted:
+            form = CarpassPostedForm(instance=carpass)
+        else:
+            form = CarpassForm(instance=carpass)
 
     # various data for render template
     data = {}
@@ -419,7 +427,8 @@ def carpass_update(request, id):
         'documents': documents,
         'contacts': contacts,
         'link': link,
-        'app_type': APP_TYPE,}
+        'app_type': APP_TYPE,
+        'is_posted': carpass.posted, }
 
     return render(request,
         'shv_service/update_universal.html',
@@ -609,21 +618,30 @@ def document_update(request, id):
             if request.FILES:
                 # actions for save file as binary to database
                 form = save_file_as_blob_to_database(form, request.FILES['file'])
-
             form.save()
             document = get_object_or_404(Document, id=id)
             form = DocumentForm(instance=document)
-
     else:
         form = DocumentForm(instance=document)
+        if entity.posted:
+            form = DocumentPostedForm(instance=document)
+        else:
+            form = DocumentForm(instance=document)
+
+    context_data = {'form': form,
+        'document': document,
+        'entity': entity,
+        'is_posted': entity.posted}
 
     return render(request,
                   'shv_service/document/update.html',
-                  {
-                   'form': form,
-                   'document': document,
-                   'entity': entity,
-                   })
+                  context=context_data
+                #   {
+                #    'form': form,
+                #    'document': document,
+                #    'entity': entity,
+                #    }
+                   )
 
 
 @login_required
@@ -768,7 +786,10 @@ def contact_update(request, id):
             new_form.type_name = TYPE_NAME[form_type]
             new_form.save()
     else:
-        form = ContactForm(instance=contact)
+        if contact.posted:
+            form = ContactPostedForm(instance=contact)
+        else:
+            form = ContactForm(instance=contact)
 
     # various data for render template
     data = {}
@@ -783,7 +804,8 @@ def contact_update(request, id):
     context_data = {'form': form,
         'data': data, 
         'entity': contact,
-        'link': link}
+        'link': link,
+        'is_posted': contact.posted}
 
     return render(request,
         'shv_service/update_universal.html',

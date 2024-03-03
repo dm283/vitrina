@@ -278,10 +278,10 @@ body {
     cursor: pointer;
     } }
 
-.form_fields_area { #id_contact, #id_contact_broker {
+/* .form_fields_area { #id_contact, #id_contact_broker {
     background-color: WhiteSmoke;
     color: gray;
-    } }
+    } } */
 
 
 /* The Modal (background) */
