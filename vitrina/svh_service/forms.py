@@ -1,4 +1,4 @@
-import os, configparser
+import sys, os, configparser
 from django import forms
 from .models import Consignment, Carpass, Contact, Document, TYPE_CHOICES
 from django.shortcuts import get_object_or_404
