@@ -261,7 +261,8 @@ class ContactForm(forms.ModelForm):
         fields = ['contact', 'type', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', ]
         labels = {
             'contact': 'Код клиента', 
-            'type': 'Тип пользователя', 
+            'type': 'Тип пользователя',
+            'type_name': 'Тип пользователя', 
             'name': 'Наименование организации', 
             'inn': 'ИНН организации', 
             'fio': 'ФИО представителя', 
@@ -299,10 +300,12 @@ class ContactForm(forms.ModelForm):
 
 class ContactPostedForm(ContactForm):
     class Meta(ContactForm.Meta):
+        fields = ['contact', 'type', 'type_name', 'name', 'inn', 'fio', 'email0', 'email1', 'email2', 'idtelegram', 'tags', ]
         is_ro = True
         widgets = {
             'contact': forms.TextInput(attrs={'readonly': is_ro}),
-            'type': forms.TextInput(attrs={'readonly': is_ro}),
+            'type': forms.HiddenInput(),
+            'type_name': forms.TextInput(attrs={'readonly': is_ro}),
             'name': forms.TextInput(attrs={'readonly': is_ro}),
             'inn': forms.TextInput(attrs={'readonly': is_ro}),
             'fio': forms.TextInput(attrs={'readonly': is_ro}),
@@ -311,6 +314,6 @@ class ContactPostedForm(ContactForm):
             'email2': forms.TextInput(attrs={'readonly': is_ro}),
             'idtelegram': forms.TextInput(attrs={'readonly': is_ro}),
             'tags': forms.TextInput(attrs={'readonly': is_ro}),
-        
         }
+        help_texts = {}
 
