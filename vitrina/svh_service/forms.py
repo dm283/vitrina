@@ -71,6 +71,11 @@ class ConsignmentForm(forms.ModelForm):
             'd_out': 'Дата выезда ТС с терминала',
         }
 
+        help_texts = {
+            'contact_name': '*', 
+            'nttn': '*', 
+        }
+
 
 class ConsignmentPostedForm(ConsignmentForm):
     class Meta(ConsignmentForm.Meta):
@@ -94,6 +99,7 @@ class ConsignmentPostedForm(ConsignmentForm):
             'id_enter': forms.TextInput(attrs={'readonly': is_ro}),
             'car': forms.TextInput(attrs={'readonly': is_ro}),
         }
+        help_texts = {}
 
 
 class ConsignmentFiltersForm(forms.Form):
@@ -183,6 +189,10 @@ class CarpassForm(forms.ModelForm):
             'timeex': 'Время выезда', 
         }
 
+        help_texts = {
+            'contact_name': '*', 
+        }
+
 
 class CarpassPostedForm(CarpassForm):
     class Meta(CarpassForm.Meta):
@@ -208,6 +218,7 @@ class CarpassPostedForm(CarpassForm):
             'contact_name': forms.TextInput(attrs={'readonly': is_ro}),
             'broker_name': forms.TextInput(attrs={'readonly': is_ro}),
         }
+        help_texts = {}
 
 
 class DocumentForm(forms.ModelForm):

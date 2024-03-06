@@ -47,8 +47,8 @@
     </thead>
     <tbody>
       {% for carpass in carpasses %}
-      
-      <tr>
+      {% if not carpass.posted %}<tr style="background-color: LavenderBlush;">
+      {% else %}<tr>{% endif %}
         <td><a href="{% url 'svh_service:carpass_update' carpass.id %}">{{ carpass.id_enter }}</a></td>
         <td>{{ carpass.ncar }}</td>
         <td>{{ carpass.dateen }}</td>
