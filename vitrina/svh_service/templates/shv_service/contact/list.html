@@ -44,7 +44,7 @@
     </thead>
     <tbody>
       {% for contact in contacts %}
-      {% if not contact.posted %}<tr style="background-color: Red;">
+      {% if not contact.posted %}<tr style="background-color: LavenderBlush;">
       {% else %}<tr>{% endif %}
         <td><a href="{% url 'svh_service:contact_update' contact.id %}">{{ contact.contact }}</a></td>
         <td>{{ contact.type_name }}</td>
