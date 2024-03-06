@@ -86,7 +86,7 @@
     {{ form.as_p }}
     {% csrf_token %}
   </div>
-  <div>* - обязательные поля при проводке документа</div>
+  {% if not entity.posted %}<div style="color:SlateGray"><span style="color:red;">*</span> - обязательные поля при проводке документа</div>{% endif %}
 </form>
 
 {% if data.entity != 'contact' %}

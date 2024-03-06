@@ -257,32 +257,36 @@ body {
     font-size: 13px;
     font-weight: bold;
     color: SlateGray;
-    margin-bottom: 4px; 
+    margin-bottom: 4px;
     width: 260px;
 }
 
-.detail_form input { 
+.detail_form input, .detail_form select { 
     font-size: 13px;
     font-weight: bold;
+    background-color: white;
     color: DarkSlateGray;
     width: 320px;
+    height: 33px;
     margin: 0 0 0px;
     border: 1px solid gainsboro;
     border-radius: 5px;
     padding: 6px 10px;
 }
 
-.form_fields_area { #id_contact_name:hover, #id_broker_name:hover {
-    border: 1px solid SteelBlue;
-    box-shadow: 2px 2px SteelBlue;
-    cursor: pointer;
+.form_fields_area { #id_contact_name, #id_broker_name {
+    /* border: 1px solid SteelBlue; */
+    background-color: PapayaWhip;
     } }
 
-/* .form_fields_area { #id_contact, #id_contact_broker {
-    background-color: WhiteSmoke;
-    color: gray;
-    } } */
+.form_fields_area { #id_contact_name:hover, #id_broker_name:hover {
+    /* border: 1px solid SteelBlue; */
+    box-shadow: 0 0 0 2.5px royalblue;
+    cursor: pointer;    } }
 
+.helptext {
+    color: red;
+}
 
 /* The Modal (background) !!! postfix -1 due to avoid name conflict with Bootstrap !!! */ 
 .modal-1 {
@@ -324,8 +328,6 @@ body {
     cursor: pointer;
 }
 
-
-
 .buttons_area {
     margin: 15px 0px 0px 0px;
     padding: 0px;
@@ -335,9 +337,14 @@ body {
     margin-top: 15px;
 }
 
+.form_fields_area { p {
+    margin: 5px;
+} }
+
 .buttons_area input[type=submit], .buttons_area input[type=button] {
     border-radius: 5px;
     width: 100px;
+    height: 31px;
     background:Teal;
     color: WhiteSmoke;
     margin-right: 5px;
