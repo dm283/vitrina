@@ -39,10 +39,8 @@
       <th data-sortable="true" data-field="key_id">ID партии</th>
       <th data-sortable="true" data-field="contact_name">Клиент</th>
       <th data-sortable="true" data-field="broker_name">Брокер</th>
-
       <th data-sortable="true" data-field="nttn">№ транспортного документа</th>
       <th data-sortable="true" data-field="goods">№ документа доставки</th>
-
       <th data-sortable="true" data-field="dater">Дата регистрации</th>
       <th data-sortable="true" data-field="dateo">Дата выдачи</th>
       <th data-sortable="true" data-field="car">ТС</th>
@@ -51,7 +49,8 @@
     </thead>
     <tbody>
       {% for consignment in consignments %}
-      <tr>
+      {% if not consignment.posted %}<tr style="background-color: LavenderBlush;">
+      {% else %}<tr>{% endif %}
         <td><a href="{% url 'svh_service:consignment_update' consignment.id %}">{{ consignment.key_id }}</a></td>
         <td>{{ consignment.contact_name }}</td>
         <td>{{ consignment.broker_name }}</td>

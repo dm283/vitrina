@@ -176,7 +176,7 @@ def consignment_list(request):
 def consignment_update(request, id):
     consignment = get_object_or_404(Consignment, id=id)
     documents = Document.objects.filter(guid_partia=consignment.key_id)
-    contacts = Contact.objects.all()
+    contacts = Contact.objects.filter(posted=True)
 
     if request.method == 'POST':
         form = ConsignmentForm(request.POST, instance=consignment)
@@ -225,18 +225,37 @@ def consignment_delete(request, id):
                   {'consignment': consignment})
 
 
+def check_fields_data(object, check_fields):
+    # ПРОВЕРКИ ДАННЫХ
+    entity_fields = object.__dict__
+    empty_fields_list = []
+    is_approved = True
+    error_msg = []
+    for e in list(check_fields.keys()):
+        if entity_fields[e] in ['', None]:
+            empty_fields_list.append(f'[ {check_fields[e]} ] не заполнено')
+    if len(empty_fields_list) > 0:
+        is_approved = False
+        error_msg = empty_fields_list
+    elif hasattr(object, 'contact_name'):
+        contact = Contact.objects.filter(name=object.contact_name).filter(posted=True)
+        if not contact:
+            is_approved = False
+            error_msg.append(f'Клиент {object.contact_name} отсутствует или не проведен в разделе Организации')
+        # contact = get_object_or_404(Contact, contact=object.contact)
+
+    return is_approved, error_msg
+
+
+
 @login_required
 def consignment_post(request, id):
     consignment = get_object_or_404(Consignment, id=id)
 
     # ПРОВЕРКИ ДАННЫХ
-    try:
-        get_object_or_404(Contact, contact=consignment.contact)
-        is_approved = True
-        error_msg = []
-    except:
-        is_approved = False
-        error_msg = ['Данные указанного клиента не заведены в разделе Организации']
+    is_approved, error_msg = check_fields_data(object=consignment, 
+                      check_fields={'contact_name': 'Наименование клиента', 
+                                    'nttn': '№ транспортного документа', })
 
     if request.method == 'POST':
         guid_partia = consignment.key_id
@@ -399,7 +418,7 @@ def carpass_list(request):
 def carpass_update(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     documents = Document.objects.filter(id_enter=carpass.id_enter)
-    contacts = Contact.objects.all()
+    contacts = Contact.objects.filter(posted=True)
 
     if request.method == 'POST':
         form = CarpassForm(request.POST, instance=carpass)
@@ -440,13 +459,8 @@ def carpass_post(request, id):
     carpass = get_object_or_404(Carpass, id=id)
     
     # ПРОВЕРКИ ДАННЫХ
-    try:
-        get_object_or_404(Contact, contact=carpass.contact)
-        is_approved = True
-        error_msg = []
-    except:
-        is_approved = False
-        error_msg = ['Данные указанного клиента не заведены в разделе Организации']
+    is_approved, error_msg = check_fields_data(object=carpass, 
+        check_fields = {'contact_name': 'Наименование организации', })
 
     if request.method == 'POST':
         id_enter = carpass.id_enter
@@ -830,26 +844,34 @@ def contact_post(request, id):
     contact = get_object_or_404(Contact, id=id)
 
     # ПРОВЕРКИ ДАННЫХ
-    check_fields = {'name': 'Наименование организации', 
-            'inn': 'ИНН организации', 
-            'fio': 'ФИО представителя', 
-            'email0': 'Почта для смены пароля и контактов по работе портала', 
-            'email1': 'Почта отсылки сообщений', 
-            'email2': 'Почта для передачи документов партии товара', }
-    #check_fields = list(check_fields.keys())
-    #['name', 'inn', 'fio', 'email0', 'email1', 'email2']
-    entity_fields = contact.__dict__
-    empty_fields_list = []
-    for e in list(check_fields.keys()):
-        if entity_fields[e] in ['', None]:
-            empty_fields_list.append(f'[ {check_fields[e]} ] не заполнено')
-    if len(empty_fields_list) > 0:
-        is_approved = False
-        error_msg = empty_fields_list
-        print(error_msg)
-    else:
-        is_approved = True
-        error_msg = []
+    is_approved, error_msg = check_fields_data(object=contact, 
+        check_fields = {'name': 'Наименование организации', 
+                        'inn': 'ИНН организации', 
+                        'fio': 'ФИО представителя', 
+                        'email0': 'Почта для смены пароля и контактов по работе портала', 
+                        'email1': 'Почта отсылки сообщений', 
+                        'email2': 'Почта для передачи документов партии товара', })
+    
+    # check_fields = {'name': 'Наименование организации', 
+    #         'inn': 'ИНН организации', 
+    #         'fio': 'ФИО представителя', 
+    #         'email0': 'Почта для смены пароля и контактов по работе портала', 
+    #         'email1': 'Почта отсылки сообщений', 
+    #         'email2': 'Почта для передачи документов партии товара', }
+    # #check_fields = list(check_fields.keys())
+    # #['name', 'inn', 'fio', 'email0', 'email1', 'email2']
+    # entity_fields = contact.__dict__
+    # empty_fields_list = []
+    # for e in list(check_fields.keys()):
+    #     if entity_fields[e] in ['', None]:
+    #         empty_fields_list.append(f'[ {check_fields[e]} ] не заполнено')
+    # if len(empty_fields_list) > 0:
+    #     is_approved = False
+    #     error_msg = empty_fields_list
+    #     print(error_msg)
+    # else:
+    #     is_approved = True
+    #     error_msg = []
     
     if request.method == 'POST':
         contact.post_user_id = '1'
