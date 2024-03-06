@@ -284,8 +284,8 @@ body {
     } } */
 
 
-/* The Modal (background) */
-.modal {
+/* The Modal (background) !!! postfix -1 due to avoid name conflict with Bootstrap !!! */ 
+.modal-1 {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -299,8 +299,8 @@ body {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
   
-/* Modal Content */
-.modal-content {
+/* Modal Content !!! postfix -1 due to avoid name conflict with Bootstrap !!! */
+.modal-content-1 {
     border-radius: 5px;
     background-color: #fefefe;
     margin: auto;
