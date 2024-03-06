@@ -2,6 +2,19 @@
 
 {% block content %}
 
+{% if entity.posted %}
+<style>
+  .form_fields_area { #id_contact_name, #id_broker_name {
+    background-color: White;
+    } }
+
+.form_fields_area { #id_contact_name:hover, #id_broker_name:hover {
+    box-shadow: None;
+    cursor: auto;    } }
+</style>
+{% endif %}
+
+
 <div id="modal_catalog_client" class="modal-1">
   <div class="modal-content-1">
     <div>
