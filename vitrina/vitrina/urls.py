@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('svh_service/', include('svh_service.urls', namespace='svh_service')),
+    path('api/', include('svh_service.api.urls', namespace='api')),
 ]
 
 if settings.DEBUG:
